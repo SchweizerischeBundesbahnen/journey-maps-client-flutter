@@ -1,3 +1,5 @@
+# Runs every night to check problems with stable flutter SDK & builds cache
+
 name: nightly build
 
 on:
@@ -6,39 +8,76 @@ on:
     - cron: "20 3 * * *" # 03:20 am every day
 
 jobs:
-  build-android:
-    name: Build Android
+  test:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: example
     steps:
       - uses: actions/checkout@v4
+
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
           cache: true
+
       - uses: actions/setup-java@v4
         with:
           java-version: "17"
           distribution: "temurin"
           cache: "gradle"
-      - run: flutter pub get
-      - name: Build appbundle.
-        run: flutter build appbundle --profile --no-pub
 
-  build-iOS:
-    name: Build iOS
-    runs-on: macos-latest
+      - run: flutter doctor -v
+      - run: flutter pub get
+      - run: flutter test
+
+  build-android:
+    runs-on: ubuntu-latest
+    needs: [test]
     defaults:
       run:
         working-directory: example
+
+    strategy:
+      fail-fast: false
+      matrix:
+        sdk: ["3.19.6", ""]
+
+    name: Build Android
     steps:
       - uses: actions/checkout@v4
+
       - uses: subosito/flutter-action@v2
         with:
-          channel: stable
+          flutter-version: ${{ matrix.sdk }}
           cache: true
+
+      - uses: actions/setup-java@v4
+        with:
+          java-version: "17"
+          distribution: "temurin"
+          cache: "gradle"
+
       - run: flutter pub get
-      - name: Build iOS package
-        run: flutter build ios --simulator
+      - run: flutter build appbundle --profile --no-pub
+
+  build-iOS:
+    runs-on: macos-latest
+    needs: [test]
+    defaults:
+      run:
+        working-directory: example
+
+    strategy:
+      fail-fast: false
+      matrix:
+        sdk: ["3.19.6", ""]
+
+    name: Build iOS package
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ matrix.sdk }}
+          cache: true
+
+      - run: flutter pub get
+      - run: flutter build ios --simulator
