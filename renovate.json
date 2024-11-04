@@ -1,6 +1,13 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:recommended"
-  ]
+  "extends": ["config:recommended"],
+  "packageRules": [
+    {
+      "matchManagers": ["pub"],
+      "groupName": "envied",
+      "matchPackagePrefixes": ["envied", "envied_generator"]
+    }
+  ],
+  "rebaseWhen": "conflicted",
+  "prConcurrentLimit": 5
 }
