@@ -23,30 +23,14 @@ final Map<String, List<SBBMapAnnotation>> _annotations = {
     SBBMapSymbol(symbolURI: _kAbaId, coords: const LatLng(46.96793, 7.46306)),
   ],
   _kRokasIcons: [
-    SBBMapSymbol(
-        symbolURI: 'sbb_marker_train_black',
-        coords: const LatLng(46.9639, 7.46434)),
-    SBBMapSymbol(
-        symbolURI: 'sbb_marker_train_black',
-        coords: const LatLng(46.96277, 7.46344)),
-    SBBMapSymbol(
-        symbolURI: 'sbb_marker_train_black',
-        coords: const LatLng(46.96214, 7.46539)),
-    SBBMapSymbol(
-        symbolURI: 'sbb_marker_train_black',
-        coords: const LatLng(46.96323, 7.46635)),
-    SBBMapSymbol(
-        symbolURI: 'sbb_marker_train_black',
-        coords: const LatLng(46.96274, 7.46601)),
-    SBBMapSymbol(
-        symbolURI: 'sbb_marker_train_black',
-        coords: const LatLng(46.9624, 7.46432)),
-    SBBMapSymbol(
-        symbolURI: 'sbb_marker_train_black',
-        coords: const LatLng(46.96344, 7.46373)),
-    SBBMapSymbol(
-        symbolURI: 'sbb_marker_train_black',
-        coords: const LatLng(46.96365, 7.46533)),
+    SBBMapSymbol(symbolURI: 'sbb_marker_train_black', coords: const LatLng(46.9639, 7.46434)),
+    SBBMapSymbol(symbolURI: 'sbb_marker_train_black', coords: const LatLng(46.96277, 7.46344)),
+    SBBMapSymbol(symbolURI: 'sbb_marker_train_black', coords: const LatLng(46.96214, 7.46539)),
+    SBBMapSymbol(symbolURI: 'sbb_marker_train_black', coords: const LatLng(46.96323, 7.46635)),
+    SBBMapSymbol(symbolURI: 'sbb_marker_train_black', coords: const LatLng(46.96274, 7.46601)),
+    SBBMapSymbol(symbolURI: 'sbb_marker_train_black', coords: const LatLng(46.9624, 7.46432)),
+    SBBMapSymbol(symbolURI: 'sbb_marker_train_black', coords: const LatLng(46.96344, 7.46373)),
+    SBBMapSymbol(symbolURI: 'sbb_marker_train_black', coords: const LatLng(46.96365, 7.46533)),
   ],
   _kCircles: [
     SBBMapCircle(center: const LatLng(46.95263, 7.44336)),
@@ -88,8 +72,7 @@ class DisplayAnnotationsRoute extends StatefulWidget {
   const DisplayAnnotationsRoute({super.key});
 
   @override
-  State<DisplayAnnotationsRoute> createState() =>
-      _DisplayAnnotationsRouteState();
+  State<DisplayAnnotationsRoute> createState() => _DisplayAnnotationsRouteState();
 }
 
 class _DisplayAnnotationsRouteState extends State<DisplayAnnotationsRoute> {
@@ -109,15 +92,13 @@ class _DisplayAnnotationsRouteState extends State<DisplayAnnotationsRoute> {
     _addIconToAnnotator(_kRokasId, 'assets/custom_icons/rokasLogo.png');
     _addIconToAnnotator(_kAbaId, 'assets/custom_icons/appBakeryLogo.png');
     _loadAnnotationsFrom(properties);
-    _styler = SBBRokasMapStyler.full(apiKey: Env.journeyMapsApiKey);
+    _styler = SBBRokasMapStyler.full(apiKey: Env.journeyMapsTilesApiKey);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    Provider.of<ThemeProvider>(context).isDark
-        ? _styler.toggleDarkMode()
-        : null;
+    Provider.of<ThemeProvider>(context).isDark ? _styler.toggleDarkMode() : null;
     return Scaffold(
       appBar: const SBBHeader(title: 'Display annotations'),
       body: SBBMap(
@@ -128,8 +109,7 @@ class _DisplayAnnotationsRouteState extends State<DisplayAnnotationsRoute> {
         mapStyler: _styler,
         isMyLocationEnabled: false,
         isFloorSwitchingEnabled: true,
-        onMapAnnotatorAvailable: (annotator) =>
-            !_annotator.isCompleted ? _annotator.complete(annotator) : null,
+        onMapAnnotatorAvailable: (annotator) => !_annotator.isCompleted ? _annotator.complete(annotator) : null,
         builder: (context) => Align(
           alignment: Alignment.topRight,
           child: Padding(
@@ -145,8 +125,7 @@ class _DisplayAnnotationsRouteState extends State<DisplayAnnotationsRoute> {
                     showSBBModalSheet<_AnnotationVisibilitySettings>(
                       context: context,
                       title: 'Show Annotations',
-                      child: _AnnotationVisibilitySettingModal(
-                          settings: properties),
+                      child: _AnnotationVisibilitySettingModal(settings: properties),
                     ).then(_setStateWithProperties);
                   },
                   icon: SBBIcons.gears_small,
@@ -210,12 +189,10 @@ class _AnnotationVisibilitySettingModal extends StatefulWidget {
   final _AnnotationVisibilitySettings settings;
 
   @override
-  State<_AnnotationVisibilitySettingModal> createState() =>
-      _AnnotationVisibilitySettingModalState();
+  State<_AnnotationVisibilitySettingModal> createState() => _AnnotationVisibilitySettingModalState();
 }
 
-class _AnnotationVisibilitySettingModalState
-    extends State<_AnnotationVisibilitySettingModal> {
+class _AnnotationVisibilitySettingModalState extends State<_AnnotationVisibilitySettingModal> {
   late _AnnotationVisibilitySettings settings;
 
   @override
@@ -253,8 +230,7 @@ class _AnnotationVisibilitySettingModalState
           SBBCheckboxListItem(
             value: settings.isCircleVisible,
             label: 'Show Circles',
-            secondaryLabel:
-                'Display circle annotations between Lorrainebrücke and Kornhausbrücke.',
+            secondaryLabel: 'Display circle annotations between Lorrainebrücke and Kornhausbrücke.',
             onChanged: (v) => setState(() {
               settings.isCircleVisible = !settings.isCircleVisible;
             }),
@@ -262,8 +238,7 @@ class _AnnotationVisibilitySettingModalState
           SBBCheckboxListItem(
             value: settings.isLineVisible,
             label: 'Show Lines',
-            secondaryLabel:
-                'Display line annotations between Bern Bahnhof and Bern Europaplatz.',
+            secondaryLabel: 'Display line annotations between Bern Bahnhof and Bern Europaplatz.',
             onChanged: (v) => setState(() {
               settings.isLineVisible = !settings.isLineVisible;
             }),
@@ -278,9 +253,7 @@ class _AnnotationVisibilitySettingModalState
             isLastElement: true,
           ),
           const SizedBox(height: sbbDefaultSpacing),
-          SBBPrimaryButton(
-              label: 'Apply Changes',
-              onPressed: () => Navigator.pop(context, settings)),
+          SBBPrimaryButton(label: 'Apply Changes', onPressed: () => Navigator.pop(context, settings)),
           const SizedBox(height: sbbDefaultSpacing),
         ],
       ),

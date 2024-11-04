@@ -18,7 +18,7 @@ class _MapPropertiesRouteState extends State<MapPropertiesRoute> {
   @override
   Widget build(BuildContext context) {
     final mapStyler = SBBRokasMapStyler.full(
-      apiKey: Env.journeyMapsApiKey,
+      apiKey: Env.journeyMapsTilesApiKey,
       isDarkMode: Provider.of<ThemeProvider>(context).isDark,
     );
 
@@ -66,8 +66,7 @@ class _MapPropertiesModalBody extends StatefulWidget {
   final SBBMapProperties properties;
 
   @override
-  State<_MapPropertiesModalBody> createState() =>
-      _MapPropertiesModalBodyState();
+  State<_MapPropertiesModalBody> createState() => _MapPropertiesModalBodyState();
 }
 
 class _MapPropertiesModalBodyState extends State<_MapPropertiesModalBody> {
@@ -123,9 +122,7 @@ class _MapPropertiesModalBodyState extends State<_MapPropertiesModalBody> {
             isLastElement: true,
           ),
           const SizedBox(height: sbbDefaultSpacing),
-          SBBPrimaryButton(
-              label: 'Apply Changes',
-              onPressed: () => Navigator.pop(context, _properties)),
+          SBBPrimaryButton(label: 'Apply Changes', onPressed: () => Navigator.pop(context, _properties)),
           const SizedBox(height: sbbDefaultSpacing),
         ],
       ),

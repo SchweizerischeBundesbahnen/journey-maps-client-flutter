@@ -17,7 +17,7 @@ class _CustomUiRouteState extends State<CustomUiRoute> {
   @override
   Widget build(BuildContext context) {
     final mapStyler = SBBRokasMapStyler.full(
-      apiKey: Env.journeyMapsApiKey,
+      apiKey: Env.journeyMapsTilesApiKey,
       isDarkMode: Provider.of<ThemeProvider>(context).isDark,
     );
     return Scaffold(
@@ -37,15 +37,11 @@ class _CustomUiRouteState extends State<CustomUiRoute> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Padding(
-                    padding: EdgeInsets.only(
-                        right: sbbDefaultSpacing,
-                        bottom: sbbDefaultSpacing * 2),
+                    padding: EdgeInsets.only(right: sbbDefaultSpacing, bottom: sbbDefaultSpacing * 2),
                     child: SBBMapStyleSwitcher(),
                   ),
                   Padding(
-                    padding: EdgeInsets.only(
-                        right: sbbDefaultSpacing,
-                        bottom: sbbDefaultSpacing * 2),
+                    padding: EdgeInsets.only(right: sbbDefaultSpacing, bottom: sbbDefaultSpacing * 2),
                     child: SBBMapMyLocationButton(),
                   ),
                 ],

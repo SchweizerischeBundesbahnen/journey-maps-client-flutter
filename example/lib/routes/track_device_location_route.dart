@@ -5,15 +5,13 @@ import 'package:sbb_maps_example/env.dart';
 import 'package:sbb_maps_example/theme_provider.dart';
 import 'package:sbb_maps_flutter/sbb_maps_flutter.dart';
 
-final _kCameraZurich =
-    SBBCameraUpdate.newLatLngZoom(const LatLng(47.3769, 8.5417), 15.0);
+final _kCameraZurich = SBBCameraUpdate.newLatLngZoom(const LatLng(47.3769, 8.5417), 15.0);
 
 class TrackDeviceLocationRoute extends StatefulWidget {
   const TrackDeviceLocationRoute({super.key});
 
   @override
-  State<TrackDeviceLocationRoute> createState() =>
-      _TrackDeviceLocationRouteState();
+  State<TrackDeviceLocationRoute> createState() => _TrackDeviceLocationRouteState();
 }
 
 class _TrackDeviceLocationRouteState extends State<TrackDeviceLocationRoute> {
@@ -22,7 +20,7 @@ class _TrackDeviceLocationRouteState extends State<TrackDeviceLocationRoute> {
   @override
   Widget build(BuildContext context) {
     final mapStyler = SBBRokasMapStyler.full(
-      apiKey: Env.journeyMapsApiKey,
+      apiKey: Env.journeyMapsTilesApiKey,
       isDarkMode: Provider.of<ThemeProvider>(context).isDark,
     );
     return Scaffold(
@@ -46,8 +44,7 @@ class _TrackDeviceLocationRouteState extends State<TrackDeviceLocationRoute> {
                 const SBBMapMyLocationButton(),
                 const SizedBox(height: sbbDefaultSpacing),
                 SBBMapIconButton(
-                  onPressed: () => controller.animateCameraMove(
-                      cameraUpdate: _kCameraZurich),
+                  onPressed: () => controller.animateCameraMove(cameraUpdate: _kCameraZurich),
                   icon: SBBIcons.station_small,
                 )
               ],

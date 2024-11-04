@@ -10,7 +10,7 @@ class PlainMapRoute extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final mapStyler = SBBRokasMapStyler.noAerial(
-      apiKey: Env.journeyMapsApiKey,
+      apiKey: Env.journeyMapsTilesApiKey,
       isDarkMode: Provider.of<ThemeProvider>(context).isDark,
     );
     return Scaffold(

@@ -20,7 +20,7 @@ class _RoutingRouteState extends State<RoutingRoute> {
   @override
   Widget build(BuildContext context) {
     final mapStyler = SBBRokasMapStyler.full(
-      apiKey: Env.journeyMapsApiKey,
+      apiKey: Env.journeyMapsTilesApiKey,
       isDarkMode: Provider.of<ThemeProvider>(context).isDark,
     );
     return Scaffold(
@@ -33,9 +33,7 @@ class _RoutingRouteState extends State<RoutingRoute> {
         isMyLocationEnabled: true,
         mapStyler: mapStyler,
         onRoutingControllerAvailable: (routingController) {
-          !_routingController.isCompleted
-              ? _routingController.complete(routingController)
-              : null;
+          !_routingController.isCompleted ? _routingController.complete(routingController) : null;
 
           routingController.routeFromGeoJSON(geoJson);
         },
@@ -378,10 +376,5 @@ const geoJson = {
       "id": null
     }
   ],
-  "bbox": [
-    7.532241111213004,
-    47.20412512135358,
-    7.542682938487567,
-    47.20672317314559
-  ]
+  "bbox": [7.532241111213004, 47.20412512135358, 7.542682938487567, 47.20672317314559]
 };

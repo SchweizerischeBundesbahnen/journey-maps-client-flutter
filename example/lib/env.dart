@@ -4,6 +4,6 @@ part 'env.g.dart';
 
 @Envied()
 abstract class Env {
-  @EnviedField(varName: 'JOURNEY_MAPS_API_KEY', obfuscate: true)
-  static String journeyMapsApiKey = _Env.journeyMapsApiKey;
+  @EnviedField(varName: 'JOURNEY_MAPS_TILES_API_KEY', obfuscate: true)
+  static String journeyMapsTilesApiKey = _Env.journeyMapsTilesApiKey;
 }

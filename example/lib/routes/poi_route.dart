@@ -20,7 +20,7 @@ class _POIRouteState extends State<POIRoute> {
   @override
   Widget build(BuildContext context) {
     final mapStyler = SBBRokasMapStyler.full(
-      apiKey: Env.journeyMapsApiKey,
+      apiKey: Env.journeyMapsTilesApiKey,
       isDarkMode: Provider.of<ThemeProvider>(context).isDark,
     );
     return Scaffold(
@@ -35,9 +35,7 @@ class _POIRouteState extends State<POIRoute> {
         poiSettings: SBBMapPOISettings(
           isPointOfInterestVisible: true,
           onPoiControllerAvailable: (poiController) =>
-              !_poiController.isCompleted
-                  ? _poiController.complete(poiController)
-                  : null,
+              !_poiController.isCompleted ? _poiController.complete(poiController) : null,
           onPoiSelected: (poi) => showSBBModalSheet(
             context: context,
             title: poi.name,
