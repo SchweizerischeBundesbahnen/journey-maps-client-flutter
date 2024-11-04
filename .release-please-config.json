@@ -1,0 +1,12 @@
+{
+  "packages": {
+    ".": {
+      "package-name": "sbb_maps_flutter",
+      "release-type": "dart"
+    },
+    "example": {
+      "package-name": "sbb_maps_flutter_example",
+      "release-type": "dart"
+    }
+  }
+}
