@@ -60,7 +60,7 @@ jobs:
         uses: timheuer/base64-to-file@v1.2
         with:
           fileName: ".env"
-          fileDir: "."
+          fileDir: "./example"
           encodedString: ${{ secrets.EXAMPLE_APP_ENV_FILE_PROD_BASE64 }}
 
       - run: flutter pub get
@@ -92,7 +92,7 @@ jobs:
         uses: timheuer/base64-to-file@v1.2
         with:
           fileName: ".env"
-          fileDir: "."
+          fileDir: "./example"
           encodedString: ${{ secrets.EXAMPLE_APP_ENV_FILE_PROD_BASE64 }}
 
       - run: flutter pub get
