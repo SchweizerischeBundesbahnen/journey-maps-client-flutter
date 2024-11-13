@@ -15,6 +15,15 @@ class SBBMapProperties {
     this.zoomGesturesEnabled = true,
   });
 
+  const SBBMapProperties.allDisabled()
+      : this(
+          compassEnabled: false,
+          rotateGesturesEnabled: false,
+          scrollGesturesEnabled: false,
+          doubleClickZoomEnabled: false,
+          zoomGesturesEnabled: false,
+        );
+
   /// Whether the compass of the map should be shown,
   /// once the camera is rotated.
   final bool compassEnabled;
@@ -53,12 +62,9 @@ class SBBMapProperties {
       compassEnabled: compassEnabled ?? this.compassEnabled,
       compassViewPosition: compassViewPosition ?? this.compassViewPosition,
       compassViewMargins: compassViewMargins ?? this.compassViewMargins,
-      rotateGesturesEnabled:
-          rotateGesturesEnabled ?? this.rotateGesturesEnabled,
-      scrollGesturesEnabled:
-          scrollGesturesEnabled ?? this.scrollGesturesEnabled,
-      doubleClickZoomEnabled:
-          doubleClickZoomEnabled ?? this.doubleClickZoomEnabled,
+      rotateGesturesEnabled: rotateGesturesEnabled ?? this.rotateGesturesEnabled,
+      scrollGesturesEnabled: scrollGesturesEnabled ?? this.scrollGesturesEnabled,
+      doubleClickZoomEnabled: doubleClickZoomEnabled ?? this.doubleClickZoomEnabled,
       zoomGesturesEnabled: zoomGesturesEnabled ?? this.zoomGesturesEnabled,
     );
   }
