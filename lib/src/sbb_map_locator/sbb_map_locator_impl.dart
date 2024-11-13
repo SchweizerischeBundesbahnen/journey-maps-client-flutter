@@ -8,11 +8,7 @@ class SBBMapLocatorImpl with ChangeNotifier implements SBBMapLocator {
   SBBMapLocatorImpl(
     this._mapController,
     this._geolocator,
-  ) {
-    _mapController.then((controller) {
-      controller.addListener(_dismissTracking);
-    });
-  }
+  );
 
   final Future<MapLibreMapController> _mapController;
   final GeolocatorFacade _geolocator;
