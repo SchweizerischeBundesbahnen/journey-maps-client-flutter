@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.3.1](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/compare/2.3.0...2.3.1) (2024-11-13)
+
+
+### Bug Fixes
+
+* dismissTracking called only when SBBMap leaves tracking mode ([#28](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/28)) ([8ba8ae2](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/8ba8ae270f0291e0c14e891699481bb1bab23992))
+* initialCameraPosition null causes crash in SBBMap ([#30](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/30)) ([57b15b7](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/57b15b782f44908c21a47c830b50192069eaa495))
+* rebuilding the CustomMapStyler correctly wires it to the MapStyleButton ([6ff2a70](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/6ff2a70c075a46987cb594bf736d84c8b0250fa5))
+
 ## [2.3.0](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/compare/v2.2.0...2.3.0) (2024-11-04)
 
 

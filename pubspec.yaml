@@ -1,6 +1,6 @@
 name: sbb_maps_flutter
 description: The SBB Maps SDK using MapLibre under the hood and ROKAS map styling.
-version: 2.3.0
+version: 2.3.1
 publish_to: "none"
 
 environment:
