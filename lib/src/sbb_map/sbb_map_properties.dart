@@ -15,6 +15,7 @@ class SBBMapProperties {
     this.zoomGesturesEnabled = true,
   });
 
+  /// Sets all properties to false.
   const SBBMapProperties.allDisabled()
       : this(
           compassEnabled: false,
