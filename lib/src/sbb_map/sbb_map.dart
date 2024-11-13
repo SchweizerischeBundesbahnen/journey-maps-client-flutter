@@ -397,7 +397,7 @@ class _SBBMapState extends State<SBBMap> {
       (_) => _controller.future.then(
         (c) => c.animateCameraMove(
           cameraUpdate: _getSwitzerlandLatLngBounds(),
-          duration: Duration.zero,
+          duration: Durations.short1,
         ),
       ),
     );
