@@ -32,5 +32,8 @@ class SBBMapUiContainer extends InheritedWidget {
   }
 
   @override
-  bool updateShouldNotify(SBBMapUiContainer oldWidget) => false;
+  bool updateShouldNotify(SBBMapUiContainer oldWidget) =>
+      mapStyler != oldWidget.mapStyler ||
+      mapLocator != oldWidget.mapLocator ||
+      mapFloorController != oldWidget.mapFloorController;
 }

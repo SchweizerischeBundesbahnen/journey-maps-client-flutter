@@ -88,7 +88,8 @@ class SBBCustomMapStyler with ChangeNotifier implements SBBMapStyler {
           _aerialStyle == other._aerialStyle &&
           _preAerialStyle == other._preAerialStyle &&
           _isDarkMode == other._isDarkMode &&
-          _isAerialStyle == other._isAerialStyle;
+          _isAerialStyle == other._isAerialStyle &&
+          hasListeners == other.hasListeners;
 
   @override
   int get hashCode =>
@@ -97,5 +98,6 @@ class SBBCustomMapStyler with ChangeNotifier implements SBBMapStyler {
       _aerialStyle.hashCode ^
       _preAerialStyle.hashCode ^
       _isDarkMode.hashCode ^
-      _isAerialStyle.hashCode;
+      _isAerialStyle.hashCode ^
+      hasListeners.hashCode;
 }

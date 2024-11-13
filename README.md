@@ -276,10 +276,6 @@ See [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
 
 * When selecting POIs programmatically with the `RokasPOIController`, one can only select from the POIs that are loaded in the tile source, meaning that trying to select a POI at a very distant place will not be possible. The workaround would be to first move to the geo coordinate and then select the POI.
 
-### Known Bugs
-
-* The [SBBMapStyleSwitchButton] is not working when the [SBBMap] is rebuild and the passed in [SBBMapStyler] is not preserved in the state. Make sure to keep the styler in your state.
-
 
 [Journey Maps API]: (https://developer.sbb.ch/apis/journey-maps/information)
 

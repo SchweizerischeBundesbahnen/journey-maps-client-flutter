@@ -256,6 +256,7 @@ class _SBBMapState extends State<SBBMap> {
     if (oldWidget.mapStyler != widget.mapStyler) {
       oldWidget.mapStyler.removeListener(_setStyleLoadedFalse);
       widget.mapStyler.addListener(_setStyleLoadedFalse);
+      oldWidget.mapStyler.dispose();
     }
     super.didUpdateWidget(oldWidget);
   }
@@ -330,7 +331,6 @@ class _SBBMapState extends State<SBBMap> {
 
   _buildUserControls() {
     return SBBMapStyleContainer(
-      key: UniqueKey(),
       child: SBBMapUiContainer(
         mapStyler: widget.mapStyler,
         mapLocator: _mapLocator,
