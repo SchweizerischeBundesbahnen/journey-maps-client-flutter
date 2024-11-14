@@ -31,6 +31,17 @@ jobs:
       - run: dart run build_runner build --delete-conflicting-outputs
       - run: flutter test
 
+  package_scorer:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: axel-op/dart-package-analyzer@v3
+        id: analysis
+        with:
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+
   build-android:
     name: Build Android
     runs-on: ubuntu-latest
