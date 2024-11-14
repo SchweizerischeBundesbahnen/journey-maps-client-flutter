@@ -5,21 +5,9 @@
       "package-name": "sbb_maps_flutter",
       "release-type": "dart",
       "component": "root"
-    },
-    "example": {
-      "package-name": "sbb_maps_flutter_example",
-      "release-type": "dart",
-      "component": "example"
     }
   },
   "include-v-in-tag": false,
   "include-component-in-tag": false,
-  "always-update": true,
-  "plugins": [
-    {
-      "type": "linked-versions",
-      "groupName": "RootAndExample",
-      "components": ["root", "example"]
-    }
-  ]
+  "pull-request-title-pattern": "Release ${version}"
 }

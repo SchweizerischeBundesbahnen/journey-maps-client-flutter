@@ -1,0 +1,55 @@
+# Creates PR with example app aligned to root pubspec build_name.
+name: Make example app release PR
+
+on:
+  pull_request_target:
+    types:
+      - labeled
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  pull-request-creation:
+    if: contains(github.event.pull_request.labels.*.name, format('autorelease{0} tagged', ':'))
+    permissions:
+      pull-requests: write
+      contents: write
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clone Repository
+        uses: actions/checkout@v4
+
+      - name: Read new build_name from root pubspec.yaml.
+        id: read_build_name
+        run: |
+          version=$(grep '^version:' pubspec.yaml | awk '{print $2}')
+          echo "Version found: $version"
+          echo "pubspec_build_name=$version" >> $GITHUB_OUTPUT
+
+      - name: Read current build_number from example pubspec.yaml
+        id: read_build_number
+        run: |
+          version=$(grep '^version:' example/pubspec.yaml | awk '{print $2}')
+          echo "Example version found: $version"
+          IFS='+' read -r build_name build_number <<< "$version"
+          new_build_number=$((build_number + 1))
+          echo "pubspec_build_number=$new_build_number" >> $GITHUB_OUTPUT
+
+      - name: Update version in example pubspec.yaml
+        run: |
+          sed -i "s/^version:.*/version: ${{ steps.read_build_name.outputs.pubspec_build_name }}+${{ steps.read_build_number.outputs.pubspec_build_number }} # automatically set by GH Action /" example/pubspec.yaml
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          commit-message: ${{ format('chore{0} example app release v{1}', ':', steps.read_build_name.outputs.pubspec_build_name) }}
+          branch: "chore/example-release"
+          title: ${{ format('Release example app v{0}', steps.read_build_name.outputs.pubspec_build_name) }}
+          body: |
+            Update pubspec version to ${{ steps.read_build_name.outputs.pubspec_build_name }}+${{ steps.read_build_number.outputs.pubspec_build_number }}
+
+            **Merging this PR will trigger the release into the enterprise app stores.**
+          labels: |
+            exampleAppRelease:pending
