@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.4.0](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/compare/2.3.1...2.4.0) (2024-11-14)
+
+
+### Features
+
+* add convenience constructor for SBBMapProperties allDisabled ([#33](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/33)) ([2b8abf2](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/2b8abf241a7ee59a8bf82023ec0450bac32c1812))
+
 ## [2.3.1](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/compare/2.3.0...2.3.1) (2024-11-13)
 
 
