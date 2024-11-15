@@ -5,7 +5,7 @@ It is built on top of MapLibre and meant as a client for the [Journey Maps API].
 You need to register your application at [developer.sbb.ch](https://developer.sbb.ch/apis/) to receive an API key
 for style and routing usage (see details below). 
 
-<p align="center"><img src="example/gallery/main.png" alt="iOS and Android example showcases" width="90%"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/main/example/gallery/main.webp" alt="iOS and Android example showcases" width="90%"></p>
 
 ## Table Of Contents
 
@@ -157,7 +157,7 @@ Tested with the latest (stable channel) and oldest supported (3.19.6) Flutter SD
 
 #### Example App
 
-<p align="left"><img src="example/gallery/app_icon/icon.png" alt="Icon of the example app" width="5%"></p>
+<p align="left"><img src="https://raw.githubusercontent.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/main/example/gallery/app_icon/icon.webp" alt="Icon of the example app" width="5%"></p>
 
 The **SBB Karten** demo application is available both in the SBB Enterprise Playstore (Android) and in the managed iOS SBB Store (Ivanti MobileIron).
 
@@ -206,27 +206,27 @@ const SBBMapProperties({
 
 #### Standard Map
 The default SBB map with ROKAS styling (see [standard_map_route.dart](example/lib/routes/standard_map_route.dart)).
-<p align="center"><img src="example/gallery/standard_map_example.png" width='25%'>
+<p align="center"><img src="https://raw.githubusercontent.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/main/example/gallery/standard_map_example.webp" width='25%'>
 
 #### Plain Map
 How to disable all UI components while using ROKAS Map styling. (see [plain_map_route.dart](example/lib/routes/plain_map_route.dart)).
-<p align="center"><img src="example/gallery/plain_map_example.png" width='25%'>
+<p align="center"><img src="https://raw.githubusercontent.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/main/example/gallery/plain_map_example.webp" width='25%'>
 
 #### Camera Movement
 Programmatic control over camera movement (see [camera_route.dart](example/lib/routes/camera_route.dart)).
-<p align="center"><img src="example/gallery/camera_example.png" width='25%'>
+<p align="center"><img src="https://raw.githubusercontent.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/main/example/gallery/camera_example.webp" width='25%'>
 
 #### Custom UI
 Customizing the map UI using the builder (see [custom_ui_route.dart](example/lib/routes/custom_ui_route.dart)).
-<p align="center"><img src="example/gallery/custom_ui_example.png" width='25%'>
+<p align="center"><img src="https://raw.githubusercontent.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/main/example/gallery/custom_ui_example.webp" width='25%'>
 
 #### ROKAS Point of Interests
 Displaying and interacting ROKAS POIs (see [poi_route.dart](example/lib/routes/poi_route.dart)).
-<p align="center"><img src="example/gallery/poi_example.png" width='25%'>
+<p align="center"><img src="https://raw.githubusercontent.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/main/example/gallery/poi_example.webp" width='25%'>
 
 #### Custom UI
 Customizing the map UI using the builder (see [custom_ui_route.dart](example/lib/routes/custom_ui_route.dart)).
-<p align="center"><img src="example/gallery/custom_ui_example.png" width='25%'>
+<p align="center"><img src="https://raw.githubusercontent.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/main/example/gallery/custom_ui_example.webp" width='25%'>
 
 #### Map Properties
 Using map properties (see [map_properties_route.dart](example/lib/routes/map_properties_route.dart)).
