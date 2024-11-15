@@ -73,18 +73,6 @@ The package is meant as a client for the [Journey Maps API] and is based on the 
 In order to access styles and tile data, you need to register your application to the [Journey Maps Tile API] to receive an API Key.
 Create an account (e.g. using SwissPass Login) to be able to setup an application and then register this application to the API.
 
-#### Installation
-
-Since this package is not on pubdev yet, you need to add it to your pubspec.yaml file like this:
-```
-dependencies:
-    ...
-    sbb_maps_flutter:
-      git:
-        url: git@github.com:SchweizerischeBundesbahnen/journey-maps-client-flutter.git
-        ref: main \\ might be prone for breaking changes - use a TAG REF
-```
-
 #### In code usage
 
 ###### API key
