@@ -1,10 +1,17 @@
 # Journey Maps Client Flutter
 
-This package allows you to easily incorporate SBB maps into your Flutter application.
+This package allows you to easily incorporate SBB styled maps into your Flutter application.
+It is built on top of MapLibre and meant as a client for the [Journey Maps API].
+You need to register your application at [developer.sbb.ch](https://developer.sbb.ch/apis/) to receive an API key
+for style and routing usage (see details below). 
 
 <p align="center"><img src="example/gallery/main.png" alt="iOS and Android example showcases" width="90%"></p>
 
-#### Table Of Contents
+## Table Of Contents
+
+<details>
+<summary>Click to expand</summary>
+
 - [Journey Maps Client Flutter](#journey-maps-client-flutter)
       - [Table Of Contents](#table-of-contents)
   - [Introduction](#introduction)
@@ -41,7 +48,8 @@ This package allows you to easily incorporate SBB maps into your Flutter applica
     - [Code of Conduct](#code-of-conduct)
   - [Caveats, limitations and known bugs\*](#caveats-limitations-and-known-bugs)
     - [Limitations](#limitations)
-    - [Known Bugs](#known-bugs)
+
+</details>
 
 <a id="Introduction"></a>
 
