@@ -1,5 +1,3 @@
-# Journey Maps Client Flutter
-
 This package allows you to easily incorporate SBB styled maps into your Flutter application.
 It is built on top of MapLibre and meant as a client for the [Journey Maps API].
 You need to register your application at [developer.sbb.ch](https://developer.sbb.ch/apis/) to receive an API key
@@ -141,13 +139,13 @@ This can be seen in the *Track Device* route in the example app here: [track_dev
 
 Tested with the latest (stable channel) and oldest supported (3.19.6) Flutter SDK.
 
-<a id="Documentation"></a>
-
 #### Example App
 
 <p align="left"><img src="https://raw.githubusercontent.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/main/example/gallery/app_icon/icon.webp" alt="Icon of the example app" width="5%"></p>
 
 The **SBB Karten** demo application is available both in the SBB Enterprise Playstore (Android) and in the managed iOS SBB Store (Ivanti MobileIron).
+
+<a id="Documentation"></a>
 
 ## Documentation
 
@@ -248,7 +246,7 @@ This repository includes a [CONTRIBUTING.md](CONTRIBUTING.md) file that outlines
 
 ### Maintainer
 
-- [Nicolas Vidoni](mailto:30844036+smallTrogdor@users.noreply.github.com)
+- [Nicolas Vidoni](https://github.com/smallTrogdor)
 
 ### Contributors
  - Loris Sorace
