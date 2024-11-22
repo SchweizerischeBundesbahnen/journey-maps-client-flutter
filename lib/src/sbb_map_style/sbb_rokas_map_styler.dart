@@ -99,7 +99,7 @@ class SBBRokasMapStyler {
     // @Deprecated(Remove in next major (3.x.x))
     if (result.isEmpty) result = _fetchLegacyApiKeyFromEnv();
 
-    if (result == '') {
+    if (result.isEmpty) {
       throw ApiKeyMissing(
         'Set JOURNEY_MAPS_TILES_API_KEY as env var or as a constructor parameter.',
       );
@@ -108,14 +108,14 @@ class SBBRokasMapStyler {
   }
 
   static String _fetchLegacyApiKeyFromEnv() {
-    const result = String.fromEnvironment('JOURNEY_MAPS_API_KEY');
-    if (result != '') {
+    const legacyKey = String.fromEnvironment('JOURNEY_MAPS_API_KEY');
+    if (legacyKey.isNotEmpty) {
       final logger = Logger();
       logger.w(
         'sbb_maps_flutter: You are currently loading the API Key from the env var JOURNEY_MAPS_API_KEY.\n'
         'This is deprecated and will be removed in the next major version of the sbb_maps_flutter.',
       );
     }
-    return result;
+    return legacyKey;
   }
 }
