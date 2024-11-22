@@ -9,7 +9,7 @@ class StandardMapRoute extends StatelessWidget {
       appBar: const SBBHeader(title: 'Standard'),
       body: SBBMap(
         isMyLocationEnabled: true,
-        mapStyler: SBBRokasMapStyler.full(), // API key in ENV var
+        mapStyler: SBBRokasMapStyler.full(), // API key in ENV var 'JOURNEY_MAPS_TILES_API_KEY'
       ),
     );
   }
@@ -32,7 +32,7 @@ class StandardMapRoute extends StatelessWidget {
       appBar: const SBBHeader(title: 'Standard'),
       body: SBBMap(
         isMyLocationEnabled: true,
-        mapStyler: SBBRokasMapStyler.full(), // API key in ENV var
+        mapStyler: SBBRokasMapStyler.full(), // API key in ENV var 'JOURNEY_MAPS_TILES_API_KEY'
         initialCameraPosition: _bern, // specifying this will have the map on a smaller zoom level from beginning
         onMapLocatorAvailable: (locator) => locator.trackDeviceLocation(),
       ),

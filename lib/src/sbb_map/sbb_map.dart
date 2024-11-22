@@ -54,8 +54,9 @@ class SBBMap extends StatefulWidget {
   /// The [SBBMapStyler] that will control the styling of the map.
   ///
   /// If not given, the [SBBRokasMapStyler] `full` will be used. This styler will
-  /// try to read the [JOURNEY_MAPS_API_KEY] from the environment variables.
-  /// If it is not set, an [APIKeyMissing] exception will be thrown during Runtime.
+  /// try to read the [JOURNEY_MAPS_TILES_API_KEY], for legacy reasons the
+  /// [JOURNEY_MAPS_API_KEY] from the environment variables.
+  /// If both are not set, an [APIKeyMissing] exception will be thrown during Runtime.
   ///
   /// The style switcher button will only be shown if the given [SBBMapStyler] has more
   /// than one style. Use the [SBBRokasMapStyler.noAerial] to hide the style switcher
