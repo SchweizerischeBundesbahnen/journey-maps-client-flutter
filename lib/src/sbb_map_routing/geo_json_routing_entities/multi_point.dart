@@ -24,9 +24,7 @@ class MultiPoint {
     Function deepEq = const DeepCollectionEquality().equals;
 
     return identical(this, other) ||
-          other is MultiPoint &&
-              runtimeType == other.runtimeType &&
-              deepEq(points, other.points);
+        other is MultiPoint && runtimeType == other.runtimeType && deepEq(points, other.points);
   }
 
   @override

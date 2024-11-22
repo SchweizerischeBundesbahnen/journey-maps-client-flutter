@@ -45,9 +45,7 @@ void main() {
         when(mockController.onFeatureTapped).thenReturn(mockCallbackList);
       });
 
-      test(
-          'should not make further registers in controller when callback registered',
-          () {
+      test('should not make further registers in controller when callback registered', () {
         // act
         sut.onSymbolTapped(mockCallback.call);
 

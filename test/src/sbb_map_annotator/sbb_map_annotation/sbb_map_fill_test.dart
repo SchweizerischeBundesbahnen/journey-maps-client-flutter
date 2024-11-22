@@ -14,18 +14,11 @@ void main() {
         final expected = {
           "type": "Feature",
           "id": sut.id,
-          "properties": {
-            "id": sut.id,
-            "draggable": sut.draggable,
-            "sbbAnnotationType": "SBBMapFill"
-          },
+          "properties": {"id": sut.id, "draggable": sut.draggable, "sbbAnnotationType": "SBBMapFill"},
           "geometry": {
             "type": "Polygon",
-            "coordinates": sut.coords
-                .map((e) => e
-                    .map((LatLng latLng) => [latLng.longitude, latLng.latitude])
-                    .toList())
-                .toList(),
+            "coordinates":
+                sut.coords.map((e) => e.map((LatLng latLng) => [latLng.longitude, latLng.latitude]).toList()).toList(),
           }
         };
         // act + expect
@@ -47,11 +40,8 @@ void main() {
           },
           "geometry": {
             "type": "Polygon",
-            "coordinates": sut.coords
-                .map((e) => e
-                    .map((LatLng latLng) => [latLng.longitude, latLng.latitude])
-                    .toList())
-                .toList(),
+            "coordinates":
+                sut.coords.map((e) => e.map((LatLng latLng) => [latLng.longitude, latLng.latitude]).toList()).toList(),
           }
         };
         // act + expect
@@ -74,12 +64,7 @@ void main() {
 
         // act
         final result = sut.copyWith(coords: [
-          [
-            const LatLng(0, 0),
-            const LatLng(0, 1),
-            const LatLng(1, 1),
-            const LatLng(1, 0)
-          ]
+          [const LatLng(0, 0), const LatLng(0, 1), const LatLng(1, 1), const LatLng(1, 0)]
         ]);
 
         // act + expect

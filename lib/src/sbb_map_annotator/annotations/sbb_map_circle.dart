@@ -192,8 +192,7 @@ class SBBMapCircleStyle {
       if (fillColor != null) 'circleColor': fillColor!.toHexStringRGB(),
       if (fillOpacity != null) 'circleOpacity': fillOpacity,
       if (fillBlur != null) 'circleBlur': fillBlur,
-      if (strokeColor != null)
-        'circleStrokeColor': strokeColor!.toHexStringRGB(),
+      if (strokeColor != null) 'circleStrokeColor': strokeColor!.toHexStringRGB(),
       if (strokeOpacity != null) 'circleStrokeOpacity': strokeOpacity,
       if (strokeWidth != null) 'circleStrokeWidth': strokeWidth,
     };

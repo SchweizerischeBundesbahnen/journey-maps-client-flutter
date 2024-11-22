@@ -10,8 +10,7 @@ void main() {
         final resultBright = brightOnlyWithoutApiKey.uri(isDarkStyle: false);
         final resultBrightFromDark = fullWithoutApiKey.uri(isDarkStyle: false);
 
-        final resultDarkFromBright =
-            brightOnlyWithoutApiKey.uri(isDarkStyle: true);
+        final resultDarkFromBright = brightOnlyWithoutApiKey.uri(isDarkStyle: true);
         final resultDark = fullWithoutApiKey.uri(isDarkStyle: true);
         // assert
         expect(resultBright, brightStyleURL);
@@ -24,8 +23,7 @@ void main() {
         final resultBright = brightOnlyWithApiKey.uri(isDarkStyle: false);
         final resultBrightFromDark = fullWithApiKey.uri(isDarkStyle: false);
 
-        final resultDarkFromBright =
-            brightOnlyWithApiKey.uri(isDarkStyle: true);
+        final resultDarkFromBright = brightOnlyWithApiKey.uri(isDarkStyle: true);
         final resultDark = fullWithApiKey.uri(isDarkStyle: true);
         // assert
         expect(resultBright, '$brightStyleURL?api_key=$apiKey');

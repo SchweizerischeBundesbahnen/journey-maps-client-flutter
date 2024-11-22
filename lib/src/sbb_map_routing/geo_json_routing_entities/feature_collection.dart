@@ -7,7 +7,6 @@ import 'feature.dart';
 /// This class represents a collection of geographic features
 /// along with a bounding box
 class FeatureCollection {
-
   /// Creates a [FeatureCollection] with the specified features and bounding box.
   ///
   /// The [features] parameter is required and represents the list of geographic features.
@@ -22,9 +21,8 @@ class FeatureCollection {
   /// The [json] parameter is a map representation of the GeoJSON object.
   /// This factory constructor parses the GeoJSON and initializes the [features] and [bbox].
   factory FeatureCollection.fromGeoJSON(Map<String, dynamic> json) {
-    var featuresList = (json['features'] as List)
-        .map((feature) => Feature.fromGeoJSON(feature as Map<String, dynamic>))
-        .toList();
+    var featuresList =
+        (json['features'] as List).map((feature) => Feature.fromGeoJSON(feature as Map<String, dynamic>)).toList();
 
     return FeatureCollection(
       features: featuresList,

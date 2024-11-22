@@ -36,9 +36,7 @@ void main() {
           reset(listener)
         });
 
-    test(
-        'routeFromFeatureCollection calls addAnnotations but not removeAnnotations',
-        () async {
+    test('routeFromFeatureCollection calls addAnnotations but not removeAnnotations', () async {
       const featureCollection = featureCollectionFixtureGeneral;
 
       await sut.routeFromFeatureCollection(featureCollection);
@@ -47,75 +45,63 @@ void main() {
       verify(mockAnnotator.addAnnotations(captureAny)).called(1);
     });
 
-    test(
-        'routeFromFeatureCollection calls moveCamera with the correct CameraUpdate',
-        () async {
-      double latDiff = featureCollectionFixtureGeneral.bbox[3] -
-          featureCollectionFixtureGeneral.bbox[1];
-      double lngDiff = featureCollectionFixtureGeneral.bbox[2] -
-          featureCollectionFixtureGeneral.bbox[0];
+    test('routeFromFeatureCollection calls moveCamera with the correct CameraUpdate', () async {
+      double latDiff = featureCollectionFixtureGeneral.bbox[3] - featureCollectionFixtureGeneral.bbox[1];
+      double lngDiff = featureCollectionFixtureGeneral.bbox[2] - featureCollectionFixtureGeneral.bbox[0];
 
       double latMargin = latDiff * marginFraction;
       double lngMargin = lngDiff * marginFraction;
 
       LatLngBounds expectedBounds = LatLngBounds(
-        southwest: LatLng(featureCollectionFixtureGeneral.bbox[1] - latMargin,
-            featureCollectionFixtureGeneral.bbox[0] - lngMargin),
-        northeast: LatLng(featureCollectionFixtureGeneral.bbox[3] + latMargin,
-            featureCollectionFixtureGeneral.bbox[2] + lngMargin),
+        southwest: LatLng(
+            featureCollectionFixtureGeneral.bbox[1] - latMargin, featureCollectionFixtureGeneral.bbox[0] - lngMargin),
+        northeast: LatLng(
+            featureCollectionFixtureGeneral.bbox[3] + latMargin, featureCollectionFixtureGeneral.bbox[2] + lngMargin),
       );
       final expectedCameraUpdate = CameraUpdate.newLatLngBounds(expectedBounds);
 
       await sut.routeFromFeatureCollection(featureCollectionFixtureGeneral);
 
-      final verificationResult =
-          verify(mockMapLibreController.moveCamera(captureAny));
+      final verificationResult = verify(mockMapLibreController.moveCamera(captureAny));
       final captured = verificationResult.captured;
       final actualCameraUpdate = captured.first as CameraUpdate;
 
       verificationResult.called(1);
       expect(actualCameraUpdate, isNotNull);
-      expect(
-          actualCameraUpdate.toJson(), equals(expectedCameraUpdate.toJson()));
+      expect(actualCameraUpdate.toJson(), equals(expectedCameraUpdate.toJson()));
     });
 
-    test('routeFromGeoJSON calls addAnnotations but not removeAnnotations',
-        () async {
+    test('routeFromGeoJSON calls addAnnotations but not removeAnnotations', () async {
       await sut.routeFromGeoJSON(featureCollectionFixtureGeneralJSON);
 
       verifyNever(mockAnnotator.removeAnnotations(captureAny)).called(0);
       verify(mockAnnotator.addAnnotations(captureAny)).called(1);
     });
 
-    test('routeFromGeoJSON calls moveCamera with the correct CameraUpdate',
-        () async {
-      double latDiff = featureCollectionFixtureGeneral.bbox[3] -
-          featureCollectionFixtureGeneral.bbox[1];
-      double lngDiff = featureCollectionFixtureGeneral.bbox[2] -
-          featureCollectionFixtureGeneral.bbox[0];
+    test('routeFromGeoJSON calls moveCamera with the correct CameraUpdate', () async {
+      double latDiff = featureCollectionFixtureGeneral.bbox[3] - featureCollectionFixtureGeneral.bbox[1];
+      double lngDiff = featureCollectionFixtureGeneral.bbox[2] - featureCollectionFixtureGeneral.bbox[0];
 
       double latMargin = latDiff * marginFraction;
       double lngMargin = lngDiff * marginFraction;
 
       LatLngBounds expectedBounds = LatLngBounds(
-        southwest: LatLng(featureCollectionFixtureGeneral.bbox[1] - latMargin,
-            featureCollectionFixtureGeneral.bbox[0] - lngMargin),
-        northeast: LatLng(featureCollectionFixtureGeneral.bbox[3] + latMargin,
-            featureCollectionFixtureGeneral.bbox[2] + lngMargin),
+        southwest: LatLng(
+            featureCollectionFixtureGeneral.bbox[1] - latMargin, featureCollectionFixtureGeneral.bbox[0] - lngMargin),
+        northeast: LatLng(
+            featureCollectionFixtureGeneral.bbox[3] + latMargin, featureCollectionFixtureGeneral.bbox[2] + lngMargin),
       );
       final expectedCameraUpdate = CameraUpdate.newLatLngBounds(expectedBounds);
 
       await sut.routeFromGeoJSON(featureCollectionFixtureGeneralJSON);
 
-      final verificationResult =
-          verify(mockMapLibreController.moveCamera(captureAny));
+      final verificationResult = verify(mockMapLibreController.moveCamera(captureAny));
       final captured = verificationResult.captured;
       final actualCameraUpdate = captured.first as CameraUpdate;
 
       verificationResult.called(1);
       expect(actualCameraUpdate, isNotNull);
-      expect(
-          actualCameraUpdate.toJson(), equals(expectedCameraUpdate.toJson()));
+      expect(actualCameraUpdate.toJson(), equals(expectedCameraUpdate.toJson()));
     });
 
     test('annotations are updated if floor changes', () async {
@@ -134,8 +120,7 @@ void main() {
       verify(mockAnnotator.removeAnnotations(any)).called(1);
     });
 
-    test('annotations are not updated if feature collection is not set',
-        () async {
+    test('annotations are not updated if feature collection is not set', () async {
       when(mockFloorController.currentFloor).thenReturn(0);
 
       when(mockFloorController.currentFloor).thenReturn(1);

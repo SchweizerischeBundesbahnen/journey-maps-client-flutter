@@ -21,8 +21,7 @@ void main() {
           },
           "geometry": {
             "type": "LineString",
-            "coordinates":
-                sut.vertices.map((n) => n.toGeoJsonCoordinates()).toList(),
+            "coordinates": sut.vertices.map((n) => n.toGeoJsonCoordinates()).toList(),
           }
         };
         // act + expect
@@ -44,8 +43,7 @@ void main() {
           },
           "geometry": {
             "type": "LineString",
-            "coordinates":
-                sut.vertices.map((n) => n.toGeoJsonCoordinates()).toList(),
+            "coordinates": sut.vertices.map((n) => n.toGeoJsonCoordinates()).toList(),
           }
         };
         // act + expect

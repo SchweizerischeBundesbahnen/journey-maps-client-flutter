@@ -11,8 +11,7 @@ import 'package:sbb_maps_flutter/src/sbb_map_style/api_key_missing_exception.dar
 ///
 /// The [initialStyleId] is `base_bright_v2_ki_v2`.
 class SBBRokasMapStyler {
-  static _rokasStyleUrl(String styleId) =>
-      'https://journey-maps-tiles.geocdn.sbb.ch/styles/$styleId/style.json';
+  static _rokasStyleUrl(String styleId) => 'https://journey-maps-tiles.geocdn.sbb.ch/styles/$styleId/style.json';
 
   static const _baseBrightV2KIV2 = 'base_bright_v2_ki_v2';
   static const _baseDarkV2KIV2 = 'base_dark_v2_ki_v2';
@@ -95,11 +94,9 @@ class SBBRokasMapStyler {
   }
 
   static String _apiKeyElseThrow(String? apiKey) {
-    final result =
-        apiKey ?? const String.fromEnvironment('JOURNEY_MAPS_API_KEY');
+    final result = apiKey ?? const String.fromEnvironment('JOURNEY_MAPS_API_KEY');
     if (result == '') {
-      throw ApiKeyMissing(
-          'JOURNEY_MAPS_API_KEY is not set as env var nor given as parameter.');
+      throw ApiKeyMissing('JOURNEY_MAPS_API_KEY is not set as env var nor given as parameter.');
     }
     return result;
   }

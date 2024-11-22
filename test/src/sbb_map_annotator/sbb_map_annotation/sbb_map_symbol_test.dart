@@ -19,10 +19,7 @@ void main() {
             "draggable": false,
             "sbbAnnotationType": "SBBMapSymbol",
           },
-          "geometry": {
-            "type": "Point",
-            "coordinates": fakeCoords.toGeoJsonCoordinates()
-          }
+          "geometry": {"type": "Point", "coordinates": fakeCoords.toGeoJsonCoordinates()}
         };
         // act + expect
         expect(sut.toGeoJson(), equals(expected));
@@ -49,10 +46,7 @@ void main() {
             "textField": text,
             "sbbAnnotationType": "SBBMapSymbol",
           },
-          "geometry": {
-            "type": "Point",
-            "coordinates": fakeCoords.toGeoJsonCoordinates()
-          }
+          "geometry": {"type": "Point", "coordinates": fakeCoords.toGeoJsonCoordinates()}
         };
         // act + expect
         expect(sut.toGeoJson(), equals(expected));
@@ -218,8 +212,7 @@ void main() {
         expect(
             sut.copyWith(other),
             equals(
-              const SBBMapSymbolStyle(
-                  textAnchor: 'center', iconAnchor: 'center'),
+              const SBBMapSymbolStyle(textAnchor: 'center', iconAnchor: 'center'),
             ));
       });
 
@@ -235,8 +228,7 @@ void main() {
         expect(
             sut.copyWith(other),
             equals(
-              const SBBMapSymbolStyle(
-                  textColor: Colors.black, iconAnchor: 'topLeft'),
+              const SBBMapSymbolStyle(textColor: Colors.black, iconAnchor: 'topLeft'),
             ));
       });
     });

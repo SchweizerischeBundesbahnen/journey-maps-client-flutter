@@ -19,10 +19,8 @@ import 'package:sbb_maps_flutter/src/sbb_map_ui/styles/sbb_map_style_container.d
 typedef MapCreatedCallback = void Function(SBBMapController controller);
 typedef OnMapLocatorAvailable = void Function(SBBMapLocator locator);
 typedef OnMapAnnotatorAvailable = void Function(SBBMapAnnotator annotator);
-typedef OnFloorControllerAvailable = void Function(
-    SBBMapFloorController floorController);
-typedef OnRoutingControllerAvailable = void Function(
-    SBBRoutingController routingController);
+typedef OnFloorControllerAvailable = void Function(SBBMapFloorController floorController);
+typedef OnRoutingControllerAvailable = void Function(SBBRoutingController routingController);
 
 class SBBMap extends StatefulWidget {
   SBBMap({
@@ -208,10 +206,8 @@ class SBBMap extends StatefulWidget {
 class _SBBMapState extends State<SBBMap> {
   bool _isFirstTimeStyleLoaded = true;
   bool _isStyleLoaded = false;
-  final Completer<SBBMapController> _controller =
-      Completer<SBBMapControllerImpl>();
-  final Completer<MapLibreMapController> _mlController =
-      Completer<MapLibreMapController>();
+  final Completer<SBBMapController> _controller = Completer<SBBMapControllerImpl>();
+  final Completer<MapLibreMapController> _mlController = Completer<MapLibreMapController>();
   late SBBMapFloorControllerImpl _floorController;
   late SBBRoutingControllerImpl _routingController;
   late SBBMapLocatorImpl _mapLocator;
@@ -233,9 +229,7 @@ class _SBBMapState extends State<SBBMap> {
     _floorController.addListener(_setState);
 
     _routingController = SBBRoutingControllerImpl(
-        annotator: _mapAnnotator.future,
-        controller: _mlController.future,
-        floorController: _floorController);
+        annotator: _mapAnnotator.future, controller: _mlController.future, floorController: _floorController);
     _routingController.addListener(_setState);
 
     _poiController = SBBRokasPOIControllerImpl(
@@ -279,8 +273,8 @@ class _SBBMapState extends State<SBBMap> {
       children: [
         MapLibreMap(
           styleString: widget.mapStyler.currentStyleURI,
-          initialCameraPosition: widget.initialCameraPosition?.toMaplibre() ??
-              SBBCameraPosition.highLevelCH.toMaplibre(),
+          initialCameraPosition:
+              widget.initialCameraPosition?.toMaplibre() ?? SBBCameraPosition.highLevelCH.toMaplibre(),
           onMapCreated: _onMapCreated,
           onStyleLoadedCallback: _onStyleLoadedCallback,
           onMapClick: (point, coords) {
@@ -293,8 +287,7 @@ class _SBBMapState extends State<SBBMap> {
           },
           onMapLongClick: widget.onMapLongClick,
           myLocationEnabled: _mapLocator.isLocationEnabled,
-          onUserLocationUpdated: (location) =>
-              _mapLocator.updateDeviceLocation(location.position),
+          onUserLocationUpdated: (location) => _mapLocator.updateDeviceLocation(location.position),
           trackCameraPosition: widget.trackCameraPosition,
           onCameraTrackingDismissed: () {
             if (_isStyleLoaded) _mapLocator.dismissTracking();
@@ -360,9 +353,7 @@ class _SBBMapState extends State<SBBMap> {
         widget.onMapLocatorAvailable!(_mapLocator);
       }
     }
-    if (widget.isFloorSwitchingEnabled &&
-        widget.onFloorControllerAvailable != null &&
-        _isFirstTimeStyleLoaded) {
+    if (widget.isFloorSwitchingEnabled && widget.onFloorControllerAvailable != null && _isFirstTimeStyleLoaded) {
       widget.onFloorControllerAvailable!(_floorController);
     }
 
@@ -381,8 +372,7 @@ class _SBBMapState extends State<SBBMap> {
       }
     }
 
-    if (widget.onRoutingControllerAvailable != null &&
-        _isFirstTimeStyleLoaded) {
+    if (widget.onRoutingControllerAvailable != null && _isFirstTimeStyleLoaded) {
       widget.onRoutingControllerAvailable!(_routingController);
     }
 

@@ -13,12 +13,10 @@ void main() {
 
   group('SBBMapAnnotator dispose Unit Tests', () {
     group('disposal of delegate to annotation callback ', () {
-      test('should remove callback delegator to controller on dispose',
-          () async {
+      test('should remove callback delegator to controller on dispose', () async {
         // setup
         mockController = MockMapLibreMapController();
-        final mockCallbackList =
-            List<OnFeatureInteractionCallback>.empty(growable: true);
+        final mockCallbackList = List<OnFeatureInteractionCallback>.empty(growable: true);
         when(mockController.onFeatureTapped).thenReturn(mockCallbackList);
         sut = SBBMapAnnotatorImpl(controller: mockController);
         reset(mockController);
@@ -29,8 +27,7 @@ void main() {
 
         // verify
         verify(mockController.onFeatureTapped).called(1);
-        expect(mockCallbackList.isEmpty, equals(true),
-            reason: 'Expected callback list to be empty.');
+        expect(mockCallbackList.isEmpty, equals(true), reason: 'Expected callback list to be empty.');
       });
     });
 
@@ -49,8 +46,7 @@ void main() {
         await sut.dispose();
 
         // verify
-        verify(mockController.removeSource(AnnotatorFixture.kSourceId))
-            .called(1);
+        verify(mockController.removeSource(AnnotatorFixture.kSourceId)).called(1);
       });
 
       test('should remove single layer if single symbol added', () async {
@@ -61,9 +57,7 @@ void main() {
         await sut.dispose();
 
         // verify
-        verify(mockController
-                .removeLayer(AnnotatorFixture.kRokasIconIdentifier))
-            .called(1);
+        verify(mockController.removeLayer(AnnotatorFixture.kRokasIconIdentifier)).called(1);
       });
 
       test('should remove first layer, then source if symbol', () async {
@@ -91,10 +85,7 @@ void main() {
         // verify
         verify(
           mockController.removeLayer(
-            argThat(anyOf([
-              AnnotatorFixture.kRokasIconIdentifier,
-              AnnotatorFixture.kSymbolIdentifier
-            ])),
+            argThat(anyOf([AnnotatorFixture.kRokasIconIdentifier, AnnotatorFixture.kSymbolIdentifier])),
           ),
         ).called(2);
       });

@@ -1,7 +1,5 @@
-
 /// This file is auto-generated. Do not modify by hand.
 sealed class RokasIcons {
-
   /// The icons which are present in all ROKAS styles.
   RokasIcons._();
 
@@ -58,7 +56,8 @@ sealed class RokasIcons {
   static const brightInactiveBlackWalk = 'sbb-marker_bright-inactive-black_walk';
   static const brightInactiveBlackZahnradbahn = 'sbb-marker_bright-inactive-black_zahnradbahn';
   static const brightInactiveBlackZug = 'sbb-marker_bright-inactive-black_zug';
-  static const brightInactiveBrightblueCarProfileSignParking = 'sbb-marker_bright-inactive-brightblue_car-profile-sign-parking';
+  static const brightInactiveBrightblueCarProfileSignParking =
+      'sbb-marker_bright-inactive-brightblue_car-profile-sign-parking';
   static const brightInactiveDarkblueBus = 'sbb-marker_bright-inactive-darkblue_bus';
   static const brightInactiveDarkblueConstruction = 'sbb-marker_bright-inactive-darkblue_construction';
   static const brightInactiveDarkblueDelay = 'sbb-marker_bright-inactive-darkblue_delay';
@@ -155,7 +154,8 @@ sealed class RokasIcons {
   static const darkInactiveBlackWalk = 'sbb-marker_dark-inactive-black_walk';
   static const darkInactiveBlackZahnradbahn = 'sbb-marker_dark-inactive-black_zahnradbahn';
   static const darkInactiveBlackZug = 'sbb-marker_dark-inactive-black_zug';
-  static const darkInactiveBrightblueCarProfileSignParking = 'sbb-marker_dark-inactive-brightblue_car-profile-sign-parking';
+  static const darkInactiveBrightblueCarProfileSignParking =
+      'sbb-marker_dark-inactive-brightblue_car-profile-sign-parking';
   static const darkInactiveDarkblueBus = 'sbb-marker_dark-inactive-darkblue_bus';
   static const darkInactiveDarkblueConstruction = 'sbb-marker_dark-inactive-darkblue_construction';
   static const darkInactiveDarkblueDelay = 'sbb-marker_dark-inactive-darkblue_delay';
@@ -241,5 +241,4 @@ sealed class RokasIcons {
   static const sectorF = 'sbb_sector_f';
   static const sectorG = 'sbb_sector_g';
   static const sectorH = 'sbb_sector_h';
-
 }

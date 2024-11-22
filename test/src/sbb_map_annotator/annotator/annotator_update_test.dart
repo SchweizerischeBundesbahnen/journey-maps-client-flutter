@@ -56,8 +56,8 @@ void main() {
         // setup
         final a = AnnotatorFixture.simpleSymbol();
         await sut.addAnnotation(a);
-        when(mockController.setGeoJsonSource(any, any)).thenAnswer(
-            (_) => Future.error(PlatformException(code: 'fakeCode')));
+        when(mockController.setGeoJsonSource(any, any))
+            .thenAnswer((_) => Future.error(PlatformException(code: 'fakeCode')));
 
         // act + expect
         await expectLater(
@@ -77,15 +77,12 @@ void main() {
         verifyZeroInteractions(mockController);
       });
 
-      test(
-          'updating two annotations should call setGeoJson with updated features',
-          () async {
+      test('updating two annotations should call setGeoJson with updated features', () async {
         // setup
         final original = AnnotatorFixture.simpleSymbol();
         final secondOriginal = AnnotatorFixture.simpleSymbol();
         final update = original.copyWith(coords: const LatLng(2.0, 3.0));
-        final secondUpdate =
-            secondOriginal.copyWith(coords: const LatLng(2.0, 3.0));
+        final secondUpdate = secondOriginal.copyWith(coords: const LatLng(2.0, 3.0));
         await sut.addAnnotations([original, secondOriginal]);
         reset(mockController);
 
@@ -104,9 +101,7 @@ void main() {
         ).called(1);
       });
 
-      test(
-          'updating known and unknown annotation should call setGeoJson with updated feature only',
-          () async {
+      test('updating known and unknown annotation should call setGeoJson with updated feature only', () async {
         // setup
         final original = AnnotatorFixture.simpleSymbol();
         final secondOriginal = AnnotatorFixture.simpleSymbol();
@@ -148,8 +143,7 @@ void main() {
         await sut.onStyleChanged();
 
         // verify
-        verify(mockController.addGeoJsonSource(
-            AnnotatorFixture.kSourceId, buildFeatureCollection([]))).called(1);
+        verify(mockController.addGeoJsonSource(AnnotatorFixture.kSourceId, buildFeatureCollection([]))).called(1);
       });
 
       test('should add layer back to map if has annotation', () async {
@@ -169,8 +163,7 @@ void main() {
         )).called(1);
       });
 
-      test('should add all layers back to map if has multiple type annotations',
-          () async {
+      test('should add all layers back to map if has multiple type annotations', () async {
         // setup
         await sut.addAnnotation(AnnotatorFixture.simpleRokasIcon());
         await sut.addAnnotation(AnnotatorFixture.simpleSymbol());
@@ -182,10 +175,7 @@ void main() {
         // verify
         verify(mockController.addLayer(
           AnnotatorFixture.kSourceId,
-          argThat(anyOf([
-            AnnotatorFixture.kRokasIconIdentifier,
-            AnnotatorFixture.kSymbolIdentifier
-          ])),
+          argThat(anyOf([AnnotatorFixture.kRokasIconIdentifier, AnnotatorFixture.kSymbolIdentifier])),
           argThat(isA<SymbolLayerProperties>()),
           filter: anyNamed('filter'),
         )).called(2);
@@ -207,8 +197,7 @@ void main() {
         )).called(1);
       });
 
-      test('should add all features back to map if has multiple annotation',
-          () async {
+      test('should add all features back to map if has multiple annotation', () async {
         // setup
         final a = AnnotatorFixture.simpleRokasIcon();
         final b = AnnotatorFixture.simpleSymbol();

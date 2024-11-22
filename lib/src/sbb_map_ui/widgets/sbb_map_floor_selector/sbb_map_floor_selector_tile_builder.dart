@@ -27,11 +27,9 @@ class FloorSelectorTilesBuilder extends StatelessWidget {
           ),
           isSelected: mapFloorController.currentFloor == null
               ? false
-              : mapFloorController.currentFloor ==
-                  mapFloorController.availableFloors[i],
+              : mapFloorController.currentFloor == mapFloorController.availableFloors[i],
           isFirst: i == 0 && mapFloorController.availableFloors.length > 1,
-          isLast: i == mapFloorController.availableFloors.length - 1 &&
-              mapFloorController.availableFloors.length > 1,
+          isLast: i == mapFloorController.availableFloors.length - 1 && mapFloorController.availableFloors.length > 1,
           style: style,
         ),
       );

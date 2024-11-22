@@ -27,8 +27,6 @@ class SBBMapMyLocationButton extends StatelessWidget {
   }
 
   IconData _filledIconIf(bool isTracking) {
-    return isTracking
-        ? SBBMapIcons.arrow_compass_filled_small
-        : SBBMapIcons.arrow_compass_small;
+    return isTracking ? SBBMapIcons.arrow_compass_filled_small : SBBMapIcons.arrow_compass_small;
   }
 }

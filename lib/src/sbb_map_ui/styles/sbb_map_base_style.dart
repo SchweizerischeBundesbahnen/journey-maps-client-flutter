@@ -10,6 +10,5 @@ class SBBMapBaseStyle {
   T themeValue<T>(T lightThemeValue, T darkThemeValue) =>
       resolve(brightness == Brightness.light, lightThemeValue, darkThemeValue);
 
-  static T resolve<T>(bool isLight, T lightThemeValue, T darkThemeValue) =>
-      isLight ? lightThemeValue : darkThemeValue;
+  static T resolve<T>(bool isLight, T lightThemeValue, T darkThemeValue) => isLight ? lightThemeValue : darkThemeValue;
 }

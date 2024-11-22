@@ -67,10 +67,7 @@ class SBBMapSymbol implements SBBMapAnnotation {
       "type": "Feature",
       "id": id,
       "properties": _buildFeaturePropertiesFromStyle(),
-      "geometry": {
-        "type": "Point",
-        "coordinates": coords.toGeoJsonCoordinates()
-      }
+      "geometry": {"type": "Point", "coordinates": coords.toGeoJsonCoordinates()}
     };
   }
 
@@ -364,9 +361,7 @@ class SBBMapSymbolStyle {
       if (fontNames != null) ...{'fontNames': fontNames},
       if (textSize != null) ...{'textSize': textSize},
       if (textMaxWidth != null) ...{'textMaxWidth': textMaxWidth},
-      if (textLetterSpacing != null) ...{
-        'textLetterSpacing': textLetterSpacing
-      },
+      if (textLetterSpacing != null) ...{'textLetterSpacing': textLetterSpacing},
       if (textJustify != null) ...{'textJustify': textJustify},
       if (textAnchor != null) ...{'textAnchor': textAnchor},
       if (textRotate != null) ...{'textRotate': textRotate},
@@ -376,16 +371,12 @@ class SBBMapSymbolStyle {
       },
       if (iconOpacity != null) ...{'iconOpacity': iconOpacity},
       if (iconColor != null) ...{'iconColor': iconColor!.toHexStringRGB()},
-      if (iconHaloColor != null) ...{
-        'iconHaloColor': iconHaloColor!.toHexStringRGB()
-      },
+      if (iconHaloColor != null) ...{'iconHaloColor': iconHaloColor!.toHexStringRGB()},
       if (iconHaloWidth != null) ...{'iconHaloWidth': iconHaloWidth},
       if (iconHaloBlur != null) ...{'iconHaloBlur': iconHaloBlur},
       if (textOpacity != null) ...{'textOpacity': textOpacity},
       if (textColor != null) ...{'textColor': textColor!.toHexStringRGB()},
-      if (textHaloColor != null) ...{
-        'textHaloColor': textHaloColor!.toHexStringRGB()
-      },
+      if (textHaloColor != null) ...{'textHaloColor': textHaloColor!.toHexStringRGB()},
       if (textHaloWidth != null) ...{'textHaloWidth': textHaloWidth},
       if (textHaloBlur != null) ...{'textHaloBlur': textHaloBlur},
     };

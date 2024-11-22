@@ -17,10 +17,8 @@ class SBBMapIconButtonStyle extends ThemeExtension<SBBMapIconButtonStyle> {
   }) {
     return SBBMapIconButtonStyle(
       iconColor: baseStyle.themeValue(SBBMapColors.black, SBBMapColors.white),
-      borderSide: baseStyle.themeValue(
-          BorderSide.none, const BorderSide(color: SBBMapColors.metal)),
-      backgroundColor:
-          baseStyle.themeValue(SBBMapColors.white, SBBMapColors.black),
+      borderSide: baseStyle.themeValue(BorderSide.none, const BorderSide(color: SBBMapColors.metal)),
+      backgroundColor: baseStyle.themeValue(SBBMapColors.white, SBBMapColors.black),
       shadowColor: SBBMapColors.cement,
       pressedColor: baseStyle.themeValue(SBBMapColors.cloud, SBBMapColors.iron),
     );
@@ -70,13 +68,11 @@ class SBBMapIconButtonStyle extends ThemeExtension<SBBMapIconButtonStyle> {
   }
 
   @override
-  ThemeExtension<SBBMapIconButtonStyle> lerp(
-      SBBMapIconButtonStyle? other, double t) {
+  ThemeExtension<SBBMapIconButtonStyle> lerp(SBBMapIconButtonStyle? other, double t) {
     if (other == null) return this;
     return copyWith(
       iconColor: Color.lerp(iconColor, other.iconColor, t),
-      borderSide: BorderSide.lerp(borderSide ?? BorderSide.none,
-          other.borderSide ?? BorderSide.none, t),
+      borderSide: BorderSide.lerp(borderSide ?? BorderSide.none, other.borderSide ?? BorderSide.none, t),
       backgroundColor: Color.lerp(backgroundColor, other.backgroundColor, t),
       shadowColor: Color.lerp(shadowColor, other.shadowColor, t),
       pressedColor: Color.lerp(pressedColor, other.pressedColor, t),

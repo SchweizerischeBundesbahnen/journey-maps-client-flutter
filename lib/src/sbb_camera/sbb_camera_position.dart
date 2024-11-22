@@ -46,17 +46,14 @@ class SBBCameraPosition {
     if (identical(this, other)) return true;
     if (runtimeType != other.runtimeType) return false;
     final SBBCameraPosition typedOther = other as SBBCameraPosition;
-    return bearing == typedOther.bearing &&
-        target == typedOther.target &&
-        zoom == typedOther.zoom;
+    return bearing == typedOther.bearing && target == typedOther.target && zoom == typedOther.zoom;
   }
 
   @override
   int get hashCode => Object.hash(bearing, target, zoom);
 
   @override
-  String toString() =>
-      'SBBCameraPosition(bearing: $bearing, target: $target, zoom: $zoom)';
+  String toString() => 'SBBCameraPosition(bearing: $bearing, target: $target, zoom: $zoom)';
 
   CameraPosition toMaplibre() => CameraPosition(
         bearing: bearing,

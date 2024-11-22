@@ -56,10 +56,7 @@ class SBBRokasIcon implements SBBMapAnnotation {
           "draggable": _draggable,
           "sbbAnnotationType": runtimeType.toString(),
         },
-        "geometry": {
-          "type": "Point",
-          "coordinates": coords.toGeoJsonCoordinates()
-        }
+        "geometry": {"type": "Point", "coordinates": coords.toGeoJsonCoordinates()}
       };
 
   SBBRokasIcon copyWith({
@@ -91,13 +88,7 @@ class SBBRokasIcon implements SBBMapAnnotation {
 
   @override
   int get hashCode {
-    return Object.hashAll([
-      _id.hashCode,
-      _symbolURI.hashCode,
-      coords.hashCode,
-      _draggable.hashCode,
-      data.hashCode
-    ]);
+    return Object.hashAll([_id.hashCode, _symbolURI.hashCode, coords.hashCode, _draggable.hashCode, data.hashCode]);
   }
 
   @override

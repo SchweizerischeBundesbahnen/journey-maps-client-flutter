@@ -13,11 +13,9 @@ class AnnotatorFixture {
   static const fakeCoords = LatLng(0.1, 1.0);
   static const fakePoint = Point(0.2, 1.5);
 
-  static SBBMapSymbol simpleSymbol() =>
-      SBBMapSymbol(symbolURI: fakeURI, coords: fakeCoords);
+  static SBBMapSymbol simpleSymbol() => SBBMapSymbol(symbolURI: fakeURI, coords: fakeCoords);
 
-  static SBBRokasIcon simpleRokasIcon() =>
-      SBBRokasIcon(symbolURI: fakeURI, coords: fakeCoords);
+  static SBBRokasIcon simpleRokasIcon() => SBBRokasIcon(symbolURI: fakeURI, coords: fakeCoords);
 
   static const fakeImageName = 'fakeImageName';
   static final emptyImage = Uint8List(0);

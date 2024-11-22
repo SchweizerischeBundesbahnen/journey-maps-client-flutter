@@ -24,9 +24,7 @@ class MultiLineString {
     Function deepEq = const DeepCollectionEquality().equals;
 
     return identical(this, other) ||
-          other is MultiLineString &&
-              runtimeType == other.runtimeType &&
-              deepEq(lineStrings, other.lineStrings);
+        other is MultiLineString && runtimeType == other.runtimeType && deepEq(lineStrings, other.lineStrings);
   }
 
   @override

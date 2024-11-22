@@ -142,8 +142,7 @@ class SBBMapAnnotatorImpl implements SBBMapAnnotator {
   Future<void> _addGeoJsonSource() async {
     return _controller
         .addGeoJsonSource(_kSourceId, buildFeatureCollection([]))
-        .catchError(_throwAnnotatorException(
-            'Adding geoJsonSource $_kSourceId failed with exception: '))
+        .catchError(_throwAnnotatorException('Adding geoJsonSource $_kSourceId failed with exception: '))
         .then((_) => _isGeoJsonSourceAdded = true);
   }
 
@@ -178,13 +177,11 @@ class SBBMapAnnotatorImpl implements SBBMapAnnotator {
           layer.properties,
           filter: layer.filter,
         )
-        .catchError(_throwAnnotatorException(
-            'Adding layer ${layer.layerId} failed with exception: '))
+        .catchError(_throwAnnotatorException('Adding layer ${layer.layerId} failed with exception: '))
         .then((_) => _addedLayers[layer.layerId] = layer);
   }
 
-  String _getAnnotationIdentifier(SBBMapAnnotation annotation) =>
-      switch (annotation) {
+  String _getAnnotationIdentifier(SBBMapAnnotation annotation) => switch (annotation) {
         SBBMapSymbol() => _kSymbolIdentifier,
         SBBRokasIcon() => _kRokasIconIdentifier,
         SBBMapCircle() => _kCircleIdentifier,
@@ -192,8 +189,7 @@ class SBBMapAnnotatorImpl implements SBBMapAnnotator {
         SBBMapFill() => _kFillIdentifier,
       };
 
-  LayerProperties _getLayerProperties(SBBMapAnnotation annotation) =>
-      switch (annotation) {
+  LayerProperties _getLayerProperties(SBBMapAnnotation annotation) => switch (annotation) {
         SBBMapSymbol() => SBBMapSymbolLayer().makeLayerExpressions(),
         SBBRokasIcon() => SBBMapSymbolLayer().makeLayerExpressions(),
         SBBMapCircle() => SBBMapCircleLayer().makeLayerExpressions(),
@@ -211,16 +207,14 @@ class SBBMapAnnotatorImpl implements SBBMapAnnotator {
     return _applyFeaturesToGeoSource(updatedIdToAnnotations);
   }
 
-  Future<void> _applyFeaturesToGeoSource(
-      Map<String, SBBMapAnnotation> updatedIdToAnnotations) {
+  Future<void> _applyFeaturesToGeoSource(Map<String, SBBMapAnnotation> updatedIdToAnnotations) {
     final annotationsAsFeatures = buildFeatureCollection(
       [for (final a in updatedIdToAnnotations.values) a.toGeoJson()],
     );
 
     return _controller
         .setGeoJsonSource(_kSourceId, annotationsAsFeatures)
-        .catchError(_throwAnnotatorException(
-            'Unexpected error applying changes to annotations: '))
+        .catchError(_throwAnnotatorException('Unexpected error applying changes to annotations: '))
         .then((_) => _idToAnnotation = updatedIdToAnnotations);
   }
 
@@ -234,15 +228,13 @@ class SBBMapAnnotatorImpl implements SBBMapAnnotator {
     return !_isKnown(annotation);
   }
 
-  Map<String, SBBMapAnnotation> _applyUpdatesToCopiedMap(
-      Iterable<SBBMapAnnotation> updates) {
+  Map<String, SBBMapAnnotation> _applyUpdatesToCopiedMap(Iterable<SBBMapAnnotation> updates) {
     final copy = Map<String, SBBMapAnnotation>.from(_idToAnnotation);
     copy.addAll({for (final a in updates) a.id: a});
     return copy;
   }
 
-  Map<String, SBBMapAnnotation> _applyRemovalToCopiedMap(
-      Iterable<SBBMapAnnotation> removals) {
+  Map<String, SBBMapAnnotation> _applyRemovalToCopiedMap(Iterable<SBBMapAnnotation> removals) {
     final copy = Map<String, SBBMapAnnotation>.from(_idToAnnotation);
     final Iterable<String> idsToRemove = removals.map((a) => a.id);
 

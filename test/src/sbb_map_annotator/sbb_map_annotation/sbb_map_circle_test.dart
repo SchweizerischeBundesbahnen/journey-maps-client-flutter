@@ -14,15 +14,8 @@ void main() {
         final expected = {
           "type": "Feature",
           "id": sut.id,
-          "properties": {
-            "id": sut.id,
-            "draggable": false,
-            "sbbAnnotationType": "SBBMapCircle"
-          },
-          "geometry": {
-            "type": "Point",
-            "coordinates": fakeCenter.toGeoJsonCoordinates()
-          }
+          "properties": {"id": sut.id, "draggable": false, "sbbAnnotationType": "SBBMapCircle"},
+          "geometry": {"type": "Point", "coordinates": fakeCenter.toGeoJsonCoordinates()}
         };
         // act + expect
         expect(sut.toGeoJson(), equals(expected));
@@ -31,21 +24,12 @@ void main() {
       test('should return geoJson with properties from style', () {
         // setup
         const double radius = 15.0;
-        final sut =
-            createCircleFixture(style: const SBBMapCircleStyle(radius: radius));
+        final sut = createCircleFixture(style: const SBBMapCircleStyle(radius: radius));
         final expected = {
           "type": "Feature",
           "id": sut.id,
-          "properties": {
-            "id": sut.id,
-            "draggable": false,
-            "circleRadius": radius,
-            "sbbAnnotationType": "SBBMapCircle"
-          },
-          "geometry": {
-            "type": "Point",
-            "coordinates": fakeCenter.toGeoJsonCoordinates()
-          }
+          "properties": {"id": sut.id, "draggable": false, "circleRadius": radius, "sbbAnnotationType": "SBBMapCircle"},
+          "geometry": {"type": "Point", "coordinates": fakeCenter.toGeoJsonCoordinates()}
         };
         // act + expect
         expect(sut.toGeoJson(), equals(expected));

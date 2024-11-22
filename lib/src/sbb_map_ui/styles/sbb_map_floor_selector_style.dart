@@ -3,8 +3,7 @@ import 'package:sbb_maps_flutter/src/sbb_map_ui/corporate_ui/sbb_map_branding.da
 import 'package:sbb_maps_flutter/src/sbb_map_ui/styles/sbb_map_base_style.dart';
 
 /// A style for the [SBBMapFloorSelector].
-class SBBMapFloorSelectorStyle
-    extends ThemeExtension<SBBMapFloorSelectorStyle> {
+class SBBMapFloorSelectorStyle extends ThemeExtension<SBBMapFloorSelectorStyle> {
   SBBMapFloorSelectorStyle({
     this.selectedBackgroundColor,
     this.borderSide,
@@ -19,16 +18,12 @@ class SBBMapFloorSelectorStyle
     required SBBMapBaseStyle baseStyle,
   }) {
     return SBBMapFloorSelectorStyle(
-      selectedBackgroundColor:
-          baseStyle.themeValue(SBBMapColors.charcoal, SBBMapColors.graphite),
-      borderSide: baseStyle.themeValue(
-          BorderSide.none, const BorderSide(color: SBBMapColors.metal)),
-      backgroundColor:
-          baseStyle.themeValue(SBBMapColors.white, SBBMapColors.black),
+      selectedBackgroundColor: baseStyle.themeValue(SBBMapColors.charcoal, SBBMapColors.graphite),
+      borderSide: baseStyle.themeValue(BorderSide.none, const BorderSide(color: SBBMapColors.metal)),
+      backgroundColor: baseStyle.themeValue(SBBMapColors.white, SBBMapColors.black),
       shadowColor: SBBMapColors.cement,
       textColor: baseStyle.themeValue(SBBMapColors.black, SBBMapColors.white),
-      selectedTextColor:
-          baseStyle.themeValue(SBBMapColors.white, SBBMapColors.black),
+      selectedTextColor: baseStyle.themeValue(SBBMapColors.white, SBBMapColors.black),
       pressedColor: SBBMapColors.transparent,
     );
   }
@@ -67,8 +62,7 @@ class SBBMapFloorSelectorStyle
     Color? pressedColor,
   }) {
     return SBBMapFloorSelectorStyle(
-      selectedBackgroundColor:
-          selectedBackgroundColor ?? this.selectedBackgroundColor,
+      selectedBackgroundColor: selectedBackgroundColor ?? this.selectedBackgroundColor,
       borderSide: borderSide ?? this.borderSide,
       backgroundColor: backgroundColor ?? this.backgroundColor,
       shadowColor: shadowColor ?? this.shadowColor,
@@ -92,19 +86,15 @@ class SBBMapFloorSelectorStyle
   }
 
   @override
-  ThemeExtension<SBBMapFloorSelectorStyle> lerp(
-      SBBMapFloorSelectorStyle? other, double t) {
+  ThemeExtension<SBBMapFloorSelectorStyle> lerp(SBBMapFloorSelectorStyle? other, double t) {
     if (other == null) return this;
     return copyWith(
-      selectedBackgroundColor:
-          Color.lerp(selectedBackgroundColor, other.selectedBackgroundColor, t),
-      borderSide: BorderSide.lerp(borderSide ?? BorderSide.none,
-          other.borderSide ?? BorderSide.none, t),
+      selectedBackgroundColor: Color.lerp(selectedBackgroundColor, other.selectedBackgroundColor, t),
+      borderSide: BorderSide.lerp(borderSide ?? BorderSide.none, other.borderSide ?? BorderSide.none, t),
       backgroundColor: Color.lerp(backgroundColor, other.backgroundColor, t),
       shadowColor: Color.lerp(shadowColor, other.shadowColor, t),
       textColor: Color.lerp(textColor, other.textColor, t),
-      selectedTextColor:
-          Color.lerp(selectedTextColor, other.selectedTextColor, t),
+      selectedTextColor: Color.lerp(selectedTextColor, other.selectedTextColor, t),
       pressedColor: Color.lerp(pressedColor, other.pressedColor, t),
     );
   }

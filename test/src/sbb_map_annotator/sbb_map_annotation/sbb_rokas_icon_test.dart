@@ -19,10 +19,7 @@ void main() {
             "draggable": false,
             "sbbAnnotationType": "SBBRokasIcon",
           },
-          "geometry": {
-            "type": "Point",
-            "coordinates": fakeCoords.toGeoJsonCoordinates()
-          }
+          "geometry": {"type": "Point", "coordinates": fakeCoords.toGeoJsonCoordinates()}
         };
         // act + expect
         expect(sut.toGeoJson(), equals(expected));
@@ -30,9 +27,7 @@ void main() {
     });
 
     group('id', () {
-      test(
-          'should return different ids even if object have same properties (empty)',
-          () {
+      test('should return different ids even if object have same properties (empty)', () {
         // setup
         final a = SBBRokasIcon(symbolURI: fakeRokasIconURI, coords: fakeCoords);
         final b = SBBRokasIcon(symbolURI: fakeRokasIconURI, coords: fakeCoords);
