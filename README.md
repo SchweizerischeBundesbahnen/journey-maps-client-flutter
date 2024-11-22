@@ -68,7 +68,7 @@ The package is meant as a client for the [Journey Maps API] and is based on the 
 
 #### Precondition
 
-In order to access styles and tile data, you need to register your application to the [Journey Maps Tile API] to receive an API Key.
+In order to access styles and tile data, you need to register your application to the [Journey Maps Tiles API] to receive an API Key.
 Create an account (e.g. using SwissPass Login) to be able to setup an application and then register this application to the API.
 
 #### In code usage
@@ -79,7 +79,7 @@ Make the API Key accessible to your application. Either
 
 1. add it as env var (not recommended):
 ```sh
-JOURNEY_MAPS_API_KEY='YOUR_API_KEY_HERE'
+JOURNEY_MAPS_TILES_API_KEY='YOUR_API_KEY_HERE'
 ```
 2. Or use a package such as [envied](https://pub.dev/packages/envied) for clean env var handling and
    *obfuscating* your API key, making it harder to reverse engineer (in public apps!). Pass the env key to the
@@ -275,4 +275,4 @@ See [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
 
 [Flutter Maplibre GL plugin]: (https://github.com/maplibre/flutter-maplibre-gl/tree/main)
 
-[Journey Maps Tile API]: (https://developer.sbb.ch/apis/journey-maps-tiles/information)
+[Journey Maps Tiles API]: (https://developer.sbb.ch/apis/journey-maps-tiles/information)
