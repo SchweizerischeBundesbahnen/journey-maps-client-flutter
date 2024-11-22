@@ -97,7 +97,7 @@ class SBBRokasMapStyler {
   static String _apiKeyElseThrow(String? apiKey) {
     String result = apiKey ?? const String.fromEnvironment('JOURNEY_MAPS_TILES_API_KEY');
     // @Deprecated(Remove in next major (3.x.x))
-    result = result.isEmpty ? _fetchLegacyApiKeyFromEnv() : '';
+    if (result.isEmpty) result = _fetchLegacyApiKeyFromEnv();
 
     if (result == '') {
       throw ApiKeyMissing(
