@@ -32,8 +32,7 @@ class SBBMapFloorSelector extends StatelessWidget {
   }
 
   SBBMapFloorSelectorStyle _resolveStyleWithInherited(BuildContext context) {
-    final inheritedStyle =
-        Theme.of(context).extension<SBBMapFloorSelectorStyle>()!;
+    final inheritedStyle = Theme.of(context).extension<SBBMapFloorSelectorStyle>()!;
     return inheritedStyle.merge(style);
   }
 }

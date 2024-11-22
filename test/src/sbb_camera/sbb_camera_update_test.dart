@@ -5,8 +5,7 @@ import 'package:test/test.dart';
 void main() {
   group('SBBCameraUpdate tests', () {
     // Test data
-    const LatLng testLatLng =
-        LatLng(47.3769, 8.5417); // Coordinates for Zurich, for example
+    const LatLng testLatLng = LatLng(47.3769, 8.5417); // Coordinates for Zurich, for example
     const double testZoom = 15.0;
     const double testBearing = 45.0;
     LatLngBounds testBounds = LatLngBounds(
@@ -39,8 +38,7 @@ void main() {
       );
     });
 
-    test('newLatLngBounds creates correct CameraUpdate with default padding',
-        () {
+    test('newLatLngBounds creates correct CameraUpdate with default padding', () {
       final sbbCameraUpdate = SBBCameraUpdate.newLatLngBounds(testBounds);
 
       final cameraMlUpdate = CameraUpdate.newLatLngBounds(testBounds);
@@ -51,8 +49,7 @@ void main() {
       );
     });
 
-    test('newLatLngBounds creates correct CameraUpdate with custom padding',
-        () {
+    test('newLatLngBounds creates correct CameraUpdate with custom padding', () {
       final sbbCameraUpdate = SBBCameraUpdate.newLatLngBounds(
         testBounds,
         left: testPadding,
@@ -76,8 +73,7 @@ void main() {
     });
 
     test('newLatLngZoom creates correct CameraUpdate', () {
-      final sbbCameraUpdate =
-          SBBCameraUpdate.newLatLngZoom(testLatLng, testZoom);
+      final sbbCameraUpdate = SBBCameraUpdate.newLatLngZoom(testLatLng, testZoom);
 
       final cameraMlUpdate = CameraUpdate.newLatLngZoom(testLatLng, testZoom);
       expect(sbbCameraUpdate.toMaplibre(), isA<CameraUpdate>());

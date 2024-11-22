@@ -9,9 +9,9 @@ class LineString {
   factory LineString.fromGeoJSON(Map<String, dynamic> json) {
     var coordinatesList = (json['geometry']['coordinates'] as List)
         .map((coordinate) => LatLng(
-      coordinate[1] as double,
-      coordinate[0] as double,
-    ))
+              coordinate[1] as double,
+              coordinate[0] as double,
+            ))
         .toList();
 
     return LineString(
@@ -26,12 +26,9 @@ class LineString {
     Function deepEq = const DeepCollectionEquality().equals;
 
     return identical(this, other) ||
-          other is LineString &&
-              runtimeType == other.runtimeType &&
-              deepEq(coordinates, other.coordinates);
+        other is LineString && runtimeType == other.runtimeType && deepEq(coordinates, other.coordinates);
   }
 
   @override
-  int get hashCode =>
-      coordinates.hashCode;
+  int get hashCode => coordinates.hashCode;
 }

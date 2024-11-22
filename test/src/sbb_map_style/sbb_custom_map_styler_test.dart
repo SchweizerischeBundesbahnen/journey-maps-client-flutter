@@ -37,9 +37,7 @@ void main() {
         verifyNever(spyListener());
       });
 
-      test(
-          'currentStyleURI should return darkStyleURI after toggling dark mode',
-          () {
+      test('currentStyleURI should return darkStyleURI after toggling dark mode', () {
         // act
         sut.toggleDarkMode();
         final result = sut.currentStyleURI;
@@ -48,9 +46,7 @@ void main() {
         verify(spyListener()).called(1);
       });
 
-      test(
-          'currentStyleURI of styler with only bright style should return brightStyle after toggling dark mode',
-          () {
+      test('currentStyleURI of styler with only bright style should return brightStyle after toggling dark mode', () {
         // arrange sut with bright only style
         sut = SBBCustomMapStyler(
           styles: [brightOnlyWithApiKey],
@@ -76,17 +72,14 @@ void main() {
         verify(spyListener()).called(2);
       });
 
-      test(
-          'switchStyle should not notify listeners if unknown style (quietly fails)',
-          () {
+      test('switchStyle should not notify listeners if unknown style (quietly fails)', () {
         // act
         sut.switchStyle('unknown');
         // assert
         verifyNever(spyListener());
       });
 
-      test('switchStyle should not notify listeners if style same as current',
-          () {
+      test('switchStyle should not notify listeners if style same as current', () {
         // act
         sut.switchStyle(fullWithApiKey.id);
         // assert
@@ -121,8 +114,7 @@ void main() {
         verifyNever(spyListener());
       });
 
-      test('initialStyle set to second should return styleURI of second style',
-          () {
+      test('initialStyle set to second should return styleURI of second style', () {
         // arrange sut with initial style set to second style
         sut = SBBCustomMapStyler(
           styles: [fullWithApiKey, aerialWithApiKey],

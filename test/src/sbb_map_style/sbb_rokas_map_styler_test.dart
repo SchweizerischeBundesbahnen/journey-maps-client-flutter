@@ -19,8 +19,7 @@ void main() {
 
         // expect
         expect(actual, isA<SBBCustomMapStyler>());
-        expect(
-            actual.getStyleIds().contains('aerial_sbb_ki_v2'), equals(false));
+        expect(actual.getStyleIds().contains('aerial_sbb_ki_v2'), equals(false));
       });
     });
   });

@@ -7,9 +7,7 @@ import 'package:sbb_maps_flutter/src/sbb_map_ui/corporate_ui/sbb_map_branding.da
 @visibleForTesting
 const marginFraction = 0.1;
 
-class SBBRoutingControllerImpl
-    with ChangeNotifier
-    implements SBBRoutingController {
+class SBBRoutingControllerImpl with ChangeNotifier implements SBBRoutingController {
   SBBRoutingControllerImpl({
     required Future<SBBMapAnnotator> annotator,
     required Future<MapLibreMapController> controller,
@@ -29,8 +27,7 @@ class SBBRoutingControllerImpl
   bool _isFeatureCollectionSet = false;
 
   @override
-  Future<void> routeFromFeatureCollection(
-      FeatureCollection featureCollection) async {
+  Future<void> routeFromFeatureCollection(FeatureCollection featureCollection) async {
     _setFeatureCollection(featureCollection);
     await _init();
   }
@@ -62,24 +59,19 @@ class SBBRoutingControllerImpl
 
   Future<void> _onUpdateFloor(int currentFloor) async {
     if (_isFeatureCollectionSet) {
-      final restyledAnnotations =
-      _getAnnotations(_featureCollection!, currentFloor: currentFloor);
+      final restyledAnnotations = _getAnnotations(_featureCollection!, currentFloor: currentFloor);
 
       await _updateAnnotations(restyledAnnotations);
     }
   }
 
-  Iterable<SBBMapAnnotation> _getAnnotations(
-      FeatureCollection featureCollection,
-      {int currentFloor = 0}) {
+  Iterable<SBBMapAnnotation> _getAnnotations(FeatureCollection featureCollection, {int currentFloor = 0}) {
     return featureCollection.features.map((f) {
       var annotation = f.toAnnotation();
       if (annotation is SBBMapLine) {
         annotation = annotation.copyWith(
           style: SBBMapLineStyle(
-            lineColor: f.properties['floor'] == currentFloor
-                ? SBBMapColors.sky
-                : SBBMapColors.smoke,
+            lineColor: f.properties['floor'] == currentFloor ? SBBMapColors.sky : SBBMapColors.smoke,
             lineWidth: 5,
           ),
         );
@@ -88,8 +80,7 @@ class SBBRoutingControllerImpl
     });
   }
 
-  Future<void> _updateAnnotations(
-      Iterable<SBBMapAnnotation> annotations) async {
+  Future<void> _updateAnnotations(Iterable<SBBMapAnnotation> annotations) async {
     await _removeAnnotationsIfNecessary();
     await _addAnnotations(annotations);
   }
@@ -111,8 +102,7 @@ class SBBRoutingControllerImpl
   }
 
   Future<void> _moveCamera(FeatureCollection featureCollection) async {
-    final cameraUpdate =
-        _calculateCameraUpdateWithMargin(featureCollection.bbox);
+    final cameraUpdate = _calculateCameraUpdateWithMargin(featureCollection.bbox);
 
     await _controller.then((controller) {
       controller.moveCamera(cameraUpdate);

@@ -1,8 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:sbb_maps_flutter/sbb_maps_flutter.dart';
 
-typedef OnPoiControllerAvailable = void Function(
-    SBBRokasPOIController poiController);
+typedef OnPoiControllerAvailable = void Function(SBBRokasPOIController poiController);
 
 typedef OnPoiSelected = void Function(RokasPOI poi);
 

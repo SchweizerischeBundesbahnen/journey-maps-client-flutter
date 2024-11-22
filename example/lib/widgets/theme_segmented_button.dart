@@ -21,12 +21,11 @@ class ThemeSegmentedButton extends StatelessWidget {
               ? 2
               : 0,
       selectedIndexChanged: (value) {
-        Provider.of<ThemeProvider>(context, listen: false)
-            .updateTheme(value == 0
-                ? false
-                : value == 1
-                    ? null
-                    : true);
+        Provider.of<ThemeProvider>(context, listen: false).updateTheme(value == 0
+            ? false
+            : value == 1
+                ? null
+                : true);
       },
     );
   }

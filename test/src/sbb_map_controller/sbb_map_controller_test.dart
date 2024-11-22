@@ -78,8 +78,7 @@ void main() {
     test('getFilter should call mapLibre controller one to one', () {
       // arrange
       const fakeLayerId = 'fakeLayerId';
-      when(mockMLController.getFilter(fakeLayerId))
-          .thenAnswer((_) => Future.value([]));
+      when(mockMLController.getFilter(fakeLayerId)).thenAnswer((_) => Future.value([]));
 
       // act
       sut.getFilter(fakeLayerId);
@@ -91,8 +90,7 @@ void main() {
     test('setFilter should call mapLibre controller one to one', () {
       // arrange
       const fakeLayerId = 'fakeLayerId';
-      when(mockMLController.setFilter(fakeLayerId, []))
-          .thenAnswer((_) => Future.value());
+      when(mockMLController.setFilter(fakeLayerId, [])).thenAnswer((_) => Future.value());
 
       // act
       sut.setFilter(fakeLayerId, []);
@@ -104,8 +102,7 @@ void main() {
     test('setLayerVisibility should call mapLibre controller one to one', () {
       // arrange
       const fakeLayerId = 'fakeLayerId';
-      when(mockMLController.setLayerVisibility(fakeLayerId, true))
-          .thenAnswer((_) => Future.value());
+      when(mockMLController.setLayerVisibility(fakeLayerId, true)).thenAnswer((_) => Future.value());
 
       // act
       sut.setLayerVisibility(fakeLayerId, true);
@@ -118,8 +115,7 @@ void main() {
       // arrange
       final cameraUpdate = SBBCameraUpdate.bearingTo(0.0);
       final mlCameraUpdate = cameraUpdate.toMaplibre();
-      when(mockMLController.animateCamera(mlCameraUpdate))
-          .thenAnswer((_) => Future.value());
+      when(mockMLController.animateCamera(mlCameraUpdate)).thenAnswer((_) => Future.value());
 
       // act
       sut.animateCameraMove(cameraUpdate: cameraUpdate);
@@ -131,15 +127,13 @@ void main() {
     test('querySourceFeatures should call mapLibre controller one to one', () {
       // arrange
       const sourceId = 'someSourceId';
-      when(mockMLController.querySourceFeatures(sourceId, null, null))
-          .thenAnswer((_) => Future.value([]));
+      when(mockMLController.querySourceFeatures(sourceId, null, null)).thenAnswer((_) => Future.value([]));
 
       // act
       sut.querySourceFeatures(sourceId);
 
       // expect
-      verify(mockMLController.querySourceFeatures(sourceId, null, null))
-          .called(1);
+      verify(mockMLController.querySourceFeatures(sourceId, null, null)).called(1);
     });
   });
 }

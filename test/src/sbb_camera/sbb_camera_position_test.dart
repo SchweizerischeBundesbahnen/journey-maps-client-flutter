@@ -4,8 +4,7 @@ import 'package:test/test.dart';
 void main() {
   group('SBBCameraPosition Unit tests', () {
     // Test data
-    const LatLng testTarget =
-        LatLng(47.3769, 8.5417); // Coordinates for Zurich, for example
+    const LatLng testTarget = LatLng(47.3769, 8.5417); // Coordinates for Zurich, for example
     const double testBearing = 45.0;
     const double testZoom = 15.0;
 
@@ -61,8 +60,7 @@ void main() {
         bearing: testBearing,
         zoom: testZoom,
       );
-      final stringRepresentation =
-          'SBBCameraPosition(bearing: $testBearing, target: $testTarget, zoom: $testZoom)';
+      final stringRepresentation = 'SBBCameraPosition(bearing: $testBearing, target: $testTarget, zoom: $testZoom)';
       expect(position.toString(), stringRepresentation);
     });
 

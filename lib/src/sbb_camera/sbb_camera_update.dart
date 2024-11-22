@@ -8,8 +8,7 @@ class SBBCameraUpdate {
 
   /// Returns a [SBBCameraUpdate] that moves the camera to the specified position.
   static SBBCameraUpdate newCameraPosition(SBBCameraPosition cameraPosition) {
-    return SBBCameraUpdate._(
-        CameraUpdate.newCameraPosition(cameraPosition.toMaplibre()));
+    return SBBCameraUpdate._(CameraUpdate.newCameraPosition(cameraPosition.toMaplibre()));
   }
 
   /// Returns a [SBBCameraUpdate] that moves the camera target to the specified

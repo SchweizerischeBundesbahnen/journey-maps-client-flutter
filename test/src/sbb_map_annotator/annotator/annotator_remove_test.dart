@@ -46,8 +46,7 @@ void main() {
       ).called(1);
     });
 
-    test('removing a known annotation should keep all the other annotations',
-        () async {
+    test('removing a known annotation should keep all the other annotations', () async {
       // setup
       final a = AnnotatorFixture.simpleSymbol();
       final b = AnnotatorFixture.simpleSymbol();

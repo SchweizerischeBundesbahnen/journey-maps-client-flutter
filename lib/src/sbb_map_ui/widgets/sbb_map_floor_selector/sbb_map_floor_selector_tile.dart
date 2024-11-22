@@ -29,8 +29,7 @@ class SBBMapFloorSelectorTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SBBMapFloorSelectorStyle resolvedStyle =
-        _resolveStyleWithInherited(context);
+    SBBMapFloorSelectorStyle resolvedStyle = _resolveStyleWithInherited(context);
 
     return Material(
       elevation: _kElevation,
@@ -54,20 +53,15 @@ class SBBMapFloorSelectorTile extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: _determineFirstOrLastBorder(
                 diameter: _kFloorSelectorTileSize.width,
-                defaultRadius:
-                    const Radius.circular(_kSelectedInnerContainerRadius),
+                defaultRadius: const Radius.circular(_kSelectedInnerContainerRadius),
               ),
-              color: isSelected
-                  ? resolvedStyle.selectedBackgroundColor
-                  : resolvedStyle.backgroundColor,
+              color: isSelected ? resolvedStyle.selectedBackgroundColor : resolvedStyle.backgroundColor,
             ),
             child: Center(
               child: Text(
                 floor.toString(),
                 style: SBBMapTextStyles.mediumLight.copyWith(
-                  color: isSelected
-                      ? resolvedStyle.selectedTextColor
-                      : resolvedStyle.textColor,
+                  color: isSelected ? resolvedStyle.selectedTextColor : resolvedStyle.textColor,
                 ),
               ),
             ),
@@ -98,8 +92,7 @@ class SBBMapFloorSelectorTile extends StatelessWidget {
   }
 
   SBBMapFloorSelectorStyle _resolveStyleWithInherited(BuildContext context) {
-    final inheritedStyle =
-        Theme.of(context).extension<SBBMapFloorSelectorStyle>()!;
+    final inheritedStyle = Theme.of(context).extension<SBBMapFloorSelectorStyle>()!;
     return inheritedStyle.merge(style);
   }
 }

@@ -18,12 +18,8 @@ class Point {
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) ||
-          other is Point &&
-              runtimeType == other.runtimeType &&
-              coordinates == other.coordinates;
+      identical(this, other) || other is Point && runtimeType == other.runtimeType && coordinates == other.coordinates;
 
   @override
-  int get hashCode =>
-      coordinates.hashCode;
+  int get hashCode => coordinates.hashCode;
 }

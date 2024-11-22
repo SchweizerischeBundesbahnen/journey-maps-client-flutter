@@ -7,9 +7,7 @@ import 'package:maplibre_gl/maplibre_gl.dart';
 import 'package:collection/collection.dart';
 import 'package:sbb_maps_flutter/sbb_maps_flutter.dart';
 
-class SBBMapFloorControllerImpl
-    with ChangeNotifier
-    implements SBBMapFloorController {
+class SBBMapFloorControllerImpl with ChangeNotifier implements SBBMapFloorController {
   static const _levelsFeaturePropertyName = 'floor_liststring';
   static const _servicePointSourceId = 'service_points';
   static const _servicePointLayerId = 'rokas_service_points';
@@ -55,17 +53,15 @@ class SBBMapFloorControllerImpl
   }
 
   Future<List<dynamic>> _queryFeaturesWithFloorsFromSource() async {
-    return await _controller
-        .then((controller) => controller.querySourceFeatures(
-              _servicePointSourceId,
-              _servicePointLayerId,
-              null,
-            ));
+    return await _controller.then((controller) => controller.querySourceFeatures(
+          _servicePointSourceId,
+          _servicePointLayerId,
+          null,
+        ));
   }
 
   List<int> _extractUniqueSortedFloors(List<dynamic> features) {
-    final floors =
-        features.map((feature) => _extractFloors(feature['properties']));
+    final floors = features.map((feature) => _extractFloors(feature['properties']));
     final flatFloors = _flattenFloors(floors);
     return _sortUniqueFloors(flatFloors);
   }
@@ -74,10 +70,7 @@ class SBBMapFloorControllerImpl
     if (properties == null || properties[_levelsFeaturePropertyName] == null) {
       return [];
     }
-    return (properties[_levelsFeaturePropertyName] as String)
-        .split(',')
-        .map((e) => int.parse(e))
-        .toList();
+    return (properties[_levelsFeaturePropertyName] as String).split(',').map((e) => int.parse(e)).toList();
   }
 
   List<int> _flattenFloors(Iterable<List<int>> floors) {
@@ -103,16 +96,14 @@ class SBBMapFloorControllerImpl
     _availableFloors = availableFloors ?? _availableFloors;
     _currentFloor = currentFloor;
 
-    if (!listEquals(_availableFloors, previousAvailableFloors) ||
-        previousFloor != _currentFloor) {
+    if (!listEquals(_availableFloors, previousAvailableFloors) || previousFloor != _currentFloor) {
       notifyListeners();
     }
   }
 
   Future<void> _selectFloor({required int floor}) async {
     return await _controller.then((controller) async {
-      final knownLayerIds = (await controller.getLayerIds())
-          .where((id) => (id as String).endsWith('-lvl'));
+      final knownLayerIds = (await controller.getLayerIds()).where((id) => (id as String).endsWith('-lvl'));
       for (final layerId in knownLayerIds) {
         try {
           final oldFilter = await controller.getFilter(layerId);
@@ -179,11 +170,9 @@ class SBBMapFloorControllerImpl
 
   bool _isCaseLvlFilter(String innerPartString) {
     if (Platform.isIOS) {
-      return innerPartString
-          .startsWith('["case",["==",["has","level"],true],["get","level"]');
+      return innerPartString.startsWith('["case",["==",["has","level"],true],["get","level"]');
     } else {
-      return innerPartString
-          .startsWith('["case",["has","level"],["get","level"]');
+      return innerPartString.startsWith('["case",["has","level"],["get","level"]');
     }
   }
 

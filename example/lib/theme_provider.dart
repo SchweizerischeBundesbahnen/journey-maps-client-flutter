@@ -5,9 +5,7 @@ class ThemeProvider extends ChangeNotifier with WidgetsBindingObserver {
     bool? isDark,
     bool? useSystemTheme,
   }) {
-    this.isDark = isDark ??
-        WidgetsBinding.instance.platformDispatcher.platformBrightness ==
-            Brightness.dark;
+    this.isDark = isDark ?? WidgetsBinding.instance.platformDispatcher.platformBrightness == Brightness.dark;
     this.useSystemTheme = useSystemTheme ?? true;
     WidgetsBinding.instance.addObserver(this);
   }
@@ -18,8 +16,7 @@ class ThemeProvider extends ChangeNotifier with WidgetsBindingObserver {
   @override
   void didChangePlatformBrightness() {
     if (useSystemTheme) {
-      isDark = WidgetsBinding.instance.platformDispatcher.platformBrightness ==
-          Brightness.dark;
+      isDark = WidgetsBinding.instance.platformDispatcher.platformBrightness == Brightness.dark;
       notifyListeners();
     }
   }
@@ -27,8 +24,7 @@ class ThemeProvider extends ChangeNotifier with WidgetsBindingObserver {
   void updateTheme(bool? isDarkMode) {
     if (isDarkMode == null) {
       useSystemTheme = true;
-      isDark = WidgetsBinding.instance.platformDispatcher.platformBrightness ==
-          Brightness.dark;
+      isDark = WidgetsBinding.instance.platformDispatcher.platformBrightness == Brightness.dark;
     } else {
       useSystemTheme = false;
       isDark = isDarkMode;

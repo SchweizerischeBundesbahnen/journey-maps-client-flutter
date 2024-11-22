@@ -58,20 +58,14 @@ class SBBMapStyle {
           _darkStyleURI == other._darkStyleURI;
 
   @override
-  int get hashCode =>
-      id.hashCode ^
-      _brightStyleURI.hashCode ^
-      _apiKey.hashCode ^
-      _darkStyleURI.hashCode;
+  int get hashCode => id.hashCode ^ _brightStyleURI.hashCode ^ _apiKey.hashCode ^ _darkStyleURI.hashCode;
 
   String _generateDarkURI() {
     return _apiKey == null ? _darkStyleURI : '$_darkStyleURI?api_key=$_apiKey';
   }
 
   String _generateBrightURI() {
-    return _apiKey == null
-        ? _brightStyleURI
-        : '$_brightStyleURI?api_key=$_apiKey';
+    return _apiKey == null ? _brightStyleURI : '$_brightStyleURI?api_key=$_apiKey';
   }
 
   String get id => _id;

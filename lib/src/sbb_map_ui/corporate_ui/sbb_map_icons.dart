@@ -6,7 +6,6 @@ const sbbIconSizeSmall = 24.0;
 
 // ignore_for_file: constant_identifier_names
 sealed class SBBMapIcons {
-  
   SBBMapIcons._();
   static const aerosol_can_small = IconData(0xf101, fontFamily: smallFontFamily);
   static const airplane_small = IconData(0xf102, fontFamily: smallFontFamily);

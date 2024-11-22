@@ -24,9 +24,7 @@ class MultiPolygon {
     Function deepEq = const DeepCollectionEquality().equals;
 
     return identical(this, other) ||
-          other is MultiPolygon &&
-              runtimeType == other.runtimeType &&
-              deepEq(polygons, other.polygons);
+        other is MultiPolygon && runtimeType == other.runtimeType && deepEq(polygons, other.polygons);
   }
 
   @override

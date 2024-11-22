@@ -36,8 +36,7 @@ class SBBMapControllerImpl with ChangeNotifier implements SBBMapController {
   }
 
   @override
-  Future<List<dynamic>> querySourceFeatures(String sourceId,
-      {String? sourceLayerId, List<Object>? filter}) {
+  Future<List<dynamic>> querySourceFeatures(String sourceId, {String? sourceLayerId, List<Object>? filter}) {
     return _maplibreMapController.querySourceFeatures(
       sourceId,
       sourceLayerId,
@@ -52,10 +51,8 @@ class SBBMapControllerImpl with ChangeNotifier implements SBBMapController {
   SBBCameraPosition? get cameraPosition => _cameraPosition;
 
   @override
-  Future<bool?> animateCameraMove(
-      {required SBBCameraUpdate cameraUpdate, Duration? duration}) {
-    return _maplibreMapController.animateCamera(cameraUpdate.toMaplibre(),
-        duration: duration);
+  Future<bool?> animateCameraMove({required SBBCameraUpdate cameraUpdate, Duration? duration}) {
+    return _maplibreMapController.animateCamera(cameraUpdate.toMaplibre(), duration: duration);
   }
 
   void _notifyListenersIfStateChanged() {

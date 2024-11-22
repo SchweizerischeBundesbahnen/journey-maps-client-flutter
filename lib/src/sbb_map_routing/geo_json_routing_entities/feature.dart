@@ -13,7 +13,6 @@ import 'multi_polygon.dart';
 /// This class encapsulates the geometry, geometry type, and properties
 /// of a geographic feature.
 class Feature {
-
   /// Creates a [Feature] with the specified geometry, geometry type, and properties.
   ///
   /// The [geometry] parameter is required and represents the geometric shape of the feature.
@@ -65,10 +64,7 @@ class Feature {
         geometry = null;
     }
 
-    return Feature(
-        geometry: geometry,
-        geometryType: geometryType,
-        properties: json['properties']);
+    return Feature(geometry: geometry, geometryType: geometryType, properties: json['properties']);
   }
 
   /// The geometric shape of the feature.
@@ -86,14 +82,11 @@ class Feature {
   /// map annotation. Throws an [UnimplementedError] for unsupported geometry types.
   SBBMapAnnotation toAnnotation() {
     return switch (geometryType) {
-      GeometryType.point =>
-        SBBMapCircle(center: (geometry as Point).coordinates),
+      GeometryType.point => SBBMapCircle(center: (geometry as Point).coordinates),
       GeometryType.multiPoint => throw UnimplementedError(),
-      GeometryType.lineString =>
-        SBBMapLine(vertices: (geometry as LineString).coordinates),
+      GeometryType.lineString => SBBMapLine(vertices: (geometry as LineString).coordinates),
       GeometryType.multiLineString => throw UnimplementedError(),
-      GeometryType.polygon =>
-        SBBMapFill(coords: (geometry as Polygon).coordinates),
+      GeometryType.polygon => SBBMapFill(coords: (geometry as Polygon).coordinates),
       GeometryType.multiPolygon => throw UnimplementedError(),
       GeometryType.unknown => throw UnimplementedError(),
     };
@@ -102,10 +95,10 @@ class Feature {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is Feature &&
-              runtimeType == other.runtimeType &&
-              geometry == other.geometry &&
-              geometryType == other.geometryType;
+      other is Feature &&
+          runtimeType == other.runtimeType &&
+          geometry == other.geometry &&
+          geometryType == other.geometryType;
 
   @override
   int get hashCode => geometry.hashCode ^ geometryType.hashCode;

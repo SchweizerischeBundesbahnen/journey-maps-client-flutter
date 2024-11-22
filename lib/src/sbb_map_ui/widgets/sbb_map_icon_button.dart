@@ -51,8 +51,7 @@ class SBBMapIconButton extends StatelessWidget {
   }
 
   SBBMapIconButtonStyle _resolveStyleWithInherited(BuildContext context) {
-    final inheritedStyle =
-        Theme.of(context).extension<SBBMapIconButtonStyle>()!;
+    final inheritedStyle = Theme.of(context).extension<SBBMapIconButtonStyle>()!;
     return inheritedStyle.merge(style);
   }
 }

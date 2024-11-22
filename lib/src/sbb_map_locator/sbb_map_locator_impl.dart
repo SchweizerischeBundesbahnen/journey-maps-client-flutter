@@ -39,9 +39,7 @@ class SBBMapLocatorImpl with ChangeNotifier implements SBBMapLocator {
     }
 
     await _mapController.then((controller) {
-      return controller
-          .updateMyLocationTrackingMode(MyLocationTrackingMode.none)
-          .then(
+      return controller.updateMyLocationTrackingMode(MyLocationTrackingMode.none).then(
             (_) => _notifyListeners(isTracking: false),
           );
     });
@@ -66,15 +64,12 @@ class SBBMapLocatorImpl with ChangeNotifier implements SBBMapLocator {
   }
 
   bool _canEnableTracking(LocationPermission permission) {
-    return permission == LocationPermission.always ||
-        permission == LocationPermission.whileInUse;
+    return permission == LocationPermission.always || permission == LocationPermission.whileInUse;
   }
 
   Future<void> _enableTrackingMode() async {
     await _mapController.then((controller) {
-      return controller
-          .updateMyLocationTrackingMode(MyLocationTrackingMode.tracking)
-          .then(
+      return controller.updateMyLocationTrackingMode(MyLocationTrackingMode.tracking).then(
             (_) => _notifyListeners(isTracking: true, enableMyLocation: true),
           );
     });

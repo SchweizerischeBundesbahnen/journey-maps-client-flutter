@@ -64,9 +64,7 @@ class SBBMapFill implements SBBMapAnnotation {
       "geometry": {
         "type": "Polygon",
         "coordinates": _coords
-            .map((List<LatLng> latLngList) => latLngList
-                .map((LatLng latLng) => latLng.toGeoJsonCoordinates())
-                .toList())
+            .map((List<LatLng> latLngList) => latLngList.map((LatLng latLng) => latLng.toGeoJsonCoordinates()).toList())
             .toList()
       },
     };
@@ -168,8 +166,7 @@ class SBBMapFillStyle {
     return {
       if (fillOpacity != null) 'fillOpacity': fillOpacity,
       if (fillColor != null) 'fillColor': fillColor!.toHexStringRGB(),
-      if (fillOutlineColor != null)
-        'fillOutlineColor': fillOutlineColor!.toHexStringRGB(),
+      if (fillOutlineColor != null) 'fillOutlineColor': fillOutlineColor!.toHexStringRGB(),
       if (fillPattern != null) 'fillPattern': fillPattern,
     };
   }

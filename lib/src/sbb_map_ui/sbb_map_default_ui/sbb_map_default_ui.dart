@@ -20,8 +20,7 @@ class SBBMapDefaultUI extends StatelessWidget {
 
     bool showStyleSwitcher = uiContainer.mapStyler.getStyleIds().length > 1;
     bool showStyleSwitcherAndMyLocation = showStyleSwitcher && locationEnabled;
-    bool showFloorSelector = isFloorSwitchingEnabled &&
-        uiContainer.mapFloorController.availableFloors.isNotEmpty;
+    bool showFloorSelector = isFloorSwitchingEnabled && uiContainer.mapFloorController.availableFloors.isNotEmpty;
     return Align(
       alignment: Alignment.topRight,
       child: Padding(

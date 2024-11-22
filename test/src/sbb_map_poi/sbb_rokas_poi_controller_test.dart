@@ -21,8 +21,7 @@ void main() {
   group('Unit Test SBBRokasPoiController', () {
     setUp(() => {
           mockController = MockMapLibreMapController(),
-          sut = SBBRokasPOIControllerImpl(
-              controller: Future.value(mockController)),
+          sut = SBBRokasPOIControllerImpl(controller: Future.value(mockController)),
           sut.addListener(listener.call),
           reset(mockController),
           reset(listener)
@@ -49,9 +48,7 @@ void main() {
         verifyNever(listener());
       });
 
-      test(
-          'Should return all available POI categories after showPointsOfInterest(null)',
-          () async {
+      test('Should return all available POI categories after showPointsOfInterest(null)', () async {
         // arrange
         // act
         await sut.showPointsOfInterest();
@@ -71,9 +68,7 @@ void main() {
         verify(listener()).called(1);
       });
 
-      test(
-          'Should return [bike_parking] after showPointsOfInterest([bike_parking])',
-          () async {
+      test('Should return [bike_parking] after showPointsOfInterest([bike_parking])', () async {
         // arrange
         final categories = [SBBPoiCategoryType.bike_parking];
         // act
@@ -114,8 +109,7 @@ void main() {
         verify(listener()).called(1);
       });
 
-      test('Should return true after showPointsOfInterest([bike_parking])',
-          () async {
+      test('Should return true after showPointsOfInterest([bike_parking])', () async {
         // arrange
         final categories = [SBBPoiCategoryType.bike_parking];
         // act
@@ -197,10 +191,8 @@ void main() {
         await sut.showPointsOfInterest();
         reset(mockController);
         reset(listener);
-        when(mockController.querySourceFeatures(journeyPoisSource,
-                'journey_pois', mobilityBikeSharingFilterFixture))
-            .thenAnswer((_) async =>
-                Future.value([mobilityBikesharingPoiGeoJSONFixture]));
+        when(mockController.querySourceFeatures(journeyPoisSource, 'journey_pois', mobilityBikeSharingFilterFixture))
+            .thenAnswer((_) async => Future.value([mobilityBikesharingPoiGeoJSONFixture]));
 
         // act
         await sut.selectPointOfInterest(
@@ -228,15 +220,12 @@ void main() {
     group('deselectPointOfInterest', () {
       const journeyPoisSource = 'journey-pois-source';
       const selectedPoiLayerId = 'journey-pois-selected';
-      test('Should not notify listeners if not visible and poi is deselected',
-          () async {
+      test('Should not notify listeners if not visible and poi is deselected', () async {
         // arrange
         await sut.showPointsOfInterest();
 
-        when(mockController.querySourceFeatures(journeyPoisSource,
-                'journey_pois', mobilityBikeSharingFilterFixture))
-            .thenAnswer((_) async =>
-                Future.value([mobilityBikesharingPoiGeoJSONFixture]));
+        when(mockController.querySourceFeatures(journeyPoisSource, 'journey_pois', mobilityBikeSharingFilterFixture))
+            .thenAnswer((_) async => Future.value([mobilityBikesharingPoiGeoJSONFixture]));
         await sut.selectPointOfInterest(
           sbbId: mobilityBikesharingPoiFixture.sbbId,
         );
@@ -253,15 +242,12 @@ void main() {
         verifyNever(listener());
       });
 
-      test('Should notify listeners if visible and poi is deselected',
-          () async {
+      test('Should notify listeners if visible and poi is deselected', () async {
         // arrange
         await sut.showPointsOfInterest();
 
-        when(mockController.querySourceFeatures(journeyPoisSource,
-                'journey_pois', mobilityBikeSharingFilterFixture))
-            .thenAnswer((_) async =>
-                Future.value([mobilityBikesharingPoiGeoJSONFixture]));
+        when(mockController.querySourceFeatures(journeyPoisSource, 'journey_pois', mobilityBikeSharingFilterFixture))
+            .thenAnswer((_) async => Future.value([mobilityBikesharingPoiGeoJSONFixture]));
         await sut.selectPointOfInterest(
           sbbId: mobilityBikesharingPoiFixture.sbbId,
         );
@@ -297,8 +283,8 @@ void main() {
         await sut.showPointsOfInterest();
         reset(mockController);
         reset(listener);
-        when(mockController.queryRenderedFeatures(any, any, any)).thenAnswer(
-            (_) async => Future.value([mobilityBikesharingPoiGeoJSONFixture]));
+        when(mockController.queryRenderedFeatures(any, any, any))
+            .thenAnswer((_) async => Future.value([mobilityBikesharingPoiGeoJSONFixture]));
 
         // act
         await sut.toggleSelectedPointOfInterest(const Point(0, 0));

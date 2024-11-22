@@ -41,8 +41,7 @@ class _MainAppState extends State<MainApp> {
     return ChangeNotifierProvider(
       create: (context) => themeProvider,
       child: Consumer<ThemeProvider>(
-        builder: (BuildContext context, ThemeProvider themeProvider, _) =>
-            MaterialApp(
+        builder: (BuildContext context, ThemeProvider themeProvider, _) => MaterialApp(
           debugShowCheckedModeBanner: false,
           theme: SBBTheme.light(),
           darkTheme: SBBTheme.dark(),
@@ -57,10 +56,8 @@ class _MainAppState extends State<MainApp> {
             '/poi': (context) => const POIRoute(),
             '/routing': (context) => const RoutingRoute(),
             '/map_properties': (context) => const MapPropertiesRoute(),
-            '/display_annotations': (context) =>
-                const DisplayAnnotationsRoute(),
-            '/track_device_location': (context) =>
-                const TrackDeviceLocationRoute(),
+            '/display_annotations': (context) => const DisplayAnnotationsRoute(),
+            '/track_device_location': (context) => const TrackDeviceLocationRoute(),
           },
         ),
       ),

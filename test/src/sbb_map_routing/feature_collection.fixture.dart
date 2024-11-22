@@ -84,8 +84,7 @@ const featureCollectionFixtureGeneral = FeatureCollection(features: [
   41.0
 ]);
 
-final pointAnnotationFixtureGeneral =
-    SBBMapCircle(center: const LatLng(102.0, 0.5));
+final pointAnnotationFixtureGeneral = SBBMapCircle(center: const LatLng(102.0, 0.5));
 final lineAnnotationFixtureGeneral = SBBMapLine(vertices: [
   const LatLng(40.0, 0.0),
   const LatLng(41.0, 1.0),
@@ -345,10 +344,5 @@ const featureCollectionFixtureSBBJSON = {
       "id": null
     }
   ],
-  "bbox": [
-    7.532241111213004,
-    47.20412512135358,
-    7.542682938487567,
-    47.20672317314559
-  ]
+  "bbox": [7.532241111213004, 47.20412512135358, 7.542682938487567, 47.20672317314559]
 };

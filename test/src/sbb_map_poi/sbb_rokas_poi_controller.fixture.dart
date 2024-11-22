@@ -1,8 +1,17 @@
 // DO NOT AUTO FORMAT
 import 'package:sbb_maps_flutter/sbb_maps_flutter.dart';
 
-const allPOICategoriesFiltureFixture = ['filter-in','subCategory','bike_parking','park_rail','bike_sharing','car_sharing','p2p_car_sharing','on_demand'];
-const bikeParkingCategoriesFiltureFixture = ['filter-in','subCategory','bike_parking'];
+const allPOICategoriesFiltureFixture = [
+  'filter-in',
+  'subCategory',
+  'bike_parking',
+  'park_rail',
+  'bike_sharing',
+  'car_sharing',
+  'p2p_car_sharing',
+  'on_demand'
+];
+const bikeParkingCategoriesFiltureFixture = ['filter-in', 'subCategory', 'bike_parking'];
 
 // PointOfInterest
 const mobilityBikesharingPoiFixture = RokasPOI(
@@ -30,4 +39,11 @@ const mobilityBikesharingPoiGeoJSONFixture = {
     'coordinates': [7.449835538864136, 46.952527097150444],
   },
 };
-const mobilityBikeSharingFilterFixture = ['==',['get','sbbId',],'c595b6be-8387-4659-9adf-d62a6a1d3f17'];
+const mobilityBikeSharingFilterFixture = [
+  '==',
+  [
+    'get',
+    'sbbId',
+  ],
+  'c595b6be-8387-4659-9adf-d62a6a1d3f17'
+];
