@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 
 Future<void> main() async {
-  const rokasStyles = ['aerial_sbb_ki_v2', 'base_dark_v2_ki_v2', 'base_bright_v2_ki_v2'];
+  const rokasStyles = ['journey_maps_aerial_v1', 'journey_maps_dark_v1', 'journey_maps_bright_v1'];
 
   final allIcons = <String, String>{};
   final allIconKeys = <String, Set<String>>{};
