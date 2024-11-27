@@ -12,7 +12,10 @@ import 'package:sbb_maps_flutter/src/sbb_map_style/api_key_missing_exception.dar
 ///
 /// The [initialStyleId] is `journey_maps_bright_v1`.
 class SBBRokasMapStyler {
-  static _rokasStyleUrl(String styleId) => 'https://journey-maps-tiles.geocdn.sbb.ch/styles/$styleId/style.json';
+  static _rokasProdStyleUrl(String styleId) => 'https://journey-maps-tiles.geocdn.sbb.ch/styles/$styleId/style.json';
+  static _rokasIntStyleUrl(String styleId) => 'https://journey-maps-tiles.geocdn-int.sbb.ch/styles/$styleId/style.json';
+
+  static _rokasStyleUrl(String style, {isInt = false}) => isInt ? _rokasIntStyleUrl(style) : _rokasProdStyleUrl(style);
 
   static const _brightV1 = 'journey_maps_bright_v1';
   static const _darkV1 = 'journey_maps_dark_v1';
@@ -36,20 +39,30 @@ class SBBRokasMapStyler {
   ///
   /// Throws an [ApiKeyMissing] exception **during runtime** if neither is given.
   ///
+  /// To use integration data for vector tiles and POIs, set
+  /// [useIntegrationData] to true.
+  ///
   /// The [initialStyleId] is `journey_maps_bright_v1`.
-  static SBBMapStyler full({String? apiKey, bool isDarkMode = false}) {
+  static SBBMapStyler full({
+    String? apiKey,
+    bool isDarkMode = false,
+    bool useIntegrationData = false,
+  }) {
     final key = _apiKeyElseThrow(apiKey);
+
+    final isInt = useIntegrationData || _intEnvVarSet();
+    _logIfIsInt(isInt);
 
     final rokasDefaultStyle = SBBMapStyle.fromURL(
       id: _brightV1,
-      brightStyleURL: _rokasStyleUrl(_brightV1),
+      brightStyleURL: _rokasStyleUrl(_brightV1, isInt: isInt),
       apiKey: key,
-      darkStyleURL: _rokasStyleUrl(_darkV1),
+      darkStyleURL: _rokasStyleUrl(_darkV1, isInt: isInt),
     );
 
     final aerialStyle = SBBMapStyle.fromURL(
       id: _aerialV1,
-      brightStyleURL: _rokasStyleUrl(_aerialV1),
+      brightStyleURL: _rokasStyleUrl(_aerialV1, isInt: isInt),
       apiKey: key,
     );
 
@@ -76,15 +89,25 @@ class SBBRokasMapStyler {
   ///
   /// Throws an [ApiKeyMissing] exception **during runtime** if neither is given.
   ///
+  /// To use integration data for vector tiles and POIs, set
+  /// [useIntegrationData] to true.
+  ///
   /// The [initialStyleId] is `journey_maps_bright_v1`.
-  static SBBMapStyler noAerial({String? apiKey, bool isDarkMode = false}) {
+  static SBBMapStyler noAerial({
+    String? apiKey,
+    bool isDarkMode = false,
+    bool useIntegrationData = false,
+  }) {
     String key = _apiKeyElseThrow(apiKey);
+
+    final isInt = useIntegrationData || _intEnvVarSet();
+    _logIfIsInt(isInt);
 
     final rokasDefaultStyle = SBBMapStyle.fromURL(
       id: _brightV1,
-      brightStyleURL: _rokasStyleUrl(_brightV1),
+      brightStyleURL: _rokasStyleUrl(_brightV1, isInt: isInt),
       apiKey: key,
-      darkStyleURL: _rokasStyleUrl(_darkV1),
+      darkStyleURL: _rokasStyleUrl(_darkV1, isInt: isInt),
     );
 
     return SBBCustomMapStyler(
@@ -117,5 +140,18 @@ class SBBRokasMapStyler {
       );
     }
     return legacyKey;
+  }
+
+  static bool _intEnvVarSet() {
+    const intFlag = String.fromEnvironment('SBB_MAPS_INT_ENABLED');
+    if (intFlag.isNotEmpty) return intFlag == 'true';
+
+    return false;
+  }
+
+  static void _logIfIsInt(bool isInt) {
+    if (!isInt) return;
+    final logger = Logger();
+    logger.i('sbb_maps_flutter: You are currently opted in to use integration data.');
   }
 }
