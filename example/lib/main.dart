@@ -1,6 +1,7 @@
 import 'package:design_system_flutter/design_system_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sbb_maps_example/routes/integration_data_route.dart';
 import 'routes/camera_route.dart';
 import 'routes/custom_ui_route.dart';
 import 'routes/display_annotations_route.dart';
@@ -56,6 +57,7 @@ class _MainAppState extends State<MainApp> {
             '/poi': (context) => const POIRoute(),
             '/routing': (context) => const RoutingRoute(),
             '/map_properties': (context) => const MapPropertiesRoute(),
+            '/integration_data': (context) => const IntegrationDataRoute(),
             '/display_annotations': (context) => const DisplayAnnotationsRoute(),
             '/track_device_location': (context) => const TrackDeviceLocationRoute(),
           },

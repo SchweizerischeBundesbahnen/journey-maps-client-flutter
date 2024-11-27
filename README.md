@@ -154,6 +154,7 @@ The **SBB Karten** demo application is available both in the SBB Enterprise Play
 | Feature                                 | iOS                | Android            |
 |-----------------------------------------| ------------------ | ------------------ |
 | Gesture                                 | :white_check_mark: | :white_check_mark: |
+| Accessing INT Tiles & POIs              | :white_check_mark: | :white_check_mark: |
 | Camera                                  | :white_check_mark: | :white_check_mark: |
 | Map Styles (including ROKAS Styles)     | :white_check_mark: | :white_check_mark: |
 | Location (including device tracking)    | :white_check_mark: | :white_check_mark: |
@@ -187,6 +188,24 @@ const SBBMapProperties({
     this.dragEnabled = true,
   });
 ```
+
+#### Accessing INT Tiles & POIs
+
+In order to access the INT data from [Journey Maps Tiles INT API], you need to register your application there and receive
+a corresponding API Key. API Keys from the PROD API will not work. After that, either set the environment variable 
+`SBB_MAPS_INT_ENABLED` to `true`:
+
+```bash
+SBB_MAPS_INT_ENABLED=true
+```
+
+or pass the `useIntegrationData` constructor parameter to a `SBBRokasMapStyler`:
+
+```dart
+SBBRokasMapStyler.full(apiKey: Env.MY_INT_API_KEY_NAME, useIntegrationData=true);
+```
+
+Using INT data will log to console as an info.
 
 ### Gallery and Examples
 
@@ -272,7 +291,6 @@ See [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
 
 
 [Journey Maps API]: (https://developer.sbb.ch/apis/journey-maps/information)
-
 [Flutter Maplibre GL plugin]: (https://github.com/maplibre/flutter-maplibre-gl/tree/main)
-
 [Journey Maps Tiles API]: (https://developer.sbb.ch/apis/journey-maps-tiles/information)
+[Journey Maps Tiles INT API]: (https://developer-int.sbb.ch/apis/journey-maps-tiles/information)
