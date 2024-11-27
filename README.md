@@ -267,7 +267,9 @@ This repository includes a [CONTRIBUTING.md](CONTRIBUTING.md) file that outlines
 
 - [Nicolas Vidoni](https://github.com/smallTrogdor)
 
-### Contributors
+### Credits
+In addition to the contributors on Github, we thank the following people for their work on previous versions:
+
  - Loris Sorace
  - Hoang Tran
 
