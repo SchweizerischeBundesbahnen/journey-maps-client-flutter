@@ -19,7 +19,7 @@ abstract class SBBMapStyler with ChangeNotifier {
 
   /// Toggles between the dark and bright mode of [currentStyle].
   ///
-  /// Some [SBBMapStyle]s do not support dark mode (e.g. `aerial_sbb_ki_v2`).
+  /// Some [SBBMapStyle]s do not support dark mode (e.g. `journey_maps_aerial_v1`).
   /// In that case, there will be no visual change in the map.
   /// The [SBBMapStyler] however will be in dark mode, meaning [switchStyle] will
   /// switch to the dark mode of the style.
