@@ -1,5 +1,20 @@
 # Changelog
 
+## [2.4.0](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/compare/2.3.1...2.4.0) (2024-11-27)
+
+
+### Features
+
+* add convenience constructor for SBBMapProperties allDisabled ([#33](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/33)) ([2b8abf2](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/2b8abf241a7ee59a8bf82023ec0450bac32c1812))
+* deprecate JOURNEY_MAPS_API_KEY env. replace with JOURNEY_MAPS_TILES_API_KEY ([#52](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/52)) ([3833568](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/3833568026be56b7af67101468ee69d03d2900aa))
+* deprecate old ROKAS map styles and replace with new map styles ([08e7f7a](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/08e7f7aaa8b9d149ca951687720d4e01e3ac8816))
+* enable accessing INT ROKAS data ([#54](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/54)) ([5aedf40](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/5aedf40549dcfcf695d52dd0e15848b9a395a550))
+
+
+### Bug Fixes
+
+* **deps:** update envied to v1 ([#39](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/39)) ([7beeb67](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/7beeb67b193b617d0184769bf3563673fcc08519))
+
 ## [2.3.1](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/compare/2.3.0...2.3.1) (2024-11-13)
 
 
