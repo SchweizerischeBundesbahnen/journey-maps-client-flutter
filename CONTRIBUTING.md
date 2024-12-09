@@ -22,3 +22,5 @@ Use the issue tracker to find ways to contribute. Find a bug or a feature, menti
 * submit a pull request. 
 
 All new code should have associated tests that validate implemented features and the presence or lack of defects. Additionally, the code should follow any stylistic and architectural guidelines prescribed by the project (see [CODING_STANDARDS](CODING_STANDARDS)). In the absence of such guidelines, mimic the styles and patterns in the existing code-base.
+
+Your code will be analysed by [SonarScan](https://docs.sonarsource.com/sonarqube-server/latest/analyzing-source-code/scanners/sonarscanner/) and the results will be visible in the PR.
