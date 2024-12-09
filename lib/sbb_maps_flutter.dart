@@ -1,4 +1,4 @@
-library sbb_maps_flutter;
+library;
 
 export 'package:maplibre_gl/maplibre_gl.dart' show LatLng, LatLngBounds, CompassViewPosition;
 export 'package:geolocator/geolocator.dart' show LocationPermission;
