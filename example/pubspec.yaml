@@ -23,7 +23,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^4.0.0
+
   # https://pub.dev/packages/envied_generator
   envied_generator: ^1.0.0
   # https://pub.dev/packages/build_runner
