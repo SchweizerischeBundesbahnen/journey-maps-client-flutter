@@ -1,6 +1,5 @@
 import 'package:sbb_maps_flutter/sbb_maps_flutter.dart';
 import 'package:sbb_maps_flutter/src/sbb_map_style/api_key_missing_exception.dart';
-import 'package:test/expect.dart';
 import 'package:test/test.dart';
 
 void main() {
