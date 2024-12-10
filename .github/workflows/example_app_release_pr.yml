@@ -2,16 +2,11 @@
 name: Make example app release PR
 
 on:
-  pull_request_target:
-    types:
-      - labeled
-    branches:
-      - main
   workflow_dispatch:
 
 jobs:
   pull-request-creation:
-    if: contains(github.event.pull_request.labels.*.name, format('autorelease{0} tagged', ':')) || github.event_name == 'workflow_dispatch'
+    if: github.event_name == 'workflow_dispatch'
     permissions:
       pull-requests: write
       contents: write
