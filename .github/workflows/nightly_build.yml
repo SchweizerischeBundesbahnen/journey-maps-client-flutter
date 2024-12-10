@@ -21,7 +21,41 @@ jobs:
       - run: flutter doctor -v
       - run: flutter pub get
       - run: dart run build_runner build --delete-conflicting-outputs
-      - run: flutter test
+      - run: flutter test --coverage
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: gen_srcs-and-coverage
+          path: |
+            coverage/
+            **/*.g.dart
+            **/*.mocks.dart
+
+  sonar_analysis:
+    name: SonarScanning on SonarCloud
+    runs-on: ubuntu-latest
+    needs: [ test ]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Download gen srcs and coverage
+        uses: actions/download-artifact@v4
+        with:
+          name: gen_srcs-and-coverage
+
+      - name: Official SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v4.1.0
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   build-android:
     runs-on: ubuntu-latest
