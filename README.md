@@ -133,11 +133,11 @@ This can be seen in the *Track Device* route in the example app here: [track_dev
 #### Tested deployment platforms
 
 |               | iOS  | Android SDK |
-|---------------|------|-------------|
+| ------------- | ---- | ----------- |
 | Oldest Tested | 15.5 | 28          |
-| Latest Tested | 18.1 | 35          |
+| Latest Tested | 18.2 | 35          |
 
-All versions are tested with the latest (3.24.5) and oldest supported (3.19.6) Flutter SDK.
+All versions are tested with the latest (3.27.0) and oldest supported (3.22.3) Flutter SDK.
 
 #### Example App
 
@@ -152,7 +152,7 @@ The **SBB Karten** demo application is available both in the SBB Enterprise Play
 #### Features
 
 | Feature                                 | iOS                | Android            |
-|-----------------------------------------| ------------------ | ------------------ |
+| --------------------------------------- | ------------------ | ------------------ |
 | Gesture                                 | :white_check_mark: | :white_check_mark: |
 | Accessing INT Tiles & POIs              | :white_check_mark: | :white_check_mark: |
 | Camera                                  | :white_check_mark: | :white_check_mark: |
