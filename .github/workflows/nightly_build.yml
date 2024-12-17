@@ -33,7 +33,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        sdk: ["3.19.6", ""]
+        sdk: ["3.22.3", ""]
 
     name: Build Android
     steps:
@@ -71,7 +71,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        sdk: ["3.19.6", ""]
+        sdk: ["3.22.3", ""]
 
     name: Build iOS package
     steps:

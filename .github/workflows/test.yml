@@ -36,7 +36,7 @@ jobs:
       - name: test # takes ~ 60s, hence we store the artifact for sonar
         run: |
           dart run build_runner build --delete-conflicting-outputs
-          flutter test --coverage 
+          flutter test --coverage
 
       - uses: actions/upload-artifact@v4
         with:
@@ -57,13 +57,12 @@ jobs:
         with:
           githubToken: ${{ secrets.GITHUB_TOKEN }}
 
-
-### FROM HERE: ALL DONE AFTER VALIDATION SUCCEEDS
+  ### FROM HERE: ALL DONE AFTER VALIDATION SUCCEEDS
 
   sonar_analysis:
     name: SonarScanning on SonarCloud
     runs-on: ubuntu-latest
-    needs: [ validation ]
+    needs: [validation]
 
     steps:
       - uses: actions/checkout@v4
@@ -86,19 +85,17 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-
-
   build-android:
     name: Build Android
     runs-on: ubuntu-latest
-    needs: [ validation ]
+    needs: [validation]
     defaults:
       run:
         working-directory: example
     strategy:
       fail-fast: false
       matrix:
-        sdk: ["3.19.6", ""]
+        sdk: ["3.22.3", ""]
     steps:
       - uses: actions/checkout@v4
 
@@ -127,14 +124,14 @@ jobs:
   build-iOS:
     name: Build iOS package
     runs-on: macos-latest
-    needs: [ validation ]
+    needs: [validation]
     defaults:
       run:
         working-directory: example
     strategy:
       fail-fast: false
       matrix:
-        sdk: ["3.19.6", ""]
+        sdk: ["3.22.3", ""]
     steps:
       - uses: actions/checkout@v4
 
