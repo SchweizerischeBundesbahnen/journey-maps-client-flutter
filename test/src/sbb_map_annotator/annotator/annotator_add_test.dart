@@ -36,6 +36,18 @@ void main() {
         ).called(1);
       });
 
+      test('subsequent annotations should not add GeoJsonSource even if not awaited', () async {
+        // act
+        sut.addAnnotations([AnnotatorFixture.simpleSymbol()]);
+        await sut.addAnnotations([AnnotatorFixture.simpleSymbol()]);
+        await sut.addAnnotations([AnnotatorFixture.simpleRokasIcon()]);
+
+        // verify
+        verify(
+          mockController.addGeoJsonSource(AnnotatorFixture.kSourceId, any),
+        ).called(1);
+      });
+
       test('second annotation of same type should not add new layer', () async {
         // setup
         final symbol = AnnotatorFixture.simpleSymbol();

@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:maplibre_gl/maplibre_gl.dart';
@@ -22,6 +24,7 @@ class SBBMapAnnotatorImpl implements SBBMapAnnotator {
   final _addedLayers = <String, Layer>{};
   final _annotationTappedCallbacks = <String, dynamic>{};
   final _addedImages = <String, Uint8List>{};
+  Completer<void>? _geoJsonAddingOperation;
 
   bool _isGeoJsonSourceAdded = false;
 
@@ -120,6 +123,10 @@ class SBBMapAnnotatorImpl implements SBBMapAnnotator {
     // See https://dart.dev/language/functions#testing-functions-for-equality
     _controller.onFeatureTapped.clear();
 
+    // the below methods ends in exceptions on Android
+    // https://github.com/maplibre/flutter-maplibre-gl/issues/526
+    if (Platform.isAndroid) return;
+
     if (_addedLayers.isNotEmpty) {
       for (final layerId in _addedLayers.keys) {
         await _controller.removeLayer(layerId);
@@ -133,6 +140,7 @@ class SBBMapAnnotatorImpl implements SBBMapAnnotator {
   // Called by [SBBMap] when style changes.
   Future<void> onStyleChanged() async {
     if (!_isGeoJsonSourceAdded && _addedImages.isEmpty) return;
+    _geoJsonAddingOperation = null;
     await _addGeoJsonSource();
     await _reAddImages();
     await _reInsertLayers();
@@ -140,10 +148,13 @@ class SBBMapAnnotatorImpl implements SBBMapAnnotator {
   }
 
   Future<void> _addGeoJsonSource() async {
+    if (_geoJsonAddingOperation != null) return _geoJsonAddingOperation!.future;
+
+    _geoJsonAddingOperation = Completer<void>();
     return _controller
         .addGeoJsonSource(_kSourceId, buildFeatureCollection([]))
         .catchError(_throwAnnotatorException('Adding geoJsonSource $_kSourceId failed with exception: '))
-        .then((_) => _isGeoJsonSourceAdded = true);
+        .then(_completeGeoJsonAdding());
   }
 
   Future<void> _addAnnotationsToLayer(
@@ -265,6 +276,13 @@ class SBBMapAnnotatorImpl implements SBBMapAnnotator {
 
       final key = _getAnnotationIdentifier(annotation);
       _annotationTappedCallbacks[key]?.call(annotation);
+    };
+  }
+
+  FutureOr<void> Function(void value) _completeGeoJsonAdding() {
+    return (_) {
+      _geoJsonAddingOperation?.complete();
+      _isGeoJsonSourceAdded = true;
     };
   }
 }
