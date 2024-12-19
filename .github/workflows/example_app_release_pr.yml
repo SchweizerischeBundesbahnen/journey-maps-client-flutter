@@ -2,24 +2,34 @@
 name: Make example app release PR
 
 on:
-  pull_request_target:
+  pull_request:
     types:
-      - labeled
+      - closed
     branches:
       - main
   workflow_dispatch:
 
 jobs:
   pull-request-creation:
-    if: contains(github.event.pull_request.labels.*.name, format('autorelease{0} tagged', ':')) || github.event_name == 'workflow_dispatch'
+    if: github.event.pull_request.merged && contains( github.event.pull_request.labels.*.name, format('autorelease{0} pending', ':')) || github.event_name == 'workflow_dispatch'
     permissions:
       pull-requests: write
       contents: write
     runs-on: ubuntu-latest
 
     steps:
+      - name: Generate Token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ vars.APPBAKERYGITHUBAPP_APPID }}
+          private-key: ${{ secrets.APPBAKERYGITHUBAPP_PRIVATEKEY }}
+
       - name: Clone Repository
         uses: actions/checkout@v4
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          persist-credentials: false
 
       - name: Read new build_name from root pubspec.yaml.
         id: read_build_name
@@ -44,12 +54,14 @@ jobs:
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7
         with:
+          token: ${{ steps.app-token.outputs.token }}
+          committer: sbb-app-bakery[bot] <914587+sbb-app-bakery[bot]@users.noreply.github.com>
           commit-message: ${{ format('chore{0} example app release v{1}', ':', steps.read_build_name.outputs.pubspec_build_name) }}
           branch: "chore/example-release"
           title: ${{ format('Release example app v{0}', steps.read_build_name.outputs.pubspec_build_name) }}
           body: |
             Update pubspec version to ${{ steps.read_build_name.outputs.pubspec_build_name }}+${{ steps.read_build_number.outputs.pubspec_build_number }}
 
-            **Merging this PR will trigger the release into the enterprise app stores.**
+            **Merging this PR will trigger the release into the enterprise app store.**
           labels: |
             exampleAppRelease:pending
