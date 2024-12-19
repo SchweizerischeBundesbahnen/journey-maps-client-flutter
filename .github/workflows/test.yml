@@ -22,18 +22,19 @@ jobs:
 
       - uses: subosito/flutter-action@v2
         with:
+          flutter-version: 3.27.x
           channel: stable
           cache: true
 
-      - name: flutter setup
+      - name: Flutter setup
         run: |
           flutter doctor -v
           flutter pub get
 
-      - name: format check
+      - name: Format check
         run: dart format -l 120 -o none --set-exit-if-changed .
 
-      - name: test # takes ~ 60s, hence we store the artifact for sonar
+      - name: Flutter test # takes ~ 60s, hence we store the artifact for sonar
         run: |
           dart run build_runner build --delete-conflicting-outputs
           flutter test --coverage
@@ -69,6 +70,7 @@ jobs:
 
       - uses: subosito/flutter-action@v2
         with:
+          flutter-version: 3.27.x
           channel: stable
           cache: true
 
@@ -95,12 +97,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        sdk: ["3.22.3", ""]
+        sdk: ["3.22.3", "3.27.x"]
     steps:
       - uses: actions/checkout@v4
 
       - uses: subosito/flutter-action@v2
         with:
+          channel: stable
           flutter-version: ${{ matrix.sdk }}
           cache: true
 
@@ -131,12 +134,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        sdk: ["3.22.3", ""]
+        sdk: ["3.22.3", "3.27.x"]
     steps:
       - uses: actions/checkout@v4
 
       - uses: subosito/flutter-action@v2
         with:
+          channel: stable
           flutter-version: ${{ matrix.sdk }}
           cache: true
 
@@ -149,4 +153,4 @@ jobs:
 
       - run: flutter pub get
       - run: dart run build_runner build --delete-conflicting-outputs
-      - run: flutter build ios --simulator
+      - run: flutter build ios --no-codesign
