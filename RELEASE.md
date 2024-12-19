@@ -14,10 +14,14 @@ takes care of the release to pub.dev.
 
 #### Example App
 
-The example app release process is initiated by running the `example_app_release_pr` Github action. This will
-open a PR with a commit syncing the example app to the package version and increasing the build number by one.
+Merging the release please PR will trigger the `example_app_release_pr` Github action. This will
+* open a PR with a commit 
+  * syncing the example app to the package version
+  * increasing the build number by one.
 
 Upon merging this PR, the example app will be released to the enterprise app store.
+
+This PR can also be opened manually and will fail silently if no changes are commited.
 
 [Release Please]: https://github.com/googleapis/release-please
 [Github Action version]: https://github.com/googleapis/release-please-action

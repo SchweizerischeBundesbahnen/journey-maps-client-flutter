@@ -10,5 +10,5 @@
   "include-v-in-tag": false,
   "include-component-in-tag": false,
   "pull-request-title-pattern": "Release ${version}",
-  "pull-request-footer": "This PR was generated with Release Please. See documentation.\n\n**Merging this PR will create a Github Release and a Pub Dev release**"
+  "pull-request-footer": "This PR was generated with Release Please. See documentation.\n\n**Merging this PR will create a Github Release, a Pub Dev release and open a PR for the Example App relase**"
 }
