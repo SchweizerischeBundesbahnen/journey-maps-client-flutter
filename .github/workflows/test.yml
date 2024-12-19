@@ -113,7 +113,7 @@ jobs:
           distribution: "temurin"
           cache: "gradle"
 
-      - name: Make secret env file accessible for envied generation.
+      - name: Make secret env file accessible for envied generation
         uses: timheuer/base64-to-file@v1.2
         with:
           fileName: ".env"
@@ -125,7 +125,7 @@ jobs:
       - run: flutter build appbundle --profile --no-pub
 
   build-iOS:
-    name: Build iOS package
+    name: Build iOS
     runs-on: macos-latest
     needs: [validation]
     defaults:
@@ -144,7 +144,7 @@ jobs:
           flutter-version: ${{ matrix.sdk }}
           cache: true
 
-      - name: Make secret env file accessible for envied generation.
+      - name: Make secret env file accessible for envied generation
         uses: timheuer/base64-to-file@v1.2
         with:
           fileName: ".env"
