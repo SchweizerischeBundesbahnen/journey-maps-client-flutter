@@ -47,6 +47,9 @@ jobs:
             **/*.g.dart
             **/*.mocks.dart
 
+      - name: Check publishable to pub.dev
+        run: flutter pub publish --dry-run
+
   package_scorer:
     runs-on: ubuntu-latest
 
