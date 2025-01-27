@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.5.0](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/compare/2.4.0...2.5.0) (2025-01-27)
+
+
+### Features
+
+* minimum supported Flutter SDK is 3.22.0 ([#74](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/74)) ([a4fe10c](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/a4fe10c4a9fe48e52cacd99025c06eb2e0d1696d))
+
+
+### Bug Fixes
+
+* repeatedly calling addAnnotations results in fatal crash ([#78](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/78)) ([3f0dcaa](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/3f0dcaa14760327491ef03dab6ce0e1fe7465651))
+
 ## [2.4.0](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/compare/2.3.1...2.4.0) (2024-11-27)
 
 
