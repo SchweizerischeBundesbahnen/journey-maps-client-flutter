@@ -100,7 +100,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        sdk: ["3.22.3", "3.27.x"]
+        sdk: ["3.24.5", "3.29.x"]
     steps:
       - uses: actions/checkout@v4
 
@@ -137,7 +137,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        sdk: ["3.22.3", "3.27.x"]
+        sdk: ["3.24.5", "3.29.x"]
     steps:
       - uses: actions/checkout@v4
 
