@@ -12,6 +12,10 @@
 # https://dart.dev/guides/libraries/private-files#pubspeclock.
 /pubspec.lock
 
+# We avoid committing pubspec.lock of example for renovate and
+# nightly build to correctly work.
+/example/pubspec.lock
+
 # MacOS
 **.DS_Store
 
