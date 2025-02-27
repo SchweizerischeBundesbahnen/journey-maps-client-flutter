@@ -129,6 +129,8 @@ To directly focus the map camera onto the device location when the `SBBMap` is b
 
 This can be seen in the *Track Device* route in the example app here: [track_device_location_route.dart](example/lib/routes/track_device_location_route.dart).
 
+Be aware that for Android, the `trackDeviceLocation` method will center on the device location and end up **on the same zoom level as at the beginning of the movement**. Therefore, you might want to set a `initialCameraPosition` with a lower zoom level to start the map "closer" to the device location.
+
 
 #### Tested deployment platforms
 

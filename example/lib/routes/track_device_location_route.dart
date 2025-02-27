@@ -6,6 +6,8 @@ import 'package:sbb_maps_example/theme_provider.dart';
 import 'package:sbb_maps_flutter/sbb_maps_flutter.dart';
 
 final _kCameraZurich = SBBCameraUpdate.newLatLngZoom(const LatLng(47.3769, 8.5417), 15.0);
+// for Android zoom effect to work, use low zoom
+const _oltenOnLowZoom = SBBCameraPosition(target: LatLng(47.35, 7.9037), zoom: 14.0);
 
 class TrackDeviceLocationRoute extends StatefulWidget {
   const TrackDeviceLocationRoute({super.key});
@@ -27,6 +29,7 @@ class _TrackDeviceLocationRouteState extends State<TrackDeviceLocationRoute> {
       appBar: const SBBHeader(title: 'Track Device'),
       body: SBBMap(
         isMyLocationEnabled: true,
+        initialCameraPosition: _oltenOnLowZoom,
         mapStyler: mapStyler,
         onMapLocatorAvailable: (locator) => locator.trackDeviceLocation(),
         onMapCreated: (c) => controller = c,
