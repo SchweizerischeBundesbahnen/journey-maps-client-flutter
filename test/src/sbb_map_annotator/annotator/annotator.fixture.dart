@@ -12,6 +12,7 @@ class AnnotatorFixture {
   static const fakeURI = 'fakeURI';
   static const fakeCoords = LatLng(0.1, 1.0);
   static const fakePoint = Point(0.2, 1.5);
+  static const fakeLayerId = "fakeLayerId";
 
   static SBBMapSymbol simpleSymbol() => SBBMapSymbol(symbolURI: fakeURI, coords: fakeCoords);
 

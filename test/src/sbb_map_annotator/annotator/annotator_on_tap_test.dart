@@ -135,6 +135,7 @@ void _callAllWithAnnotation(
       registeredA.id,
       AnnotatorFixture.fakePoint,
       AnnotatorFixture.fakeCoords,
+      AnnotatorFixture.fakeLayerId,
     );
   }
 }
