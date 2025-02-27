@@ -133,11 +133,11 @@ This can be seen in the *Track Device* route in the example app here: [track_dev
 #### Tested deployment platforms
 
 |               | iOS  | Android SDK |
-| ------------- | ---- | ----------- |
+| ------------- |------| ----------- |
 | Oldest Tested | 15.5 | 28          |
-| Latest Tested | 18.2 | 35          |
+| Latest Tested | 18.3 | 35          |
 
-All versions are tested with the latest (3.27.0) and oldest supported (3.22.3) Flutter SDK.
+All versions are tested with the latest (3.29.0) and oldest supported (3.24.5) Flutter SDK.
 
 #### Example App
 
