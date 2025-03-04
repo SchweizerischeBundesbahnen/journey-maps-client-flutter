@@ -121,8 +121,8 @@ void main() {
       });
     });
     group('showPointsOfInterest', () {
-      const poiLayerId = 'journey-pois';
-      test('Should set visibility to true and ', () async {
+      const poiLayerId = 'journey-pois-first';
+      test('Should set visibility to true', () async {
         // arrange
         // act
         await sut.showPointsOfInterest();
@@ -151,7 +151,7 @@ void main() {
       });
     });
     group('hidePointsOfInterest', () {
-      const poiLayerId = 'journey-pois';
+      const poiLayerId = 'journey-pois-first';
       test('Should not notify listeners if not visible before', () async {
         // arrange
         // act

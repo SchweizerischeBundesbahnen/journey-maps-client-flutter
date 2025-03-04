@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 import 'package:sbb_maps_flutter/sbb_maps_flutter.dart';
 
-const _kRokasPoiLayerId = 'journey-pois';
+const _kRokasPoiLayerId = 'journey-pois-first';
 const _kRokasSelectedPoiLayerId = 'journey-pois-selected';
 const _kRokasPoiSourceId = 'journey-pois-source';
 const _kRokasPoiSourceLayerId = 'journey_pois';
