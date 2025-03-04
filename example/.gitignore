@@ -50,6 +50,7 @@ migrate_working_dir/
 **/android/local.properties
 **/android/key.properties
 **/android/**/GeneratedPluginRegistrant.java
+**/android/app/.cxx/
 
 # do not add the generated env file
 **/*.g.dart
