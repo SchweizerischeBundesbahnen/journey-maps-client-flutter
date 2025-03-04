@@ -46,4 +46,23 @@ class SBBMapPOISettings {
     this.onPoiDeselected,
     this.isPointOfInterestVisible = false,
   });
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is SBBMapPOISettings &&
+        other.onPoiControllerAvailable == onPoiControllerAvailable &&
+        other.onPoiSelected == onPoiSelected &&
+        other.onPoiDeselected == onPoiDeselected &&
+        other.isPointOfInterestVisible == isPointOfInterestVisible;
+  }
+
+  @override
+  int get hashCode {
+    return onPoiControllerAvailable.hashCode ^
+        onPoiSelected.hashCode ^
+        onPoiDeselected.hashCode ^
+        isPointOfInterestVisible.hashCode;
+  }
 }
