@@ -9,8 +9,7 @@ class SBBMapPOISettings {
   /// Callback for once the POI controller is available.
   ///
   /// This is called after the map is ready to be interacted with (style loaded for the first time).
-  /// May be used to receive the [SBBRokasPOIController] instance of the map, which
-  /// notifies its listeners when the current poi categories or available poi categories change.
+  /// May be used to receive the [SBBRokasPOIController] instance of the map.
   ///
   /// This is useful for programmatically controlling POIs.
   final OnPoiControllerAvailable? onPoiControllerAvailable;
@@ -19,6 +18,9 @@ class SBBMapPOISettings {
   ///
   /// Selecting POIs through user interaction is only enabled
   /// if this is not null.
+  ///
+  /// Points of Interests from the ROKAS base layer will be shown as
+  /// rounded square icons when this is non null.
   ///
   /// It is called both when a POI is selected by the user and when a POI is
   /// selected programmatically.
@@ -30,21 +32,15 @@ class SBBMapPOISettings {
   /// deselected programmatically.
   final VoidCallback? onPoiDeselected;
 
-  /// Whether the point of interest is visible.
-  ///
-  /// This is equivalent to
-  /// ```dart
-  /// SBBRokasPOIController.showPointsOfInterest()
-  /// ```
-  ///
-  /// Defaults to `false`.
+  /// Deprecated. Use SBBRokasPOIController.showPointsOfInterest instead. Does exactly that.
+  @Deprecated("Use SBBRokasPOIController.showPointsOfInterest. Deprecated after 2.4.0.")
   final bool isPointOfInterestVisible;
 
   const SBBMapPOISettings({
     this.onPoiControllerAvailable,
     this.onPoiSelected,
     this.onPoiDeselected,
-    this.isPointOfInterestVisible = false,
+    this.isPointOfInterestVisible = true,
   });
 
   @override

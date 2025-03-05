@@ -358,6 +358,7 @@ class _SBBMapState extends State<SBBMap> {
       widget.onFloorControllerAvailable!(_floorController);
     }
 
+    _poiController.hideAllPointsOfInterest();
     if (widget.poiSettings.isPointOfInterestVisible) {
       await _poiController.showPointsOfInterest();
     }
