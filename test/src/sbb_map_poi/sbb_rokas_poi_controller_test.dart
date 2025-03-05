@@ -77,7 +77,7 @@ void main() {
       // arrange
       final categories = [SBBPoiCategoryType.bike_parking];
       // act
-      await sut.showPointsOfInterest(layer: RokasPoiLayer.highlighted, categories: categories);
+      await sut.showPointsOfInterest(layer: SBBRokasPoiLayer.highlighted, categories: categories);
       final result = sut.currentPOICategories;
       // expect
       expect(result, SBBPoiCategoryType.values.toList());
@@ -88,8 +88,8 @@ void main() {
       // arrange
       final categories = [SBBPoiCategoryType.bike_parking];
       // act
-      await sut.showPointsOfInterest(layer: RokasPoiLayer.baseOnFloor, categories: categories);
-      await sut.showPointsOfInterest(layer: RokasPoiLayer.highlighted, categories: []);
+      await sut.showPointsOfInterest(layer: SBBRokasPoiLayer.baseWithFloor, categories: categories);
+      await sut.showPointsOfInterest(layer: SBBRokasPoiLayer.highlighted, categories: []);
       final result = sut.currentPOICategories;
       // expect
       expect(result, categories);
@@ -98,7 +98,7 @@ void main() {
 
     test('getCategoryFilterByLayer_whenNoFilterAndBaseLayer_shouldReturnAllAvailablePoiCategories', () {
       // act
-      final result = sut.getCategoryFilterByLayer(layer: RokasPoiLayer.baseOnFloor);
+      final result = sut.getCategoryFilterByLayer(layer: SBBRokasPoiLayer.baseWithFloor);
       // expect
       expect(result, SBBPoiCategoryType.values.toSet());
       verifyNever(listener());
@@ -108,7 +108,7 @@ void main() {
       // arrange
       // act
       await sut.showPointsOfInterest();
-      final result = sut.getCategoryFilterByLayer(layer: RokasPoiLayer.baseOnFloor);
+      final result = sut.getCategoryFilterByLayer(layer: SBBRokasPoiLayer.baseWithFloor);
       // expect
       expect(result, SBBPoiCategoryType.values.toSet());
       verify(listener()).called(1); // for switching visibility
@@ -118,7 +118,7 @@ void main() {
       // arrange
       // act
       await sut.showPointsOfInterest(categories: []);
-      final result = sut.getCategoryFilterByLayer(layer: RokasPoiLayer.baseOnFloor);
+      final result = sut.getCategoryFilterByLayer(layer: SBBRokasPoiLayer.baseWithFloor);
       // expect
       expect(result, <SBBPoiCategoryType>{});
       verify(listener()).called(1);
@@ -129,7 +129,7 @@ void main() {
       final categories = [SBBPoiCategoryType.bike_parking];
       // act
       await sut.showPointsOfInterest(categories: categories);
-      final result = sut.getCategoryFilterByLayer(layer: RokasPoiLayer.baseOnFloor);
+      final result = sut.getCategoryFilterByLayer(layer: SBBRokasPoiLayer.baseWithFloor);
       // expect
       expect(result, categories.toSet());
       verify(listener()).called(1);
@@ -139,8 +139,8 @@ void main() {
       // arrange
       final categories = [SBBPoiCategoryType.bike_parking];
       // act
-      await sut.showPointsOfInterest(layer: RokasPoiLayer.highlighted, categories: categories);
-      final result = sut.getCategoryFilterByLayer(layer: RokasPoiLayer.baseOnFloor);
+      await sut.showPointsOfInterest(layer: SBBRokasPoiLayer.highlighted, categories: categories);
+      final result = sut.getCategoryFilterByLayer(layer: SBBRokasPoiLayer.baseWithFloor);
       // expect
       expect(result, SBBPoiCategoryType.values.toSet());
       verify(listener()).called(1);
@@ -151,9 +151,9 @@ void main() {
       // arrange
       final categories = [SBBPoiCategoryType.bike_parking];
       // act
-      await sut.showPointsOfInterest(layer: RokasPoiLayer.baseOnFloor, categories: categories);
-      await sut.showPointsOfInterest(layer: RokasPoiLayer.highlighted, categories: []);
-      final result = sut.getCategoryFilterByLayer(layer: RokasPoiLayer.baseOnFloor);
+      await sut.showPointsOfInterest(layer: SBBRokasPoiLayer.baseWithFloor, categories: categories);
+      await sut.showPointsOfInterest(layer: SBBRokasPoiLayer.highlighted, categories: []);
+      final result = sut.getCategoryFilterByLayer(layer: SBBRokasPoiLayer.baseWithFloor);
       // expect
       expect(result, categories.toSet());
       verify(listener()).called(2);
@@ -209,8 +209,8 @@ void main() {
 
     test('isPointsOfInterestVisible_whenShowTwoTypes_shouldReturnTrue', () async {
       // act
-      await sut.showPointsOfInterest(layer: RokasPoiLayer.baseOnFloor);
-      await sut.showPointsOfInterest(layer: RokasPoiLayer.highlighted);
+      await sut.showPointsOfInterest(layer: SBBRokasPoiLayer.baseWithFloor);
+      await sut.showPointsOfInterest(layer: SBBRokasPoiLayer.highlighted);
       final result = sut.isPointsOfInterestVisible;
       // expect
       expect(result, true);
@@ -219,8 +219,8 @@ void main() {
 
     test('isPointsOfInterestVisible_whenShowTwoTypesAndHideOneType_shouldReturnTrue(Any)', () async {
       // act
-      await sut.showPointsOfInterest(layer: RokasPoiLayer.baseOnFloor);
-      await sut.showPointsOfInterest(layer: RokasPoiLayer.highlighted);
+      await sut.showPointsOfInterest(layer: SBBRokasPoiLayer.baseWithFloor);
+      await sut.showPointsOfInterest(layer: SBBRokasPoiLayer.highlighted);
       await sut.hidePointsOfInterest();
       final result = sut.isPointsOfInterestVisible;
       // expect
@@ -230,10 +230,10 @@ void main() {
 
     test('isPointsOfInterestVisible_whenShowTwoTypesAndHideTwoTypes_shouldReturnFalse', () async {
       // act
-      await sut.showPointsOfInterest(layer: RokasPoiLayer.baseOnFloor);
-      await sut.showPointsOfInterest(layer: RokasPoiLayer.highlighted);
+      await sut.showPointsOfInterest(layer: SBBRokasPoiLayer.baseWithFloor);
+      await sut.showPointsOfInterest(layer: SBBRokasPoiLayer.highlighted);
       await sut.hidePointsOfInterest();
-      await sut.hidePointsOfInterest(layer: RokasPoiLayer.highlighted);
+      await sut.hidePointsOfInterest(layer: SBBRokasPoiLayer.highlighted);
       final result = sut.isPointsOfInterestVisible;
       // expect
       expect(result, false);
@@ -242,7 +242,7 @@ void main() {
 
     test('getVisibilityByLayer_whenDefault_shouldReturnFalse', () {
       // act
-      final result = sut.getVisibilityByLayer(layer: RokasPoiLayer.baseOnFloor);
+      final result = sut.getVisibilityByLayer(layer: SBBRokasPoiLayer.baseWithFloor);
       // expect
       expect(result, false);
       verifyNever(listener());
@@ -252,7 +252,7 @@ void main() {
       // arrange
       // act
       await sut.showPointsOfInterest();
-      final result = sut.getVisibilityByLayer(layer: RokasPoiLayer.baseOnFloor);
+      final result = sut.getVisibilityByLayer(layer: SBBRokasPoiLayer.baseWithFloor);
       // expect
       expect(result, true);
       verify(listener()).called(1);
@@ -261,7 +261,7 @@ void main() {
     test('getVisibilityByLayer_whenShow([])_shouldReturnTrue', () async {
       // act
       await sut.showPointsOfInterest(categories: []);
-      final result = sut.getVisibilityByLayer(layer: RokasPoiLayer.baseOnFloor);
+      final result = sut.getVisibilityByLayer(layer: SBBRokasPoiLayer.baseWithFloor);
       // expect
       expect(result, true);
       verify(listener()).called(1);
@@ -272,7 +272,7 @@ void main() {
       final categories = [SBBPoiCategoryType.bike_parking];
       // act
       await sut.showPointsOfInterest(categories: categories);
-      final result = sut.getVisibilityByLayer(layer: RokasPoiLayer.baseOnFloor);
+      final result = sut.getVisibilityByLayer(layer: SBBRokasPoiLayer.baseWithFloor);
       // expect
       expect(result, true);
       verify(listener()).called(1);
@@ -280,8 +280,8 @@ void main() {
 
     test('getVisibilityByLayer_whenShowOtherTypeThanQueried_shouldReturnFalse', () async {
       // act
-      await sut.showPointsOfInterest(layer: RokasPoiLayer.baseOnFloor);
-      final result = sut.getVisibilityByLayer(layer: RokasPoiLayer.highlighted);
+      await sut.showPointsOfInterest(layer: SBBRokasPoiLayer.baseWithFloor);
+      final result = sut.getVisibilityByLayer(layer: SBBRokasPoiLayer.highlighted);
       // expect
       expect(result, false);
       verify(listener()).called(1);
@@ -291,7 +291,7 @@ void main() {
       // act
       await sut.showPointsOfInterest();
       await sut.hidePointsOfInterest();
-      final result = sut.getVisibilityByLayer(layer: RokasPoiLayer.baseOnFloor);
+      final result = sut.getVisibilityByLayer(layer: SBBRokasPoiLayer.baseWithFloor);
       // expect
       expect(result, false);
       verify(listener()).called(2);
@@ -299,9 +299,9 @@ void main() {
 
     test('getVisibilityByLayer_whenShowTwoTypesAndOtherType_shouldReturnTrue', () async {
       // act
-      await sut.showPointsOfInterest(layer: RokasPoiLayer.baseOnFloor);
-      await sut.showPointsOfInterest(layer: RokasPoiLayer.highlighted);
-      final result = sut.getVisibilityByLayer(layer: RokasPoiLayer.highlighted);
+      await sut.showPointsOfInterest(layer: SBBRokasPoiLayer.baseWithFloor);
+      await sut.showPointsOfInterest(layer: SBBRokasPoiLayer.highlighted);
+      final result = sut.getVisibilityByLayer(layer: SBBRokasPoiLayer.highlighted);
       // expect
       expect(result, true);
       verify(listener()).called(2);
@@ -309,10 +309,10 @@ void main() {
 
     test('getVisibilityByLayer_whenShowTwoTypesAndHideQueriedType_shouldReturnFalse', () async {
       // act
-      await sut.showPointsOfInterest(layer: RokasPoiLayer.baseOnFloor);
-      await sut.showPointsOfInterest(layer: RokasPoiLayer.highlighted);
+      await sut.showPointsOfInterest(layer: SBBRokasPoiLayer.baseWithFloor);
+      await sut.showPointsOfInterest(layer: SBBRokasPoiLayer.highlighted);
       await sut.hidePointsOfInterest();
-      final result = sut.getVisibilityByLayer(layer: RokasPoiLayer.baseOnFloor);
+      final result = sut.getVisibilityByLayer(layer: SBBRokasPoiLayer.baseWithFloor);
       // expect
       expect(result, false);
       verify(listener()).called(3);
@@ -320,11 +320,11 @@ void main() {
 
     test('getVisibilityByLayer_whenShowTwoTypesAndHideTwoTypes_shouldReturnFalse', () async {
       // act
-      await sut.showPointsOfInterest(layer: RokasPoiLayer.baseOnFloor);
-      await sut.showPointsOfInterest(layer: RokasPoiLayer.highlighted);
+      await sut.showPointsOfInterest(layer: SBBRokasPoiLayer.baseWithFloor);
+      await sut.showPointsOfInterest(layer: SBBRokasPoiLayer.highlighted);
       await sut.hidePointsOfInterest();
-      await sut.hidePointsOfInterest(layer: RokasPoiLayer.highlighted);
-      final result = sut.getVisibilityByLayer(layer: RokasPoiLayer.baseOnFloor);
+      await sut.hidePointsOfInterest(layer: SBBRokasPoiLayer.highlighted);
+      final result = sut.getVisibilityByLayer(layer: SBBRokasPoiLayer.baseWithFloor);
       // expect
       expect(result, false);
       verify(listener()).called(4);
@@ -351,7 +351,7 @@ void main() {
 
     test('showPointsOfInterest_WhenHighlightedLayer_shouldSetVisibilityToTrue', () async {
       // act
-      await sut.showPointsOfInterest(layer: RokasPoiLayer.highlighted);
+      await sut.showPointsOfInterest(layer: SBBRokasPoiLayer.highlighted);
       // expect
       verify(mockController.setLayerVisibility(rokasPoiHighlightedLayerId, true)).called(1);
       verifyNever(mockController.setFilter(any, any));
@@ -431,10 +431,10 @@ void main() {
 
     test('hidePointsOfInterest_whenInvisibleOtherThanDefault_shouldNotNotifyListenersAndMakeCall', () async {
       // arrange
-      await sut.showPointsOfInterest(layer: RokasPoiLayer.highlighted);
+      await sut.showPointsOfInterest(layer: SBBRokasPoiLayer.highlighted);
       reset(listener);
       // act
-      await sut.hidePointsOfInterest(layer: RokasPoiLayer.baseOnFloor);
+      await sut.hidePointsOfInterest(layer: SBBRokasPoiLayer.baseWithFloor);
       // expect
       verify(mockController.setLayerVisibility(rokasPoiBaseLayerIdWithFloorNonClickable, false)).called(1);
       verifyNever(listener());
@@ -450,7 +450,7 @@ void main() {
 
     test('hideAllPointsOfInterest_whenCalledAfterShowingSome_shouldNotHaveAnyVisibilityAndNotifyListeners', () async {
       // arrange
-      await sut.showPointsOfInterest(layer: RokasPoiLayer.highlighted);
+      await sut.showPointsOfInterest(layer: SBBRokasPoiLayer.highlighted);
       reset(listener);
       // act
       await sut.hideAllPointsOfInterest();
