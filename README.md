@@ -91,28 +91,21 @@ JOURNEY_MAPS_TILES_API_KEY='YOUR_API_KEY_HERE'
    `SBBRokasMapStyler` as constructor parameter. Use this styler to the `SBBMap` as `mapStyler` parameter.
 
 ```dart
-SBBRokasMapStyler.full
-(
-apiKey
-:
-Env
-.
-MY_API_KEY_NAME
-);
+
+final customStylerWithApiKey = SBBRokasMapStyler.full(apiKey: Env.MY_API_KEY_NAME);
 ```
 
 ###### Adding the map
 
 ```dart
-SBBMap
-(
-initialCameraPosition: const SBBCameraPosition(
-target: LatLng(46.947456, 7.451123), // Bern
-zoom: 15.0,
-),
-mapStyler:
-_customStylerWithApiKey // as from above
-)
+
+final map = SBBMap(
+    initialCameraPosition: const SBBCameraPosition(
+      target: LatLng(46.947456, 7.451123), // Bern
+      zoom: 15.0,
+    ),
+    mapStyler: customStylerWithApiKey // as from above
+);
 ```
 
 ###### Accessing user location
@@ -204,16 +197,16 @@ the `SBBMapProperties` class, given as `properties` parameter in the `SBBMap` co
 
 ```dart
 // the defaults
-const SBBMapProperties
-(
-{this.compassEnabled = true,
-this.compassViewPosition = CompassViewPosition.topLeft,
-this.compassViewMargins,
-this.rotateGesturesEnabled = true,
-this.scrollGesturesEnabled = true,
-this.doubleClickZoomEnabled = true,
-this.dragEnabled = true,
-});
+const properties = SBBMapProperties
+  (
+    {this.compassEnabled = true,
+      this.compassViewPosition = CompassViewPosition.topLeft,
+      this.compassViewMargins,
+      this.rotateGesturesEnabled = true,
+      this.scrollGesturesEnabled = true,
+      this.doubleClickZoomEnabled = true,
+      this.dragEnabled = true,
+    });
 ```
 
 #### Accessing INT Tiles & POIs
@@ -230,9 +223,8 @@ SBB_MAPS_INT_ENABLED=true
 or pass the `useIntegrationData` constructor parameter to a `SBBRokasMapStyler`:
 
 ```dart
-SBBRokasMapStyler.full
-(
-apiKey: Env.MY_INT_API_KEY_NAME, useIntegrationData=true);
+
+final intStyler = SBBRokasMapStyler.full(apiKey: Env.MY_INT_API_KEY_NAME, useIntegrationData = true);
 ```
 
 Using INT data will log to console as an info.

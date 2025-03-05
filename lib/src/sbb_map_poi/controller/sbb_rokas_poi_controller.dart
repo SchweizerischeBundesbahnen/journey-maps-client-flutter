@@ -2,12 +2,12 @@ import 'package:flutter/foundation.dart';
 import 'package:sbb_maps_flutter/src/sbb_map_poi/sbb_map_poi.dart';
 
 /// Controls visibility and selection of the ROKAS POIs
-/// embedded in the [_kRokasPoiLayerId] layer of the ROKAS map styles.
+/// embedded in the [RokasPoiLayer] layers of the ROKAS map styles.
 ///
 /// Using this class will only work,
 /// when the according [SBBMap] is used with a [SBBRokasMapStyler] style.
 ///
-/// There are two types of ROKAS Points Of Interest, see [RokasPoiLayer]:
+/// There are two types of ROKAS Points Of Interest in varying layers, see [RokasPoiLayer]:
 /// 1. Base points of interest (small rounded squares / circles icons)
 /// 2. Highlighted points of interest (larger symbols appearing as "pins")
 ///
@@ -26,7 +26,7 @@ abstract class SBBRokasPOIController with ChangeNotifier {
   @Deprecated("Deprecated after v.2.4.0. Use getCategoryFilterByLayer with `RokasPoiLayer.baseOnFloor`.")
   List<SBBPoiCategoryType> get currentPOICategories;
 
-  /// Deprecated. This will show you whether ANY point of interest layer is visible.
+  /// Deprecated. This will indicate whether ANY point of interest layer is visible.
   ///
   /// Use [getVisibilityByLayer] with the correct layer.
   @Deprecated("Deprecated after v.2.4.0. Use getVisibilityByLayer with a `RokasPoiLayer`.")
@@ -34,7 +34,7 @@ abstract class SBBRokasPOIController with ChangeNotifier {
 
   /// Gets the currently applied POI category filter for the given [RokasPoiLayer].
   ///
-  /// Each filter is set individually to the [RokasPoiLayer] when calling [showPointsOfInterest].
+  /// Each filter is set individually for each [RokasPoiLayer] when calling [showPointsOfInterest].
   Set<SBBPoiCategoryType> getCategoryFilterByLayer({required RokasPoiLayer layer});
 
   /// Gets the current visibility of the given [RokasPoiLayer].
@@ -65,9 +65,7 @@ abstract class SBBRokasPOIController with ChangeNotifier {
   /// [layer] allows controlling which ROKAS POI will be hidden.
   Future<void> hidePointsOfInterest({RokasPoiLayer layer = RokasPoiLayer.baseOnFloor});
 
-  /// Hides all points of interest regardless of the type.
-  ///
-  /// This is called by the [SBBMap] upon initialization.
+  /// Hides all points of interest regardless of the [RokasPoiLayer].
   Future<void> hideAllPointsOfInterest();
 
   /// For programmatic selection of a POI.
