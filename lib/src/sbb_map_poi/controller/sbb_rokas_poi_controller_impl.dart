@@ -15,6 +15,7 @@ const _rokasSelectedPoiLayerId = 'journey-pois-selected';
 const _rokasHighlightedPoiLayerId = 'journey-pois-first';
 const _rokasBasePoiClickableLayerId = 'journey-pois-second-lvl';
 const _rokasBasePoiNonClickableLayerId = 'journey-pois-third-lvl';
+const _rokasBasePoiWithoutLvlClickableLayerId = 'journey-pois-second-2d';
 
 typedef _AllLayerVisibilityToFalseCreation = Map<RokasPoiLayer, bool> Function();
 typedef _AllLayerPoiCategoriesCreation = Set<SBBPoiCategoryType> Function();
@@ -24,6 +25,7 @@ class SBBRokasPOIControllerImpl with ChangeNotifier implements SBBRokasPOIContro
     _rokasHighlightedPoiLayerId,
     _rokasBasePoiClickableLayerId,
     _rokasBasePoiNonClickableLayerId,
+    _rokasBasePoiWithoutLvlClickableLayerId
   };
 
   SBBRokasPOIControllerImpl({
@@ -111,6 +113,10 @@ class SBBRokasPOIControllerImpl with ChangeNotifier implements SBBRokasPOIContro
   @override
   RokasPOI? get selectedPointOfInterest => _selectedPOI;
 
+  /// Toggles the currently selected POI.
+  ///
+  /// This is used for reacting on user clicks on the map with the following behavior:
+  /// * If the user clicks on a POI, it will be selected and the currently selected POI will be deselected.
   /// * If the user clicks on an empty space, the currently selected POI will be deselected.
   Future<void> toggleSelectedPointOfInterest(Point<double> p) async {
     if (!_isAnyPoiLayerVisible) return Future.value();
@@ -123,13 +129,21 @@ class SBBRokasPOIControllerImpl with ChangeNotifier implements SBBRokasPOIContro
     _updateAndNotifyListenersIfChanged(filters: null, visibility: null, selectedPOI: poi);
   }
 
-  /// Toggles the currently selected POI.
+  /// This method is called by [SBBMap] whenever the style changes.
   ///
-  /// This is used for reacting on user clicks on the map with the following behavior:
-  /// * If the user clicks on a POI, it will be selected and the currently selected POI will be deselected.
+  /// This reapplies all filters and visibilities to the style / layers.
+  Future<void> synchronizeWithNewStyle() async {
+    return _controller.then((c) async {
+      await _hideAllPointsOfInterest(c);
+      await _reapplyAllFilters(c);
+      if (_isAnyPoiLayerVisible) await _reapplyVisibilities(c);
+      // calling updateListeners for "losing" the POI
+    }).then((_) => _updateAndNotifyListenersIfChanged(filters: null, visibility: null, selectedPOI: null));
+  }
+
   Future<RokasPOI?> _searchPOIAtPoint(Point<double> p) async {
     return await _controller.then((c) async {
-      final features = await c.queryRenderedFeatures(p, [_rokasHighlightedPoiLayerId], null);
+      final features = await c.queryRenderedFeatures(p, [..._allPoiLayerIds], null);
       return features.map((poi) => RokasPOI.fromGeoJSON(poi)).firstOrNull;
     });
   }
@@ -252,5 +266,22 @@ class SBBRokasPOIControllerImpl with ChangeNotifier implements SBBRokasPOIContro
       visibility: _allLayersWithVisibilityToFalse(),
       selectedPOI: null,
     );
+  }
+
+  _reapplyAllFilters(MapLibreMapController c) {
+    final List<Future<void>> result = [];
+    for (final element in _layerToCategoryFilters.entries) {
+      if (SetEquality().equals(element.value, _allPoiCategories())) continue;
+      result.add(c.setFilter(_layerIdFromPoiLayer(element.key), _buildCategoriesFilter(element.value)));
+    }
+    return Future.wait(result);
+  }
+
+  _reapplyVisibilities(MapLibreMapController c) {
+    final List<Future<void>> result = [];
+    for (final element in _layerToVisibility.entries) {
+      result.add(c.setLayerVisibility(_layerIdFromPoiLayer(element.key), element.value));
+    }
+    return Future.wait(result);
   }
 }

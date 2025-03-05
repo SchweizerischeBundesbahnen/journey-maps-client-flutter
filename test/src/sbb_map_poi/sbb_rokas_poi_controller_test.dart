@@ -17,6 +17,9 @@ void main() {
   const rokasPoiBaseLayerIdWithFloorClickable = 'journey-pois-second-lvl';
   const rokasPoiHighlightedLayerId = 'journey-pois-first';
 
+  const journeyPoisSource = 'journey-pois-source';
+  const selectedPoiLayerId = 'journey-pois-selected';
+
   late SBBRokasPOIControllerImpl sut;
   late MockMapLibreMapController mockController;
   final listener = MockCallbackFunction();
@@ -445,7 +448,7 @@ void main() {
       // act
       await sut.hideAllPointsOfInterest();
       // expect
-      verify(mockController.setLayerVisibility(any, false)).called(3);
+      verify(mockController.setLayerVisibility(any, false)).called(4);
       verifyNever(listener());
     });
 
@@ -457,138 +460,168 @@ void main() {
       await sut.hideAllPointsOfInterest();
       // expect
       verify(listener()).called(1);
-      verify(mockController.setLayerVisibility(any, false)).called(3);
+      verify(mockController.setLayerVisibility(any, false)).called(4);
       expect(sut.isPointsOfInterestVisible, false);
     });
 
-    group('selectPointOfInterest', () {
-      const journeyPoisSource = 'journey-pois-source';
-      const selectedPoiLayerId = 'journey-pois-selected';
-      test('Should not do anything if POIs not visible', () async {
-        // arrange + act (is POIs visible is false by default)
-        await sut.selectPointOfInterest(
-          sbbId: mobilityBikesharingPoiFixture.sbbId,
-        );
-        // expect
-        verifyNever(mockController.setFilter(any, any));
-        verifyNever(mockController.setLayerProperties(any, any));
-        verifyNever(mockController.querySourceFeatures(any, any, any));
-        verifyNever(listener());
-      });
-
-      test('Should notify listeners if visible and poi is selected', () async {
-        // arrange
-        await sut.showPointsOfInterest();
-        reset(mockController);
-        reset(listener);
-        when(mockController.querySourceFeatures(journeyPoisSource, 'journey_pois', mobilityBikeSharingFilterFixture))
-            .thenAnswer((_) async => Future.value([mobilityBikesharingPoiGeoJSONFixture]));
-
-        // act
-        await sut.selectPointOfInterest(sbbId: mobilityBikesharingPoiFixture.sbbId);
-
-        // expect
-        expect(sut.selectedPointOfInterest, mobilityBikesharingPoiFixture);
-        verify(mockController.querySourceFeatures(
-          journeyPoisSource,
-          any,
-          mobilityBikeSharingFilterFixture,
-        )).called(1);
-        verify(mockController.setFilter(
-          selectedPoiLayerId,
-          mobilityBikeSharingFilterFixture,
-        )).called(1);
-        verify(mockController.setLayerProperties(
-          selectedPoiLayerId,
-          any,
-        )).called(1);
-        verify(listener()).called(1);
-      });
+    test('selectPointOfInterest_ifPOIsNotVisible_shouldNotDoAnything', () async {
+      // act
+      await sut.selectPointOfInterest(sbbId: mobilityBikesharingPoiFixture.sbbId);
+      // expect
+      verifyNever(mockController.setFilter(any, any));
+      verifyNever(mockController.setLayerProperties(any, any));
+      verifyNever(mockController.querySourceFeatures(any, any, any));
+      verifyNever(listener());
     });
-    group('deselectPointOfInterest', () {
-      const journeyPoisSource = 'journey-pois-source';
-      const selectedPoiLayerId = 'journey-pois-selected';
-      test('Should not notify listeners if not visible and poi is deselected', () async {
-        // arrange
-        await sut.showPointsOfInterest();
 
-        when(mockController.querySourceFeatures(journeyPoisSource, 'journey_pois', mobilityBikeSharingFilterFixture))
-            .thenAnswer((_) async => Future.value([mobilityBikesharingPoiGeoJSONFixture]));
-        await sut.selectPointOfInterest(
-          sbbId: mobilityBikesharingPoiFixture.sbbId,
-        );
-        expect(sut.selectedPointOfInterest, mobilityBikesharingPoiFixture);
-        await sut.hidePointsOfInterest();
-        reset(mockController);
-        reset(listener);
-        // act
+    test('selectPointOfInterest_ifPOIsVisibleAndPoiSelected_shouldNotifyListeners', () async {
+      // arrange
+      await sut.showPointsOfInterest();
+      reset(mockController);
+      reset(listener);
+      when(mockController.querySourceFeatures(journeyPoisSource, 'journey_pois', mobilityBikeSharingFilterFixture))
+          .thenAnswer((_) async => Future.value([mobilityBikesharingPoiGeoJSONFixture]));
 
-        await sut.deselectPointOfInterest();
+      // act
+      await sut.selectPointOfInterest(sbbId: mobilityBikesharingPoiFixture.sbbId);
 
-        // expect
-        verifyNever(mockController.setLayerProperties(any, any));
-        verifyNever(listener());
-      });
-
-      test('Should notify listeners if visible and poi is deselected', () async {
-        // arrange
-        await sut.showPointsOfInterest();
-
-        when(mockController.querySourceFeatures(journeyPoisSource, 'journey_pois', mobilityBikeSharingFilterFixture))
-            .thenAnswer((_) async => Future.value([mobilityBikesharingPoiGeoJSONFixture]));
-        await sut.selectPointOfInterest(
-          sbbId: mobilityBikesharingPoiFixture.sbbId,
-        );
-        expect(sut.selectedPointOfInterest, mobilityBikesharingPoiFixture);
-        reset(mockController);
-        reset(listener);
-        // act
-
-        await sut.deselectPointOfInterest();
-
-        // expect
-        verify(mockController.setLayerProperties(
-          selectedPoiLayerId,
-          any,
-        )).called(1);
-        verify(listener()).called(1);
-      });
+      // expect
+      expect(sut.selectedPointOfInterest, mobilityBikesharingPoiFixture);
+      verify(mockController.querySourceFeatures(
+        journeyPoisSource,
+        any,
+        mobilityBikeSharingFilterFixture,
+      )).called(1);
+      verify(mockController.setFilter(
+        selectedPoiLayerId,
+        mobilityBikeSharingFilterFixture,
+      )).called(1);
+      verify(mockController.setLayerProperties(
+        selectedPoiLayerId,
+        any,
+      )).called(1);
+      verify(listener()).called(1);
     });
-    group('toggleSelectedPointOfInterest', () {
-      const selectedPoiLayerId = 'journey-pois-selected';
+    test('deselectPointOfInterest_ifNotVisibleAndPOIIsDeselected_shouldNotNotifyListeners', () async {
+      // arrange
+      await sut.showPointsOfInterest();
 
-      test('Should not do anything if POIs not visible', () async {
-        // arrange + act (is POIs visible is false by default)
-        await sut.toggleSelectedPointOfInterest(const Point(0, 0));
-        // expect
-        verifyNever(mockController.setFilter(any, any));
-        verifyNever(mockController.setLayerProperties(any, any));
-        verifyNever(mockController.querySourceFeatures(any, any, any));
-        verifyNever(listener());
-      });
-      test('Should notify listeners if visible and poi is selected', () async {
-        // arrange
-        await sut.showPointsOfInterest();
-        reset(mockController);
-        reset(listener);
-        when(mockController.queryRenderedFeatures(any, any, any))
-            .thenAnswer((_) async => Future.value([mobilityBikesharingPoiGeoJSONFixture]));
+      when(mockController.querySourceFeatures(journeyPoisSource, 'journey_pois', mobilityBikeSharingFilterFixture))
+          .thenAnswer((_) async => Future.value([mobilityBikesharingPoiGeoJSONFixture]));
+      await sut.selectPointOfInterest(
+        sbbId: mobilityBikesharingPoiFixture.sbbId,
+      );
+      expect(sut.selectedPointOfInterest, mobilityBikesharingPoiFixture);
+      await sut.hidePointsOfInterest();
+      reset(mockController);
+      reset(listener);
 
-        // act
-        await sut.toggleSelectedPointOfInterest(const Point(0, 0));
+      // act
+      await sut.deselectPointOfInterest();
 
-        // expect
-        expect(sut.selectedPointOfInterest, mobilityBikesharingPoiFixture);
-        verify(mockController.setFilter(
-          selectedPoiLayerId,
-          mobilityBikeSharingFilterFixture,
-        )).called(1);
-        verify(mockController.setLayerProperties(
-          selectedPoiLayerId,
-          any,
-        )).called(1);
-        verify(listener()).called(1);
-      });
+      // expect
+      verifyNever(mockController.setLayerProperties(any, any));
+      verifyNever(listener());
+    });
+
+    test('deselectPointOfInterest_IfVisibleAndPoiSelected_shouldNotifyListenersAndMakeCalls', () async {
+      // arrange
+      await sut.showPointsOfInterest();
+
+      when(mockController.querySourceFeatures(journeyPoisSource, 'journey_pois', mobilityBikeSharingFilterFixture))
+          .thenAnswer((_) async => Future.value([mobilityBikesharingPoiGeoJSONFixture]));
+      await sut.selectPointOfInterest(
+        sbbId: mobilityBikesharingPoiFixture.sbbId,
+      );
+      expect(sut.selectedPointOfInterest, mobilityBikesharingPoiFixture);
+      reset(mockController);
+      reset(listener);
+
+      // act
+      await sut.deselectPointOfInterest();
+
+      // expect
+      verify(mockController.setLayerProperties(
+        selectedPoiLayerId,
+        any,
+      )).called(1);
+      verify(listener()).called(1);
+    });
+
+    test('toggleSelectedPointOfInterest_IfPoiNotVisible_shouldNotDoAnything', () async {
+      // arrange + act (is POIs visible is false by default)
+      await sut.toggleSelectedPointOfInterest(const Point(0, 0));
+      // expect
+      verifyNever(mockController.setFilter(any, any));
+      verifyNever(mockController.setLayerProperties(any, any));
+      verifyNever(mockController.querySourceFeatures(any, any, any));
+      verifyNever(listener());
+    });
+
+    test('toggleSelectedPointOfInterest_IfVisibleAndPoiSelected_shouldMakeCallsAndNotify', () async {
+      // arrange
+      await sut.showPointsOfInterest();
+      reset(mockController);
+      reset(listener);
+      when(mockController.queryRenderedFeatures(any, any, any))
+          .thenAnswer((_) async => Future.value([mobilityBikesharingPoiGeoJSONFixture]));
+
+      // act
+      await sut.toggleSelectedPointOfInterest(const Point(0, 0));
+
+      // expect
+      expect(sut.selectedPointOfInterest, mobilityBikesharingPoiFixture);
+      verify(mockController.setFilter(
+        selectedPoiLayerId,
+        mobilityBikeSharingFilterFixture,
+      )).called(1);
+      verify(mockController.setLayerProperties(
+        selectedPoiLayerId,
+        any,
+      )).called(1);
+      verify(listener()).called(1);
+    });
+
+    test('synchronizeWithNewStyle_whenDefault_shouldCallVisibilityFalseAndNotNotify', () async {
+      // act
+      await sut.synchronizeWithNewStyle();
+
+      // expect
+      verify(mockController.setLayerVisibility(any, false)).called(4);
+      verifyNever(mockController.setFilter(any, any));
+      verifyNever(listener()); // never called except for POI dropped
+    });
+
+    test('synchronizeWithNewStyle_whenDefaultLayerIsVisible_shouldCallVisibilityTrue', () async {
+      // arrange
+      await sut.showPointsOfInterest();
+      reset(listener);
+      reset(mockController);
+
+      // act
+      await sut.synchronizeWithNewStyle();
+
+      // expect
+      verify(mockController.setLayerVisibility(rokasPoiBaseLayerIdWithFloorNonClickable, true)).called(1);
+      verifyNever(mockController.setFilter(any, any));
+      verifyNever(listener()); // never called except for POI dropped
+    });
+
+    test('synchronizeWithNewStyle_whenDefaultLayerIsVisibleAndFiltered_shouldCallFilters', () async {
+      // arrange
+      await sut.showPointsOfInterest(categories: [SBBPoiCategoryType.bike_parking]);
+      reset(listener);
+      reset(mockController);
+
+      // act
+      await sut.synchronizeWithNewStyle();
+
+      // expect
+      verify(mockController.setLayerVisibility(rokasPoiBaseLayerIdWithFloorNonClickable, true)).called(1);
+      verify(
+        mockController.setFilter(rokasPoiBaseLayerIdWithFloorNonClickable, bikeParkingCategoriesFiltureFixture),
+      ).called(1);
+      verifyNever(listener()); // never called except for POI dropped
     });
   });
 }
