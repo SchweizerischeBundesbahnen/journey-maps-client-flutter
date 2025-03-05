@@ -33,9 +33,10 @@ class _POIRouteState extends State<POIRoute> {
         isMyLocationEnabled: true,
         mapStyler: mapStyler,
         poiSettings: SBBMapPOISettings(
-          isPointOfInterestVisible: true,
-          onPoiControllerAvailable: (poiController) =>
-              !_poiController.isCompleted ? _poiController.complete(poiController) : null,
+          onPoiControllerAvailable: (poiController) {
+            !_poiController.isCompleted ? _poiController.complete(poiController) : null;
+            poiController.showPointsOfInterest();
+          },
           onPoiSelected: (poi) => showSBBModalSheet(
             context: context,
             title: poi.name,
