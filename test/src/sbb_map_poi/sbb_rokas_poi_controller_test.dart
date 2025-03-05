@@ -13,13 +13,6 @@ import 'sbb_rokas_poi_controller.fixture.dart';
 import 'sbb_rokas_poi_controller_test.mocks.dart';
 
 void main() {
-  const rokasPoiBaseLayerIdWithFloorNonClickable = 'journey-pois-third-lvl';
-  const rokasPoiBaseLayerIdWithFloorClickable = 'journey-pois-second-lvl';
-  const rokasPoiHighlightedLayerId = 'journey-pois-first';
-
-  const journeyPoisSource = 'journey-pois-source';
-  const selectedPoiLayerId = 'journey-pois-selected';
-
   late SBBRokasPOIControllerImpl sut;
   late MockMapLibreMapController mockController;
   final listener = MockCallbackFunction();
@@ -384,7 +377,10 @@ void main() {
       // expect
       verify(mockController.setLayerVisibility(rokasPoiBaseLayerIdWithFloorNonClickable, true)).called(1);
       verify(
-        mockController.setFilter(rokasPoiBaseLayerIdWithFloorNonClickable, bikeParkingCategoriesFiltureFixture),
+        mockController.setFilter(
+          rokasPoiBaseLayerIdWithFloorNonClickable,
+          bikeParkingCategoriesFiltureFixture,
+        ),
       ).called(1);
       verify(listener()).called(1);
     });
@@ -487,19 +483,9 @@ void main() {
 
       // expect
       expect(sut.selectedPointOfInterest, mobilityBikesharingPoiFixture);
-      verify(mockController.querySourceFeatures(
-        journeyPoisSource,
-        any,
-        mobilityBikeSharingFilterFixture,
-      )).called(1);
-      verify(mockController.setFilter(
-        selectedPoiLayerId,
-        mobilityBikeSharingFilterFixture,
-      )).called(1);
-      verify(mockController.setLayerProperties(
-        selectedPoiLayerId,
-        any,
-      )).called(1);
+      verify(mockController.querySourceFeatures(journeyPoisSource, any, mobilityBikeSharingFilterFixture)).called(1);
+      verify(mockController.setFilter(selectedPoiLayerId, mobilityBikeSharingFilterFixture)).called(1);
+      verify(mockController.setLayerProperties(selectedPoiLayerId, any)).called(1);
       verify(listener()).called(1);
     });
     test('deselectPointOfInterest_ifNotVisibleAndPOIIsDeselected_shouldNotNotifyListeners', () async {
@@ -508,9 +494,7 @@ void main() {
 
       when(mockController.querySourceFeatures(journeyPoisSource, 'journey_pois', mobilityBikeSharingFilterFixture))
           .thenAnswer((_) async => Future.value([mobilityBikesharingPoiGeoJSONFixture]));
-      await sut.selectPointOfInterest(
-        sbbId: mobilityBikesharingPoiFixture.sbbId,
-      );
+      await sut.selectPointOfInterest(sbbId: mobilityBikesharingPoiFixture.sbbId);
       expect(sut.selectedPointOfInterest, mobilityBikesharingPoiFixture);
       await sut.hidePointsOfInterest();
       reset(mockController);
@@ -530,9 +514,7 @@ void main() {
 
       when(mockController.querySourceFeatures(journeyPoisSource, 'journey_pois', mobilityBikeSharingFilterFixture))
           .thenAnswer((_) async => Future.value([mobilityBikesharingPoiGeoJSONFixture]));
-      await sut.selectPointOfInterest(
-        sbbId: mobilityBikesharingPoiFixture.sbbId,
-      );
+      await sut.selectPointOfInterest(sbbId: mobilityBikesharingPoiFixture.sbbId);
       expect(sut.selectedPointOfInterest, mobilityBikesharingPoiFixture);
       reset(mockController);
       reset(listener);
@@ -541,10 +523,7 @@ void main() {
       await sut.deselectPointOfInterest();
 
       // expect
-      verify(mockController.setLayerProperties(
-        selectedPoiLayerId,
-        any,
-      )).called(1);
+      verify(mockController.setLayerProperties(selectedPoiLayerId, any)).called(1);
       verify(listener()).called(1);
     });
 
@@ -571,14 +550,8 @@ void main() {
 
       // expect
       expect(sut.selectedPointOfInterest, mobilityBikesharingPoiFixture);
-      verify(mockController.setFilter(
-        selectedPoiLayerId,
-        mobilityBikeSharingFilterFixture,
-      )).called(1);
-      verify(mockController.setLayerProperties(
-        selectedPoiLayerId,
-        any,
-      )).called(1);
+      verify(mockController.setFilter(selectedPoiLayerId, mobilityBikeSharingFilterFixture)).called(1);
+      verify(mockController.setLayerProperties(selectedPoiLayerId, any)).called(1);
       verify(listener()).called(1);
     });
 
@@ -619,7 +592,10 @@ void main() {
       // expect
       verify(mockController.setLayerVisibility(rokasPoiBaseLayerIdWithFloorNonClickable, true)).called(1);
       verify(
-        mockController.setFilter(rokasPoiBaseLayerIdWithFloorNonClickable, bikeParkingCategoriesFiltureFixture),
+        mockController.setFilter(
+          rokasPoiBaseLayerIdWithFloorNonClickable,
+          bikeParkingCategoriesFiltureFixture,
+        ),
       ).called(1);
       verifyNever(listener()); // never called except for POI dropped
     });

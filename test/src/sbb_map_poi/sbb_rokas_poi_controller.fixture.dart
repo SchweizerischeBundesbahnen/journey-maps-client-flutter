@@ -1,5 +1,11 @@
-// DO NOT AUTO FORMAT
 import 'package:sbb_maps_flutter/sbb_maps_flutter.dart';
+
+const rokasPoiBaseLayerIdWithFloorNonClickable = 'journey-pois-third-lvl';
+const rokasPoiBaseLayerIdWithFloorClickable = 'journey-pois-second-lvl';
+const rokasPoiHighlightedLayerId = 'journey-pois-first';
+
+const journeyPoisSource = 'journey-pois-source';
+const selectedPoiLayerId = 'journey-pois-selected';
 
 const bikeParkingCategoriesFiltureFixture = ['filter-in', 'subCategory', 'bike_parking'];
 

@@ -13,19 +13,16 @@ const _rokasPoiSourceLayerId = 'journey_pois';
 const _rokasSelectedPoiLayerId = 'journey-pois-selected';
 
 const _rokasHighlightedPoiLayerId = 'journey-pois-first';
-const _rokasBasePoiClickableLayerId = 'journey-pois-second-lvl';
-const _rokasBasePoiNonClickableLayerId = 'journey-pois-third-lvl';
-const _rokasBasePoiWithoutLvlClickableLayerId = 'journey-pois-second-2d';
-
-typedef _AllLayerVisibilityToFalseCreation = Map<RokasPoiLayer, bool> Function();
-typedef _AllLayerPoiCategoriesCreation = Set<SBBPoiCategoryType> Function();
+const _rokasBaseLvlPoiClickableLayerId = 'journey-pois-second-lvl';
+const _rokasBaseLvlPoiNonClickableLayerId = 'journey-pois-third-lvl';
+const _rokasBasePoiClickableLayerId = 'journey-pois-second-2d';
 
 class SBBRokasPOIControllerImpl with ChangeNotifier implements SBBRokasPOIController {
   static const _allPoiLayerIds = {
     _rokasHighlightedPoiLayerId,
-    _rokasBasePoiClickableLayerId,
-    _rokasBasePoiNonClickableLayerId,
-    _rokasBasePoiWithoutLvlClickableLayerId
+    _rokasBaseLvlPoiClickableLayerId,
+    _rokasBaseLvlPoiNonClickableLayerId,
+    _rokasBasePoiClickableLayerId
   };
 
   SBBRokasPOIControllerImpl({
@@ -34,26 +31,26 @@ class SBBRokasPOIControllerImpl with ChangeNotifier implements SBBRokasPOIContro
     this.onPoiDeselected,
   }) : _controller = controller;
 
-  static _AllLayerPoiCategoriesCreation get _allPoiCategories =>
-      () => Set<SBBPoiCategoryType>.from(SBBPoiCategoryType.values);
+  final Future<MapLibreMapController> _controller;
+  final OnPoiSelected? onPoiSelected;
+  final VoidCallback? onPoiDeselected;
+
+  static get _allPoiCategories => () => Set<SBBPoiCategoryType>.from(SBBPoiCategoryType.values);
+
+  static get _allLayersWithVisibilityToFalse => () => {for (var k in RokasPoiLayer.values) k: false};
 
   Map<RokasPoiLayer, Set<SBBPoiCategoryType>> _layerToCategoryFilters = {
     RokasPoiLayer.highlighted: _allPoiCategories(),
     RokasPoiLayer.baseOnFloor: _allPoiCategories()
   };
-
-  static _AllLayerVisibilityToFalseCreation get _allLayersWithVisibilityToFalse =>
-      () => {for (var k in RokasPoiLayer.values) k: false};
-
   Map<RokasPoiLayer, bool> _layerToVisibility = _allLayersWithVisibilityToFalse();
-
   RokasPOI? _selectedPOI;
-  final Future<MapLibreMapController> _controller;
-  final OnPoiSelected? onPoiSelected;
-  final VoidCallback? onPoiDeselected;
 
   @override
   List<SBBPoiCategoryType> get availablePOICategories => SBBPoiCategoryType.values.toList();
+
+  @override
+  RokasPOI? get selectedPointOfInterest => _selectedPOI;
 
   @override
   List<SBBPoiCategoryType> get currentPOICategories => _layerToCategoryFilters[RokasPoiLayer.baseOnFloor]!.toList();
@@ -83,11 +80,9 @@ class SBBRokasPOIControllerImpl with ChangeNotifier implements SBBRokasPOIContro
   }
 
   @override
-  Future<void> hidePointsOfInterest({RokasPoiLayer layer = RokasPoiLayer.baseOnFloor}) async {
-    return _controller
-        .then((c) async => await c.setLayerVisibility(_layerIdFromPoiLayer(layer), false))
-        .then((_) => _updateVisibilityAndFilterForLayer(layer: layer, isVisible: false));
-  }
+  Future<void> hidePointsOfInterest({RokasPoiLayer layer = RokasPoiLayer.baseOnFloor}) async => _controller
+      .then((c) async => await c.setLayerVisibility(_layerIdFromPoiLayer(layer), false))
+      .then((_) => _updateVisibilityAndFilterForLayer(layer: layer, isVisible: false));
 
   @override
   Future<void> hideAllPointsOfInterest() async =>
@@ -110,10 +105,7 @@ class SBBRokasPOIControllerImpl with ChangeNotifier implements SBBRokasPOIContro
     _updateAndNotifyListenersIfChanged(visibility: null, filters: null, selectedPOI: null);
   }
 
-  @override
-  RokasPOI? get selectedPointOfInterest => _selectedPOI;
-
-  /// Toggles the currently selected POI.
+  /// Toggles the currently selected POI. Called by [SBBMap].
   ///
   /// This is used for reacting on user clicks on the map with the following behavior:
   /// * If the user clicks on a POI, it will be selected and the currently selected POI will be deselected.
@@ -220,7 +212,7 @@ class SBBRokasPOIControllerImpl with ChangeNotifier implements SBBRokasPOIContro
 
   String _layerIdFromPoiLayer(RokasPoiLayer layer) => switch (layer) {
         RokasPoiLayer.baseOnFloor =>
-          onPoiSelected != null ? _rokasBasePoiClickableLayerId : _rokasBasePoiNonClickableLayerId,
+          onPoiSelected != null ? _rokasBaseLvlPoiClickableLayerId : _rokasBaseLvlPoiNonClickableLayerId,
         RokasPoiLayer.highlighted => _rokasHighlightedPoiLayerId,
       };
 
@@ -268,7 +260,7 @@ class SBBRokasPOIControllerImpl with ChangeNotifier implements SBBRokasPOIContro
     );
   }
 
-  _reapplyAllFilters(MapLibreMapController c) {
+  Future<void> _reapplyAllFilters(MapLibreMapController c) {
     final List<Future<void>> result = [];
     for (final element in _layerToCategoryFilters.entries) {
       if (SetEquality().equals(element.value, _allPoiCategories())) continue;
@@ -277,7 +269,7 @@ class SBBRokasPOIControllerImpl with ChangeNotifier implements SBBRokasPOIContro
     return Future.wait(result);
   }
 
-  _reapplyVisibilities(MapLibreMapController c) {
+  Future<void> _reapplyVisibilities(MapLibreMapController c) {
     final List<Future<void>> result = [];
     for (final element in _layerToVisibility.entries) {
       result.add(c.setLayerVisibility(_layerIdFromPoiLayer(element.key), element.value));
