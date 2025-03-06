@@ -248,12 +248,12 @@ class _SBBMapState extends State<SBBMap> {
 
   @override
   void didUpdateWidget(covariant SBBMap oldWidget) {
+    super.didUpdateWidget(oldWidget);
     if (oldWidget.mapStyler != widget.mapStyler) {
       oldWidget.mapStyler.removeListener(_setStyleLoadedFalse);
       widget.mapStyler.addListener(_setStyleLoadedFalse);
       oldWidget.mapStyler.dispose();
     }
-    super.didUpdateWidget(oldWidget);
   }
 
   @override
@@ -358,9 +358,7 @@ class _SBBMapState extends State<SBBMap> {
       widget.onFloorControllerAvailable!(_floorController);
     }
 
-    if (widget.poiSettings.isPointOfInterestVisible) {
-      await _poiController.showPointsOfInterest();
-    }
+    _poiController.synchronizeWithNewStyle();
     if (widget.poiSettings.onPoiControllerAvailable != null) {
       widget.poiSettings.onPoiControllerAvailable!(_poiController);
     }
