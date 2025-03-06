@@ -1,5 +1,31 @@
 # Changelog
 
+## [2.5.0](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/compare/2.4.0...2.5.0) (2025-03-06)
+
+
+### Features
+
+* add getCategoryFilterByLayer in SBBRokasPoiController ([75f2c0e](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/75f2c0eb155328cd9417f695eaf1373ac37a971b))
+* add getVisibilityByLayer in SBBRokasPoiController ([75f2c0e](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/75f2c0eb155328cd9417f695eaf1373ac37a971b))
+* add hideAllPointsOfInterests to SBBRokasPoiController ([75f2c0e](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/75f2c0eb155328cd9417f695eaf1373ac37a971b))
+* add new ROKAS POI customization possibilities ([#96](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/96)) ([75f2c0e](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/75f2c0eb155328cd9417f695eaf1373ac37a971b))
+* add SBBRokasPoiLayer with baseWithFloor and highlighted ([75f2c0e](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/75f2c0eb155328cd9417f695eaf1373ac37a971b))
+* deprecate currentPOICategories, isPointsOfInterestVisible in SBBRokasPoiController ([75f2c0e](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/75f2c0eb155328cd9417f695eaf1373ac37a971b))
+* deprecate isPointOfInterestVisible in SBBMapPoiSettings ([75f2c0e](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/75f2c0eb155328cd9417f695eaf1373ac37a971b))
+* do not show ROKAS POIs by default, use showPointsOfInterest in SBBRokasPoiController ([75f2c0e](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/75f2c0eb155328cd9417f695eaf1373ac37a971b))
+* dropped support for flutter 3 22 x ([#93](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/93)) ([54b4f6f](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/54b4f6fa9b9b60c9225d63d7c68f42c0766bdd00))
+* extend hidePointsOfInterest with optional layer in SBBRokasPoiController ([75f2c0e](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/75f2c0eb155328cd9417f695eaf1373ac37a971b))
+* extend showPointsOfInterest with optional layer in SBBRokasPoiController ([75f2c0e](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/75f2c0eb155328cd9417f695eaf1373ac37a971b))
+* extend the set of possible SBBPoiCategoryType to match latest categories ([75f2c0e](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/75f2c0eb155328cd9417f695eaf1373ac37a971b))
+* minimum supported Flutter SDK is 3.22.0 ([#74](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/74)) ([a4fe10c](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/a4fe10c4a9fe48e52cacd99025c06eb2e0d1696d))
+
+
+### Bug Fixes
+
+* **deps:** update dependency maplibre_gl to ^0.21.0 ([#91](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/91)) ([2bb9c36](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/2bb9c363cf472ae5da25e1e6162d7a589a74e908))
+* repeatedly calling addAnnotations results in fatal crash ([#78](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/78)) ([3f0dcaa](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/3f0dcaa14760327491ef03dab6ce0e1fe7465651))
+* synchronize style switching to filtered PointsOfInterests ([75f2c0e](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/75f2c0eb155328cd9417f695eaf1373ac37a971b))
+
 ## [2.4.0](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/compare/2.3.1...2.4.0) (2024-11-27)
 
 
