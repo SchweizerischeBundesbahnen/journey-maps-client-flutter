@@ -8,7 +8,7 @@ class RokasPOI {
     required this.category,
     required this.subCategory,
     required this.icon,
-    this.operator,
+    required this.operator,
     required this.coordinates,
   });
 
@@ -21,20 +21,21 @@ class RokasPOI {
       category: json['properties']['category'] as String,
       subCategory: json['properties']['subCategory'] as String,
       icon: json['properties']['icon'] as String,
-      operator: json['properties']['operator'] != null ? json['properties']['operator'] as String : null,
+      operator: json['properties']['operator'] != null ? json['properties']['operator'] as String : 'unknown',
       coordinates: LatLng(
         json['geometry']['coordinates'][1] as double,
         json['geometry']['coordinates'][0] as double,
       ),
     );
   }
+
   final String id;
   final String sbbId;
   final String name;
   final String category;
   final String subCategory;
   final String icon;
-  final String? operator;
+  final String operator;
   final LatLng coordinates;
 
   @override

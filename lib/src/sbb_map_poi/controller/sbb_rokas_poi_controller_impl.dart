@@ -155,8 +155,8 @@ class SBBRokasPOIControllerImpl with ChangeNotifier implements SBBRokasPOIContro
     _layerToCategoryFilters = filters ?? _layerToCategoryFilters;
     _selectedPOI = selectedPOI;
 
-    if (!MapEquality().equals(_layerToVisibility, previousVisibility) ||
-        !MapEquality().equals(_layerToCategoryFilters, previousCategoriesFilter) ||
+    if (!const MapEquality().equals(_layerToVisibility, previousVisibility) ||
+        !const MapEquality().equals(_layerToCategoryFilters, previousCategoriesFilter) ||
         previousSelectedPOI != _selectedPOI) {
       notifyListeners();
     }
@@ -236,7 +236,7 @@ class SBBRokasPOIControllerImpl with ChangeNotifier implements SBBRokasPOIContro
       Future.wait(_allPoiLayerIds.map((layerId) => c.setLayerVisibility(layerId, false)));
 
   bool _isFilterSameAsCurrent(SBBRokasPoiLayer layer, Set<SBBPoiCategoryType> filter) =>
-      SetEquality().equals(_layerToCategoryFilters[layer]!, filter);
+      const SetEquality().equals(_layerToCategoryFilters[layer]!, filter);
 
   void _updateVisibilityAndFilterForLayer({
     required SBBRokasPoiLayer layer,
@@ -265,7 +265,7 @@ class SBBRokasPOIControllerImpl with ChangeNotifier implements SBBRokasPOIContro
   Future<void> _reapplyAllFilters(MapLibreMapController c) {
     final List<Future<void>> result = [];
     for (final element in _layerToCategoryFilters.entries) {
-      if (SetEquality().equals(element.value, _allPoiCategories())) continue;
+      if (const SetEquality().equals(element.value, _allPoiCategories())) continue;
       result.add(c.setFilter(_layerIdFromPoiLayer(element.key), _buildCategoriesFilter(element.value)));
     }
     return Future.wait(result);
