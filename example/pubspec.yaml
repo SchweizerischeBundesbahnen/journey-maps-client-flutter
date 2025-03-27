@@ -20,6 +20,10 @@ dependencies:
   # https://pub.dev/packages/provider
   provider: ^6.1.2
 
+# remove once support for Flutter SDK 3.24.x is removed - see https://github.com/Baseflow/flutter-geolocator/issues/1666
+dependency_overrides:
+  geolocator_android: 4.6.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
