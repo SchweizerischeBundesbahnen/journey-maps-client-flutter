@@ -36,16 +36,16 @@ jobs:
         run: |
           version=$(grep '^version:' pubspec.yaml | awk '{print $2}')
           echo "Version found: $version"
-          echo "pubspec_build_name=$version" >> $GITHUB_OUTPUT
+          echo pubspec_build_name="$version" >> "$GITHUB_OUTPUT"
 
       - name: Read current build_number from example pubspec.yaml
         id: read_build_number
         run: |
           version=$(grep '^version:' example/pubspec.yaml | awk '{print $2}')
           echo "Example version found: $version"
-          IFS='+' read -r build_name build_number <<< "$version"
+          IFS='+' read -r _ build_number <<< "$version"
           new_build_number=$((build_number + 1))
-          echo "pubspec_build_number=$new_build_number" >> $GITHUB_OUTPUT
+          echo pubspec_build_number="$new_build_number" >> "$GITHUB_OUTPUT"
 
       - name: Update version in example pubspec.yaml
         run: |

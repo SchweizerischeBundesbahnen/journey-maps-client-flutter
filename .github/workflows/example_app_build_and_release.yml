@@ -83,5 +83,5 @@ jobs:
       pull-requests: write
     steps:
       - uses: actions/checkout@v4
-      - run: gh pr edit $PR_NUMBER --remove-label exampleAppRelease:pending
-      - run: gh pr edit $PR_NUMBER --add-label exampleAppRelease:released
+      - run: gh pr edit "$PR_NUMBER" --remove-label exampleAppRelease:pending
+      - run: gh pr edit "$PR_NUMBER" --add-label exampleAppRelease:released
