@@ -91,3 +91,5 @@ jobs:
   build-examples:
     needs: [ test ]
     uses: ./.github/workflows/example_app_build.yml
+    secrets:
+      example_app_env_file_base64: ${{ secrets.EXAMPLE_APP_ENV_FILE_PROD_BASE64 }}

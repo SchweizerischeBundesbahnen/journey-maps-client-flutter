@@ -2,6 +2,9 @@ name: example-app-build
 
 on:
   workflow_call:
+    secrets:
+      example_app_env_file_base64:
+        required: true
 
 # Ensure that new pushes/updates cancel running jobs
 concurrency:
@@ -39,7 +42,7 @@ jobs:
         with:
           fileName: ".env"
           fileDir: "./example"
-          encodedString: ${{ secrets.EXAMPLE_APP_ENV_FILE_PROD_BASE64 }}
+          encodedString: ${{ secrets.example_app_env_file_base64 }}
 
       - run: flutter pub get
       - run: dart run build_runner build --delete-conflicting-outputs
@@ -69,7 +72,7 @@ jobs:
         with:
           fileName: ".env"
           fileDir: "./example"
-          encodedString: ${{ secrets.EXAMPLE_APP_ENV_FILE_PROD_BASE64 }}
+          encodedString: ${{ secrets.example_app_env_file_base64 }}
 
       - run: flutter pub get
       - run: dart run build_runner build --delete-conflicting-outputs
