@@ -22,8 +22,7 @@ jobs:
 
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: 3.27.x
-          channel: stable
+          flutter-version: 3.29.x
           cache: true
 
       - name: Flutter setup
@@ -66,15 +65,14 @@ jobs:
   sonar_analysis:
     name: SonarScanning on SonarCloud
     runs-on: ubuntu-latest
-    needs: [test]
+    needs: [ test ]
 
     steps:
       - uses: actions/checkout@v4
 
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: 3.27.x
-          channel: stable
+          flutter-version: 3.29.x
           cache: true
 
       - name: Get dependencies
@@ -90,70 +88,6 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-  build-android:
-    name: Build Android
-    runs-on: ubuntu-latest
-    needs: [test]
-    defaults:
-      run:
-        working-directory: example
-    strategy:
-      fail-fast: false
-      matrix:
-        sdk: ["3.24.5", "3.29.x"]
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: subosito/flutter-action@v2
-        with:
-          channel: stable
-          flutter-version: ${{ matrix.sdk }}
-          cache: true
-
-      - uses: actions/setup-java@v4
-        with:
-          java-version: "17"
-          distribution: "temurin"
-          cache: "gradle"
-
-      - name: Make secret env file accessible for envied generation
-        uses: timheuer/base64-to-file@v1.2
-        with:
-          fileName: ".env"
-          fileDir: "./example"
-          encodedString: ${{ secrets.EXAMPLE_APP_ENV_FILE_PROD_BASE64 }}
-
-      - run: flutter pub get
-      - run: dart run build_runner build --delete-conflicting-outputs
-      - run: flutter build appbundle --profile --no-pub
-
-  build-iOS:
-    name: Build iOS
-    runs-on: macos-latest
-    needs: [test]
-    defaults:
-      run:
-        working-directory: example
-    strategy:
-      fail-fast: false
-      matrix:
-        sdk: ["3.24.5", "3.29.x"]
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: subosito/flutter-action@v2
-        with:
-          channel: stable
-          flutter-version: ${{ matrix.sdk }}
-          cache: true
-
-      - name: Make secret env file accessible for envied generation
-        uses: timheuer/base64-to-file@v1.2
-        with:
-          fileName: ".env"
-          fileDir: "./example"
-          encodedString: ${{ secrets.EXAMPLE_APP_ENV_FILE_PROD_BASE64 }}
-
-      - run: flutter pub get
-      - run: dart run build_runner build --delete-conflicting-outputs
-      - run: flutter build ios --no-codesign
+  build-examples:
+    needs: [ test ]
+    uses: ./.github/workflows/example_app_build.yml
