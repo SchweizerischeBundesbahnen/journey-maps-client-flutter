@@ -92,6 +92,6 @@ jobs:
     needs: [ test ]
     uses: ./.github/workflows/example_app_build.yml
     with:
-      flutter_sdks: '[ "3.24.x", "3.29.x" ]'
+      flutter_sdks: '["3.24.x","3.29.x"]'
     secrets:
       example_app_env_file_base64: ${{ secrets.EXAMPLE_APP_ENV_FILE_PROD_BASE64 }}
