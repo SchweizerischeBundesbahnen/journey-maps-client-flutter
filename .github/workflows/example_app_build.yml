@@ -1,0 +1,86 @@
+name: example-app-build
+
+on:
+  workflow_call:
+    inputs:
+      flutter_sdks:
+        description: 'A JSON formatted list of strings of the Flutter SDKs used to build the example app, e.g. [ "3.29.x", "3.31.x" ].'
+        type: string
+        required: true
+    secrets:
+      example_app_env_file_base64:
+        required: true
+
+# Ensure that new pushes/updates cancel running jobs
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-android:
+    name: Build Android
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: example
+    strategy:
+      fail-fast: false
+      matrix:
+        flutter_sdk: ${{ fromJSON(github.event.inputs.flutter_sdks) }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ matrix.flutter_sdk }}
+          channel: stable
+          cache: true
+
+      - uses: actions/setup-java@v4
+        with:
+          java-version: "17"
+          distribution: "temurin"
+          cache: "gradle"
+
+      - name: Make secret env file accessible for envied generation
+        uses: timheuer/base64-to-file@v1.2
+        with:
+          fileName: ".env"
+          fileDir: "./example"
+          encodedString: ${{ secrets.example_app_env_file_base64 }}
+
+      - run: flutter pub get
+      - run: dart run build_runner build --delete-conflicting-outputs
+      - run: flutter build appbundle --profile --no-pub
+
+  build-iOS:
+    name: Build iOS
+    runs-on: macos-latest
+    defaults:
+      run:
+        working-directory: example
+    strategy:
+      fail-fast: false
+      matrix:
+        flutter_sdk: ${{ fromJSON(github.event.inputs.flutter_sdks) }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ matrix.flutter_sdk }}
+          channel: stable
+          cache: true
+
+      - name: Make secret env file accessible for envied generation
+        uses: timheuer/base64-to-file@v1.2
+        with:
+          fileName: ".env"
+          fileDir: "./example"
+          encodedString: ${{ secrets.example_app_env_file_base64 }}
+
+      - run: flutter pub get
+      - run: dart run build_runner build --delete-conflicting-outputs
+      - run: flutter build ios --no-codesign
