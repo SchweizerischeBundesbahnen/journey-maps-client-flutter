@@ -2,6 +2,11 @@ name: example-app-build
 
 on:
   workflow_call:
+    inputs:
+      flutter_sdks:
+        description: 'A JSON formatted list of strings of the Flutter SDKs used to build the example app, e.g. [ "3.29.x", "3.31.x" ].'
+        type: string
+        required: true
     secrets:
       example_app_env_file_base64:
         required: true
@@ -21,14 +26,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        sdk: [ "3.24.5", "3.29.x" ]
+        flutter_sdk: ${{ fromJSON(github.event.inputs.flutter_sdks) }}
 
     steps:
       - uses: actions/checkout@v4
 
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: ${{ matrix.sdk }}
+          flutter-version: ${{ matrix.flutter_sdk }}
+          channel: stable
           cache: true
 
       - uses: actions/setup-java@v4
@@ -57,14 +63,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        sdk: [ "3.24.5", "3.29.x" ]
+        flutter_sdk: ${{ fromJSON(github.event.inputs.flutter_sdks) }}
 
     steps:
       - uses: actions/checkout@v4
 
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: ${{ matrix.sdk }}
+          flutter-version: ${{ matrix.flutter_sdk }}
+          channel: stable
           cache: true
 
       - name: Make secret env file accessible for envied generation
