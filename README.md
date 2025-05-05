@@ -151,9 +151,9 @@ lower zoom level to start the map "closer" to the device location.
 |               | iOS  | Android SDK |
 |---------------|------|-------------|
 | Oldest Tested | 15.5 | 28          |
-| Latest Tested | 18.3 | 35          |
+| Latest Tested | 18.4 | 35          |
 
-All versions are tested with the latest (3.29.0) and oldest supported (3.24.5) Flutter SDK.
+All versions are tested with the latest (3.29.3) and oldest supported (3.24.5) Flutter SDK.
 
 #### Example App
 
