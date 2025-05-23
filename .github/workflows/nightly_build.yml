@@ -27,6 +27,6 @@ jobs:
     needs: [ test ]
     uses: ./.github/workflows/example_app_build.yml
     with:
-      flutter_sdks: '["3.24.5",""]'  # the empty one will use the latest stable channel sdk
+      flutter_sdks: '["3.27.4",""]'  # the empty one will use the latest stable channel sdk
     secrets:
       example_app_env_file_base64: ${{ secrets.EXAMPLE_APP_ENV_FILE_PROD_BASE64 }}
