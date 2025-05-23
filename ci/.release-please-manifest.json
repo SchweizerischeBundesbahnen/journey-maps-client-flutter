@@ -1,3 +1,9 @@
 {
-  ".": "2.5.0"
+  ".": "2.5.0",
+  "extra-files": [
+    {
+      "type": "yaml",
+      "path": "example/pubspec.yaml"
+    }
+  ]
 }
