@@ -22,7 +22,7 @@ jobs:
 
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: 3.29.x
+          flutter-version: 3.32.x
           cache: true
 
       - name: Flutter setup
@@ -31,7 +31,7 @@ jobs:
           flutter pub get
 
       - name: Format check
-        run: dart format -l 120 -o none --set-exit-if-changed .
+        run: dart format --page-width 120 -o none --set-exit-if-changed .
 
       - name: Flutter test # takes ~ 60s, hence we store the artifact for sonar
         run: |
