@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.6.0](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/compare/2.5.0...2.6.0) (2025-05-23)
+
+
+### Features
+
+* drop support for flutter 3.24.x ([#119](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/119)) ([85144d2](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/85144d268c9ec9cdffaba8cd2df4981f4a4ed415))
+
+
+### Bug Fixes
+
+* map style change does not update camera position ([#124](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/124)) ([a796bc7](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/a796bc70df9f85f9582610304c7515429afe280f))
+* poi controller available only called first style loaded ([#125](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/125)) ([a375dc8](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/a375dc8eb86110d08c0da05b80fe97e019c9c031))
+
 ## [2.5.0](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/compare/2.4.0...2.5.0) (2025-03-06)
 
 
