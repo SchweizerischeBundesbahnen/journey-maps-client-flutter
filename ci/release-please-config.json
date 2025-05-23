@@ -14,7 +14,8 @@
   "extra-files": [
     {
       "type": "yaml",
-      "path": "example/pubspec.yaml"
+      "path": "example/pubspec.yaml",
+      "jsonpath": "$.version"
     }
   ]
 }
