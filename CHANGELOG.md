@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.6.0](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/compare/2.5.0...2.6.0) (2025-05-23)
+
+
+### Features
+
+* drop support for flutter 3.24.x ([#119](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/119)) ([85144d2](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/85144d268c9ec9cdffaba8cd2df4981f4a4ed415))
+
 ## [2.5.0](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/compare/2.4.0...2.5.0) (2025-03-06)
 
 
