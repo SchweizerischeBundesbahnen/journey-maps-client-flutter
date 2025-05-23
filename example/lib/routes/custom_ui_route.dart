@@ -1,6 +1,6 @@
-import 'package:sbb_design_system_mobile/sbb_design_system_mobile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sbb_design_system_mobile/sbb_design_system_mobile.dart';
 import 'package:sbb_maps_example/env.dart';
 import 'package:sbb_maps_example/theme_provider.dart';
 import 'package:sbb_maps_example/widgets/theme_segmented_button.dart';
@@ -44,6 +44,10 @@ class _CustomUiRouteState extends State<CustomUiRoute> {
                     padding: EdgeInsets.only(right: sbbDefaultSpacing, bottom: sbbDefaultSpacing * 2),
                     child: SBBMapMyLocationButton(),
                   ),
+                  Padding(
+                    padding: EdgeInsets.only(right: sbbDefaultSpacing, bottom: sbbDefaultSpacing * 2),
+                    child: SBBMapFloorSelector(),
+                  ),
                 ],
               )
             ],
@@ -70,7 +74,7 @@ class _ShadowedThemeButton extends StatelessWidget {
           boxShadow: [
             BoxShadow(
               blurRadius: _blurRadius,
-              color: SBBColors.black.withOpacity(0.1),
+              color: SBBColors.black.withValues(alpha: 0.1),
               offset: _shadowOffset,
             )
           ],
