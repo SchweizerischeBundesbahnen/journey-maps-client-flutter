@@ -359,7 +359,7 @@ class _SBBMapState extends State<SBBMap> {
     }
 
     _poiController.synchronizeWithNewStyle();
-    if (widget.poiSettings.onPoiControllerAvailable != null) {
+    if (widget.poiSettings.onPoiControllerAvailable != null && _isFirstTimeStyleLoaded) {
       widget.poiSettings.onPoiControllerAvailable!(_poiController);
     }
 
