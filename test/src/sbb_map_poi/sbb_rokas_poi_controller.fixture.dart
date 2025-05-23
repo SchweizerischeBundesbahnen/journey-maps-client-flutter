@@ -7,7 +7,80 @@ const rokasPoiHighlightedLayerId = 'journey-pois-first';
 const journeyPoisSource = 'journey-pois-source';
 const selectedPoiLayerId = 'journey-pois-selected';
 
-const bikeParkingCategoriesFiltureFixture = ['filter-in', 'subCategory', 'bike_parking'];
+// applied filter fixtures
+const emptySubCategoryFilterFixture = [
+  'all',
+  ['filter-in', 'subCategory', '']
+];
+const subCategoryFilterWithBakeryFixture = [
+  'all',
+  ['filter-in', 'subCategory', 'bakery']
+];
+final subCategoryFilterWithAllCategoriesFixture = ['all', allPOICategoriesFiltureFixture];
+
+final lvlZeroWithEmptySubCategoryFilterFixture = ['all', ...lvlZeroFilterFixture, emptySubCategoryFilterFixture[1]];
+final lvlZeroWithBakerySubCategoryFilterFixture = [
+  'all',
+  ...lvlZeroFilterFixture,
+  subCategoryFilterWithBakeryFixture[1]
+];
+final lvlZeroMultiFilterWithBakerySubCategoryFilterFixture = [
+  'all',
+  ..._lvlZeroMultiFilterFixture,
+  subCategoryFilterWithBakeryFixture[1]
+];
+
+const bikeParkingCategoriesFiltureFixture = [
+  'all',
+  ['filter-in', 'subCategory', 'bike_parking']
+];
+
+// lvl filter fixtures without categories
+const lvlZeroFilterFixture = [
+  "==",
+  [
+    "case",
+    [
+      "==",
+      ["has", "level"],
+      true
+    ],
+    ["get", "level"],
+    0
+  ],
+  0
+];
+const _lvlZeroMultiFilterFixture = [
+  [
+    "==",
+    [
+      "case",
+      [
+        "==",
+        ["has", "level"],
+        true
+      ],
+      ["get", "level"],
+      0
+    ],
+    0
+  ],
+  [
+    "==",
+    [
+      "case",
+      [
+        "==",
+        ["has", "level"],
+        true
+      ],
+      ["get", "level"],
+      0
+    ],
+    0
+  ]
+];
+const lvlZeroMultiFilterFixture = ["all", ..._lvlZeroMultiFilterFixture];
 
 // PointOfInterest
 const mobilityBikesharingPoiFixture = RokasPOI(

@@ -24,7 +24,7 @@ void main() {
     });
 
     group('updateAvailableFloors', () {
-      test('Should extract empty floor list from empty feature list and not call listener', () async {
+      test('updateAvailableFloors_whenEmptySource_shouldExtractEmptyAndNotCallListeners', () async {
         // arrange
         when(mockController.querySourceFeatures(any, any, any)).thenAnswer((_) async => []);
         expect(sut.availableFloors, []);
@@ -37,7 +37,7 @@ void main() {
         verifyNever(listener());
       });
 
-      test('Should extract ground and first floors from one feature', () async {
+      test('updateAvailableFloors_whenOneFeatureWithTwoFloors_shouldExtractGroundAndFirstFloor', () async {
         // arrange
         when(mockController.querySourceFeatures(any, any, any)).thenAnswer((_) async => oneFeatureGroundAndFirstFloor);
         expect(sut.availableFloors, []);
@@ -49,7 +49,7 @@ void main() {
         expect(sut.availableFloors, groundAndFirstFloor);
         verify(listener()).called(1);
       });
-      test('Should extract five floors with negative floors from three features', () async {
+      test('updateAvailableFloors_whenThreeFeatures_shouldExtractAllFiveFloorsIncludingNegative', () async {
         // arrange
         when(mockController.querySourceFeatures(any, any, any)).thenAnswer((_) async => threeFeatureWithThreeFloors);
         expect(sut.availableFloors, []);
@@ -61,7 +61,7 @@ void main() {
         expect(sut.availableFloors, threeFloorsFromThreeFeatures);
         verify(listener()).called(1);
       });
-      test('Should extract same features twice but call listener only once', () async {
+      test('updateAvailableFloors_whenCalledTwiceAndFeatureDoNotChange_shouldNotCallListenerAgain', () async {
         // arrange
         when(mockController.querySourceFeatures(any, any, any)).thenAnswer((_) async => threeFeatureWithThreeFloors);
         expect(sut.availableFloors, []);
@@ -82,7 +82,7 @@ void main() {
         expect(sut.availableFloors, threeFloorsFromThreeFeatures);
         verify(listener()).called(1);
       });
-      test('Should fail silently switching to nonexisting floor', () async {
+      test('switchFloor_whenNonExistingFloor_shouldFailSilently', () async {
         // act
         sut.switchFloor(10);
 
@@ -90,7 +90,7 @@ void main() {
         expect(sut.currentFloor, null);
         verifyNever(listener());
       });
-      test('Should reset currentFloor if no longer available in source', () async {
+      test('switchFloor_ifFloorNoLongerAvailableInSource_shouldResetCurrentFloor', () async {
         // arrange
         await sut.switchFloor(-1);
         expect(sut.currentFloor, -1);
@@ -103,7 +103,7 @@ void main() {
         expect(sut.currentFloor, null);
         verify(listener()).called(2);
       });
-      test('Should switch to any floor not changing any filters when no level layers available', () async {
+      test('switchFloor_whenNoLevelLayersAvailable_anyFloorSwitchShouldNotApplyFilters', () async {
         // arrange mock controller
         when(mockController.getLayerIds()).thenAnswer((_) async => noLevelLayers);
 
@@ -120,7 +120,7 @@ void main() {
         verify(listener()).called(threeFloorsFromThreeFeatures.length); // first call checked in setUp
       });
 
-      test('Should switch to floor 1 not changing filters if null level layer filters', () async {
+      test('switchFloor_whenLayerFilterRespondsWithNull_shouldNotChangeFilters', () async {
         // arrange mock controller
         when(mockController.getLayerIds()).thenAnswer((_) async => oneLevelLayers);
         when(mockController.getFilter('layer2-lvl')).thenAnswer((_) async => null);
@@ -135,7 +135,7 @@ void main() {
         verify(listener()).called(1); // first call checked in setUp
       });
 
-      test('Should switch to floor 1 not changing filters if empty level layer filters', () async {
+      test('switchFloor_whenEmptyLayerFilter_shouldNotChangeFilters', () async {
         // arrange mock controller
         when(mockController.getLayerIds()).thenAnswer((_) async => oneLevelLayers);
         when(mockController.getFilter('layer2-lvl')).thenAnswer((_) async => []);
@@ -150,7 +150,7 @@ void main() {
         verify(listener()).called(1); // first call checked in setUp
       });
 
-      test('Should switch to floor 1 changing filters of lvl layer', () async {
+      test('switchFloor_whenLayerFilterInResponse_shouldApplyFilter', () async {
         // arrange mock controller for non iOS platform (we do not check iOS platform here)
         when(mockController.getLayerIds()).thenAnswer((_) async => oneLevelLayers);
         when(mockController.getFilter('layer2-lvl')).thenAnswer((_) async => layer2Level0Filter);

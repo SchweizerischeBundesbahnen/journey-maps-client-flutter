@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:maplibre_gl/maplibre_gl.dart';
@@ -358,7 +359,7 @@ void main() {
       verify(listener()).called(1);
     });
 
-    test('showPointsOfInterest_WhenInteractableSut_shouldSetVisibilityInInteractableLayerToTrue', () async {
+    test('showPointsOfInterest_WhenPoiAreClickable_shouldSetVisibilityInInteractableLayerToTrue', () async {
       // arrange
       onPoiSelected(_) {}
       sut = SBBRokasPOIControllerImpl(controller: Future.value(mockController), onPoiSelected: onPoiSelected);
@@ -369,22 +370,6 @@ void main() {
       verifyNever(mockController.setFilter(any, any));
     });
 
-    test('showPointsOfInterest_whenHasFilter_shouldApplyFilter', () async {
-      // arrange
-      final categories = [SBBPoiCategoryType.bike_parking];
-      // act
-      await sut.showPointsOfInterest(categories: categories);
-      // expect
-      verify(mockController.setLayerVisibility(rokasPoiBaseLayerIdWithFloorNonClickable, true)).called(1);
-      verify(
-        mockController.setFilter(
-          rokasPoiBaseLayerIdWithFloorNonClickable,
-          bikeParkingCategoriesFiltureFixture,
-        ),
-      ).called(1);
-      verify(listener()).called(1);
-    });
-
     test('showPointsOfInterest_whenCalledOnceWithoutFilterAndOnceWithFilter_shouldUpdateTwice', () async {
       // arrange
       final categories = [SBBPoiCategoryType.bike_parking];
@@ -393,10 +378,112 @@ void main() {
       await sut.showPointsOfInterest(categories: categories);
       // expect
       verify(mockController.setLayerVisibility(rokasPoiBaseLayerIdWithFloorNonClickable, true)).called(2);
-      verify(
-        mockController.setFilter(rokasPoiBaseLayerIdWithFloorNonClickable, bikeParkingCategoriesFiltureFixture),
-      ).called(1);
+      verify(mockController.setFilter(any, any)).called(1);
       verify(listener()).called(2);
+    });
+
+    test('showPointsOfInterest_whenEmptyListAndNoLayerFilters_shouldApplyWithEmptyList', () async {
+      // arrange
+      final categories = <SBBPoiCategoryType>[];
+      // act
+      await sut.showPointsOfInterest(categories: categories);
+      // expect
+      verify(mockController.setLayerVisibility(any, any)).called(1);
+      verify(
+        mockController.setFilter(
+          rokasPoiBaseLayerIdWithFloorNonClickable,
+          emptySubCategoryFilterFixture,
+        ),
+      ).called(1);
+      verify(listener()).called(1);
+    });
+
+    test('showPointsOfInterest_whenSingleCategoryAndNoLayerFilters_shouldApplyWithSingleCategory', () async {
+      // arrange
+      final categories = <SBBPoiCategoryType>[SBBPoiCategoryType.bakery];
+      // act
+      await sut.showPointsOfInterest(categories: categories);
+      // expect
+      verify(mockController.setLayerVisibility(any, any)).called(1);
+      verify(
+        mockController.setFilter(
+          rokasPoiBaseLayerIdWithFloorNonClickable,
+          subCategoryFilterWithBakeryFixture,
+        ),
+      ).called(1);
+      verify(listener()).called(1);
+    });
+
+    test('showPointsOfInterest_whenEmptyListAndExistingFilterWithoutSubCategory_shouldAddToLevelFilter', () async {
+      // arrange
+      when(mockController.getFilter(rokasPoiBaseLayerIdWithFloorNonClickable))
+          .thenAnswer((_) => Future.value(lvlZeroFilterFixture));
+
+      // act
+      await sut.showPointsOfInterest(categories: []);
+      // expect
+      verify(mockController.setLayerVisibility(any, any)).called(1);
+      verify(
+        mockController.setFilter(
+          rokasPoiBaseLayerIdWithFloorNonClickable,
+          lvlZeroWithEmptySubCategoryFilterFixture,
+        ),
+      ).called(1);
+      verify(listener()).called(1);
+    });
+
+    test('showPointsOfInterest_whenSingleCategoryAndExistingFilterWithoutSubCategory_shouldAddToFilter', () async {
+      // arrange
+      when(mockController.getFilter(rokasPoiBaseLayerIdWithFloorNonClickable))
+          .thenAnswer((_) => Future.value(lvlZeroFilterFixture));
+
+      // act
+      await sut.showPointsOfInterest(categories: [SBBPoiCategoryType.bakery]);
+      // expect
+      verify(mockController.setLayerVisibility(any, any)).called(1);
+      verify(
+        mockController.setFilter(
+          rokasPoiBaseLayerIdWithFloorNonClickable,
+          lvlZeroWithBakerySubCategoryFilterFixture,
+        ),
+      ).called(1);
+      verify(listener()).called(1);
+    });
+
+    test('showPointsOfInterest_whenSingleCategoryAndExistingMultiFilterWithoutSubCategory_shouldAddToFilter', () async {
+      // arrange
+      when(mockController.getFilter(rokasPoiBaseLayerIdWithFloorNonClickable))
+          .thenAnswer((_) => Future.value(lvlZeroMultiFilterFixture));
+
+      // act
+      await sut.showPointsOfInterest(categories: [SBBPoiCategoryType.bakery]);
+      // expect
+      verify(mockController.setLayerVisibility(any, any)).called(1);
+      verify(
+        mockController.setFilter(
+          rokasPoiBaseLayerIdWithFloorNonClickable,
+          lvlZeroMultiFilterWithBakerySubCategoryFilterFixture,
+        ),
+      ).called(1);
+      verify(listener()).called(1);
+    });
+
+    test('showPointsOfInterest_whenNoCategoryAndNoLayerFilters_shouldApplyWithAllCategories', () async {
+      // arrange
+      await sut.showPointsOfInterest(categories: []);
+      reset(mockController);
+
+      // act
+      await sut.showPointsOfInterest();
+      // expect
+      verify(mockController.setLayerVisibility(any, any)).called(1);
+      verify(
+        mockController.setFilter(
+          rokasPoiBaseLayerIdWithFloorNonClickable,
+          subCategoryFilterWithAllCategoriesFixture,
+        ),
+      ).called(1);
+      verify(listener()).called(1);
     });
 
     test('hidePointsOfInterest_whenDefault_shouldNotNotifyListenersAndMakeCall', () async {
