@@ -327,6 +327,7 @@ See [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
 * When selecting POIs programmatically with the `RokasPOIController`, one can only select from the POIs that are loaded
   in the tile source, meaning that trying to select a POI at a very distant place will not be possible. The workaround
   would be to first move to the geo coordinate and then select the POI.
+* See [open bugs](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues?q=is:issue%20state:open%20label:bug)
 
 [Journey Maps API]: (https://developer.sbb.ch/apis/journey-maps/information)
 
