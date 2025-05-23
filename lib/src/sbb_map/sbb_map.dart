@@ -345,7 +345,7 @@ class _SBBMapState extends State<SBBMap> {
       _isStyleLoaded = true;
     });
 
-    if (widget.initialCameraPosition == null) {
+    if (widget.initialCameraPosition == null && _isFirstTimeStyleLoaded) {
       await _delayedMoveToCHBounds();
     }
 
