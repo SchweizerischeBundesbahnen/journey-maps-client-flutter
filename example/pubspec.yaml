@@ -1,7 +1,7 @@
 name: sbb_maps_example
 description: Example app for the sbb_maps_flutter package.
 publish_to: "none"
-version: 2.5.0+9004 # automatically set by GH Action 
+version: 2.6.0+9005 # automatically set by GH Action 
 
 environment:
   sdk: ">=3.6.0 <4.0.0"
