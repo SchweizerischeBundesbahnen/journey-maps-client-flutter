@@ -1,5 +1,21 @@
 # Changelog
 
+## [2.6.0](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/compare/2.5.0...2.6.0) (2025-05-25)
+
+
+### Features
+
+* add selectPointOfInterestAt to select poi after camera movement to coordinates ([#128](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/128)) ([cd5f820](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/cd5f8205dbbd08ad8d569018e993bffbfdc2f70b))
+* drop support for flutter 3.24.x ([#119](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/119)) ([85144d2](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/85144d268c9ec9cdffaba8cd2df4981f4a4ed415))
+
+
+### Bug Fixes
+
+* `SBBMapFloorSelector` only draws if floors available ([#126](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/126)) ([b1904da](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/b1904da6ba434413cab17e804fc48d1ff8a04ea5))
+* filter POIs for categories and floors at the same time ([#127](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/127)) ([d39fb85](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/d39fb850ec9e20a35687dad56c2ce1438eda5038))
+* map style change does not update camera position ([#124](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/124)) ([a796bc7](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/a796bc70df9f85f9582610304c7515429afe280f))
+* poi controller available only called first style loaded ([#125](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/125)) ([a375dc8](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/a375dc8eb86110d08c0da05b80fe97e019c9c031))
+
 ## [2.5.0](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/compare/2.4.0...2.5.0) (2025-03-06)
 
 
