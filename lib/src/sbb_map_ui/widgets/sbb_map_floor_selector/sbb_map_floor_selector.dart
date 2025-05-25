@@ -13,21 +13,24 @@ class SBBMapFloorSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final floorController = SBBMapUiContainer.of(context).mapFloorController;
     final style = _resolveStyleWithInherited(context);
     return ListenableBuilder(
-      listenable: SBBMapUiContainer.of(context).mapFloorController,
-      builder: (context, child) => SizedBox(
-        width: _kFloorSelectorWidth,
-        child: DecoratedBox(
-          decoration: ShapeDecoration(
-            shape: StadiumBorder(
-              side: style.borderSide ?? BorderSide.none,
+      listenable: floorController,
+      builder: (context, child) => floorController.availableFloors.isEmpty
+          ? SizedBox.shrink()
+          : SizedBox(
+              width: _kFloorSelectorWidth,
+              child: DecoratedBox(
+                decoration: ShapeDecoration(
+                  shape: StadiumBorder(
+                    side: style.borderSide ?? BorderSide.none,
+                  ),
+                ),
+                position: DecorationPosition.foreground,
+                child: FloorSelectorTilesBuilder(style: style),
+              ),
             ),
-          ),
-          position: DecorationPosition.foreground,
-          child: FloorSelectorTilesBuilder(style: style),
-        ),
-      ),
     );
   }
 
