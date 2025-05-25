@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
-import 'package:sbb_maps_flutter/src/sbb_map_poi/sbb_map_poi.dart';
+
+import '../../../sbb_maps_flutter.dart';
 
 /// Controls visibility and selection of the ROKAS POIs
 /// embedded in the [SBBRokasPoiLayer] layers of the ROKAS map styles.
@@ -50,8 +51,7 @@ abstract class SBBRokasPOIController with ChangeNotifier {
   /// The highlighted POIs are symbols appearing as "pins" on the map.
   ///
   /// Only POIs of the given [categories] will be visible.
-  /// If the argument is null, POIs from all [availablePOICategories]
-  /// will be shown.
+  /// If the argument is null, POIs from all [availablePOICategories] will be shown.
   ///
   /// The currently applied POI category's filter can be queried with
   /// [getCategoryFilterByLayer].
@@ -72,6 +72,14 @@ abstract class SBBRokasPOIController with ChangeNotifier {
   ///
   /// Only works if the POIs are visible.
   Future<void> selectPointOfInterest({required String sbbId});
+
+  /// For selection of a POI at [LatLng] [coordinates].
+  ///
+  /// Only works if POIs are visible and POI is underneath the given [coordinates].
+  /// Set the [zoomLevel] to make sure the desired POIs are rendered.
+  ///
+  /// Will move the camera center to the given [coordinates].
+  Future<void> selectPointOfInterestAt({required LatLng coordinates, double zoomLevel});
 
   /// Deselects the currently selected POI.
   ///

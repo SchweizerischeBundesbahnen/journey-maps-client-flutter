@@ -108,6 +108,19 @@ class SBBRokasPOIControllerImpl with ChangeNotifier implements SBBRokasPOIContro
     _updateAndNotifyListenersIfChanged(visibility: null, filters: null, selectedPOI: null);
   }
 
+  @override
+  Future<void> selectPointOfInterestAt({required LatLng coordinates, double zoomLevel = 18.0}) async {
+    if (!_isAnyPoiLayerVisible) return Future.value();
+    return _controller.then((c) async {
+      await c.moveCamera(CameraUpdate.newLatLngZoom(coordinates, zoomLevel));
+      await Future.delayed(const Duration(milliseconds: 100));
+      final point = await c.toScreenLocation(coordinates);
+      final poi = await _searchPOIAtPoint(point.toDouble());
+      await _togglePoi(poi);
+      _updateAndNotifyListenersIfChanged(filters: null, visibility: null, selectedPOI: poi);
+    });
+  }
+
   /// Toggles the currently selected POI. Called by [SBBMap].
   ///
   /// This is used for reacting on user clicks on the map with the following behavior:
@@ -116,12 +129,16 @@ class SBBRokasPOIControllerImpl with ChangeNotifier implements SBBRokasPOIContro
   Future<void> toggleSelectedPointOfInterest(Point<double> p) async {
     if (!_isAnyPoiLayerVisible) return Future.value();
     RokasPOI? poi = await _searchPOIAtPoint(p);
+    await _togglePoi(poi);
+    _updateAndNotifyListenersIfChanged(filters: null, visibility: null, selectedPOI: poi);
+  }
+
+  Future<void> _togglePoi(RokasPOI? poi) async {
     if (poi == null) {
       await deselectPointOfInterest();
     } else if (_selectedPOI != poi) {
       await _selectPointOfInterest(poi);
     }
-    _updateAndNotifyListenersIfChanged(filters: null, visibility: null, selectedPOI: poi);
   }
 
   /// This method is called by [SBBMap] whenever the style changes.
@@ -313,4 +330,8 @@ class SBBRokasPOIControllerImpl with ChangeNotifier implements SBBRokasPOIContro
     if (filter == null) return filter;
     return ['==', filter, true];
   }
+}
+
+extension _ToDouble on Point<num> {
+  Point<double> toDouble() => Point(x.toDouble(), y.toDouble());
 }

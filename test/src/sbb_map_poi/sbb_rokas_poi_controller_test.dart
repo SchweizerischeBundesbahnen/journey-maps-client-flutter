@@ -575,6 +575,62 @@ void main() {
       verify(mockController.setLayerProperties(selectedPoiLayerId, any)).called(1);
       verify(listener()).called(1);
     });
+
+    test('selectPointOfInterestAt_ifPOIsNotVisible_shouldNotDoAnything', () async {
+      // act
+      await sut.selectPointOfInterestAt(coordinates: LatLng(0, 0));
+      // expect
+      verifyNever(mockController.setFilter(any, any));
+      verifyNever(mockController.setLayerProperties(any, any));
+      verifyNever(mockController.querySourceFeatures(any, any, any));
+      verifyNever(listener());
+    });
+
+    test('selectPointOfInterestAt_ifPoiIsVisibleButNoPoiUnderneath_shouldNotDoAnything', () async {
+      // arrange
+      const coordinates = LatLng(0, 0);
+      const point = Point(0.0, 0.0);
+      await sut.showPointsOfInterest();
+      reset(mockController);
+      reset(listener);
+      when(mockController.moveCamera(any)).thenAnswer((_) => Future.value());
+      when(mockController.toScreenLocation(coordinates)).thenAnswer((_) => Future.value(point));
+      when(mockController.queryRenderedFeatures(point, any, any)).thenAnswer((_) => Future.value([]));
+
+      // act
+      await sut.selectPointOfInterestAt(coordinates: coordinates);
+      // expect
+      verify(mockController.moveCamera(any)).called(1);
+      verify(mockController.toScreenLocation(any)).called(1);
+      verify(mockController.queryRenderedFeatures(any, any, any)).called(1);
+      verifyNever(mockController.setFilter(any, any));
+      verifyNever(mockController.setLayerProperties(any, any));
+      verifyNever(listener());
+    });
+
+    test('selectPointOfInterestAt_ifPoiIsVisibleAndPoiUnderneath_shouldToggleVisibilityAndPoi', () async {
+      // arrange
+      const coordinates = LatLng(0, 0);
+      const point = Point(0.0, 0.0);
+      await sut.showPointsOfInterest();
+      reset(mockController);
+      reset(listener);
+      when(mockController.moveCamera(any)).thenAnswer((_) => Future.value());
+      when(mockController.toScreenLocation(coordinates)).thenAnswer((_) => Future.value(point));
+      when(mockController.queryRenderedFeatures(point, any, any))
+          .thenAnswer((_) => Future.value([mobilityBikesharingPoiGeoJSONFixture]));
+
+      // act
+      await sut.selectPointOfInterestAt(coordinates: coordinates);
+      // expect
+      verify(mockController.moveCamera(any)).called(1);
+      verify(mockController.toScreenLocation(any)).called(1);
+      verify(mockController.queryRenderedFeatures(any, any, any)).called(1);
+      verify(mockController.setFilter(any, any)).called(1);
+      verify(mockController.setLayerProperties(any, any)).called(1);
+      verify(listener()).called(1);
+    });
+
     test('deselectPointOfInterest_ifNotVisibleAndPOIIsDeselected_shouldNotNotifyListeners', () async {
       // arrange
       await sut.showPointsOfInterest();
