@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:logger/logger.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
-import 'package:collection/collection.dart';
 import 'package:sbb_maps_flutter/sbb_maps_flutter.dart';
 
 class SBBMapFloorControllerImpl with ChangeNotifier implements SBBMapFloorController {
@@ -106,7 +106,8 @@ class SBBMapFloorControllerImpl with ChangeNotifier implements SBBMapFloorContro
       final knownLayerIds = (await controller.getLayerIds()).where((id) => (id as String).endsWith('-lvl'));
       for (final layerId in knownLayerIds) {
         try {
-          final oldFilter = await controller.getFilter(layerId);
+          final oldFilter = await _tryGettingOldFilter(controller, layerId);
+          if (oldFilter == null) continue;
           final newFilter = _calculateLayerFilter(oldFilter, floor);
           final oldFilterString = jsonEncode(oldFilter);
           final newFilterString = jsonEncode(newFilter);
@@ -122,6 +123,16 @@ class SBBMapFloorControllerImpl with ChangeNotifier implements SBBMapFloorContro
       }
       controller.setLayerVisibility("rokas_background_mask", floor < 0);
     });
+  }
+
+  Future<dynamic> _tryGettingOldFilter(MapLibreMapController controller, layerId) async {
+    try {
+      final result = await controller.getFilter(layerId);
+      return result;
+    } catch (e) {
+      _logger.i('Failed to get layer filter on layer: $layerId\nSkipping layer.');
+      return null;
+    }
   }
 
   List<dynamic>? _calculateLayerFilter(List<dynamic>? oldFilter, int level) {

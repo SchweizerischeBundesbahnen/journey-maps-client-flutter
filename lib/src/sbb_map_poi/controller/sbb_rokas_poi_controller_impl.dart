@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
@@ -209,7 +210,7 @@ class SBBRokasPOIControllerImpl with ChangeNotifier implements SBBRokasPOIContro
     Set<SBBPoiCategoryType> filter,
   ) async {
     if (_isFilterSameAsCurrent(layer, filter)) return;
-    return c.setFilter(_layerIdFromPoiLayer(layer), _buildCategoriesFilter(filter));
+    return _applyFilterToLayer(c, layer, filter);
   }
 
   String _layerIdFromPoiLayer(SBBRokasPoiLayer layer) => switch (layer) {
@@ -217,20 +218,6 @@ class SBBRokasPOIControllerImpl with ChangeNotifier implements SBBRokasPOIContro
           onPoiSelected != null ? _rokasBaseLvlPoiClickableLayerId : _rokasBaseLvlPoiNonClickableLayerId,
         SBBRokasPoiLayer.highlighted => _rokasHighlightedPoiLayerId,
       };
-
-  List<Object>? _buildCategoriesFilter(Set<SBBPoiCategoryType> list) {
-    final filter = ['filter-in', 'subCategory', ...list.map((e) => e.name)];
-    return _buildPlatformSpecificFilter(filter); // Android
-  }
-
-  List<Object>? _buildPlatformSpecificFilter(List<Object> filter) {
-    if (Platform.isIOS) return _buildFilterExpressionIOS(filter);
-    return filter; // Android
-  }
-
-  List<Object>? _buildFilterExpressionIOS(List<Object> filter) {
-    return ['==', filter, true];
-  }
 
   FutureOr _hideAllPointsOfInterest(MapLibreMapController c) async =>
       Future.wait(_allPoiLayerIds.map((layerId) => c.setLayerVisibility(layerId, false)));
@@ -262,20 +249,68 @@ class SBBRokasPOIControllerImpl with ChangeNotifier implements SBBRokasPOIContro
     );
   }
 
-  Future<void> _reapplyAllFilters(MapLibreMapController c) {
-    final List<Future<void>> result = [];
-    for (final element in _layerToCategoryFilters.entries) {
-      if (const SetEquality().equals(element.value, _allPoiCategories())) continue;
-      result.add(c.setFilter(_layerIdFromPoiLayer(element.key), _buildCategoriesFilter(element.value)));
-    }
-    return Future.wait(result);
-  }
-
   Future<void> _reapplyVisibilities(MapLibreMapController c) {
     final List<Future<void>> result = [];
     for (final element in _layerToVisibility.entries) {
       result.add(c.setLayerVisibility(_layerIdFromPoiLayer(element.key), element.value));
     }
     return Future.wait(result);
+  }
+
+  Future<void> _reapplyAllFilters(MapLibreMapController c) {
+    final List<Future<void>> result = [];
+    for (final element in _layerToCategoryFilters.entries) {
+      if (const SetEquality().equals(element.value, _allPoiCategories())) continue;
+      result.add(_applyFilterToLayer(c, element.key, element.value));
+    }
+    return Future.wait(result);
+  }
+
+  Future<void> _applyFilterToLayer(
+    MapLibreMapController c,
+    SBBRokasPoiLayer layer,
+    Set<SBBPoiCategoryType> categoryFilters,
+  ) async {
+    final layerId = _layerIdFromPoiLayer(layer);
+
+    final oldFilter = await c.getFilter(layerId);
+
+    return c.setFilter(_layerIdFromPoiLayer(layer), _buildCategoriesFilter(oldFilter, categoryFilters));
+  }
+
+  List<dynamic>? _buildCategoriesFilter(List<dynamic>? oldFilter, Set<SBBPoiCategoryType> categoryFilters) {
+    if (oldFilter == null || oldFilter.isEmpty) {
+      final filter = ["all", _buildInnerCategoryFilter(categoryFilters)];
+      return _buildPlatformSpecificFilter(filter);
+    }
+
+    final prunedFilter = oldFilter.whereNot(_isSubCategoryFilter).toList();
+    if (oldFilter[0] == 'all') prunedFilter.removeAt(0);
+
+    return ['all', ...prunedFilter, _buildInnerCategoryFilter(categoryFilters)];
+  }
+
+  bool _isSubCategoryFilter(filter) {
+    if (Platform.isIOS) return jsonEncode(filter).startsWith('["==",["filter-in",["subCategory"');
+    return jsonEncode(filter).startsWith('["filter-in",["subCategory"');
+  }
+
+  List<Object> _buildInnerCategoryFilter(Set<SBBPoiCategoryType> categoryFilters) {
+    final filter = [
+      'filter-in',
+      'subCategory',
+      ...categoryFilters.isEmpty ? [''] : categoryFilters.map((e) => e.name)
+    ];
+    return _buildPlatformSpecificFilter(filter)!;
+  }
+
+  List<Object>? _buildPlatformSpecificFilter(List<Object>? filter) {
+    if (Platform.isIOS) return _buildFilterExpressionIOS(filter);
+    return filter; // Android
+  }
+
+  List<Object>? _buildFilterExpressionIOS(List<Object>? filter) {
+    if (filter == null) return filter;
+    return ['==', filter, true];
   }
 }
