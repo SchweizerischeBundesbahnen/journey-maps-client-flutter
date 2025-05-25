@@ -608,7 +608,7 @@ void main() {
       verifyNever(listener());
     });
 
-    test('selectPointOfInterestAt_ifPoiIsVisibleAndPoiUnderneath_shouldToggleVisibilityAndPoi', () async {
+    test('selectPointOfInterestAt_ifPoiIsVisibleAndPoiUnderneath_shouldSelectPoi', () async {
       // arrange
       const coordinates = LatLng(0, 0);
       const point = Point(0.0, 0.0);
