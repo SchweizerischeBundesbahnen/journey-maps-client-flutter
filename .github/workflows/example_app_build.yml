@@ -11,11 +11,6 @@ on:
       example_app_env_file_base64:
         required: true
 
-# Ensure that new pushes/updates cancel running jobs
-concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
-
 jobs:
   build-android:
     name: Build Android
