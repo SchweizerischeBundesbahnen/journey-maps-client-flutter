@@ -1,3 +1,4 @@
+// coverage:ignore-file
 import 'package:flutter/material.dart';
 import 'package:sbb_maps_flutter/src/sbb_map_ui/styles/sbb_map_icon_button_style.dart';
 

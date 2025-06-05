@@ -1,3 +1,4 @@
+// coverage:ignore-file
 import 'package:flutter/material.dart';
 import 'package:sbb_maps_flutter/sbb_maps_flutter.dart';
 
