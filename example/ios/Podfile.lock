@@ -1,34 +1,15 @@
 PODS:
   - Flutter (1.0.0)
-  - geolocator_apple (1.2.0):
-    - Flutter
-  - MapLibre (6.5.0)
-  - maplibre_gl (0.0.1):
-    - Flutter
-    - MapLibre (= 6.5.0)
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
-  - geolocator_apple (from `.symlinks/plugins/geolocator_apple/ios`)
-  - maplibre_gl (from `.symlinks/plugins/maplibre_gl/ios`)
-
-SPEC REPOS:
-  trunk:
-    - MapLibre
 
 EXTERNAL SOURCES:
   Flutter:
     :path: Flutter
-  geolocator_apple:
-    :path: ".symlinks/plugins/geolocator_apple/ios"
-  maplibre_gl:
-    :path: ".symlinks/plugins/maplibre_gl/ios"
 
 SPEC CHECKSUMS:
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  geolocator_apple: 9bcea1918ff7f0062d98345d238ae12718acfbc1
-  MapLibre: 0ebfa9329d313cec8bf0a5ba5a336a1dc903785e
-  maplibre_gl: be7b98f1c3ed75bf77f321eec04df359d0ff6f62
 
 PODFILE CHECKSUM: 819463e6a0290f5a72f145ba7cde16e8b6ef0796
 
