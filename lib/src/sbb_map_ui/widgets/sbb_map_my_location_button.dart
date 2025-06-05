@@ -1,3 +1,4 @@
+// coverage:ignore-file
 import 'package:flutter/material.dart';
 import 'package:sbb_maps_flutter/src/sbb_map_ui/corporate_ui/sbb_map_branding.dart';
 import 'package:sbb_maps_flutter/src/sbb_map_ui/sbb_map_ui_container/sbb_map_ui_container.dart';
@@ -10,6 +11,7 @@ class SBBMapMyLocationButton extends StatelessWidget {
   const SBBMapMyLocationButton({
     super.key,
   });
+
   @override
   Widget build(BuildContext context) {
     final uiContainer = SBBMapUiContainer.of(context);

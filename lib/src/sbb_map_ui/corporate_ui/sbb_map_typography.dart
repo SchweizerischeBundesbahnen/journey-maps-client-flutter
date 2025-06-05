@@ -1,3 +1,4 @@
+// coverage:ignore-file
 import 'package:flutter/material.dart';
 
 const String sbbWebFont = 'packages/design_system_flutter/SBBWeb';
