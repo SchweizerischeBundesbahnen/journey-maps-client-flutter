@@ -6,6 +6,9 @@ on:
   pull_request:
     branches:
       - main
+    paths:
+      - 'lib/**'
+      - 'example/**'
   workflow_dispatch:
 
 # Ensure that new pushes/updates cancel running jobs
