@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.6.1](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/compare/2.6.0...2.6.1) (2025-07-11)
+
+
+### Bug Fixes
+
+* **deps:** bump flutter_maplibre_gl to 0.22.x ([#132](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/132)) ([e67522b](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/e67522b3686cbe8703bf4c9b2b235b356ace1726))
+
 ## [2.6.0](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/compare/2.5.0...2.6.0) (2025-05-25)
 
 
