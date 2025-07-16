@@ -1,4 +1,4 @@
-name: example-app-build
+name: example_app_build
 
 on:
   workflow_call:

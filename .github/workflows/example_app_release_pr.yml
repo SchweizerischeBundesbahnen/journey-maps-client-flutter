@@ -1,5 +1,5 @@
 # Creates PR with example app aligned to root pubspec build_name.
-name: Make example app release PR
+name: example_app_release_pr
 
 on:
   pull_request:
