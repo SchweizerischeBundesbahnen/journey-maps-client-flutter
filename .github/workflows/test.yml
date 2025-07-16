@@ -6,10 +6,9 @@ on:
   pull_request:
     branches:
       - main
-    paths:
-      - 'lib/**'
-      - 'example/**'
-  workflow_dispatch:
+  push:
+    branches:
+      - main
 
 # Ensure that new pushes/updates cancel running jobs
 concurrency:

@@ -1,6 +1,6 @@
 # Runs every night to check problems with stable flutter SDK & builds cache
 
-name: nightly build
+name: nightly_build
 
 on:
   workflow_dispatch:
