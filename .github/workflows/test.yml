@@ -86,7 +86,7 @@ jobs:
           name: gen_srcs-and-coverage
 
       - name: Official SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@v5.2.0
+        uses: SonarSource/sonarqube-scan-action@v5.3.0
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
