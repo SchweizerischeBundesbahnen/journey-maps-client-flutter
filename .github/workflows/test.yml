@@ -24,7 +24,7 @@ jobs:
 
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: 3.32.x
+          flutter-version: 3.35.x
           cache: true
 
       - name: Flutter setup
@@ -74,7 +74,7 @@ jobs:
 
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: 3.32.x
+          flutter-version: 3.35.x
           cache: true
 
       - name: Get dependencies
@@ -94,6 +94,6 @@ jobs:
     needs: [ test ]
     uses: ./.github/workflows/example_app_build.yml
     with:
-      flutter_sdks: '["3.27.x","3.32.x"]'
+      flutter_sdks: '["3.29.x","3.35.x"]'
     secrets:
       example_app_env_file_base64: ${{ secrets.EXAMPLE_APP_ENV_FILE_PROD_BASE64 }}
