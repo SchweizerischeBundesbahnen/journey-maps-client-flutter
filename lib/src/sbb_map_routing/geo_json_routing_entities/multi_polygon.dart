@@ -3,18 +3,15 @@ import 'package:collection/collection.dart';
 import 'polygon.dart';
 
 class MultiPolygon {
-  const MultiPolygon({
-    required this.polygons,
-  });
+  const MultiPolygon({required this.polygons});
 
   factory MultiPolygon.fromGeoJSON(Map<String, dynamic> json) {
-    var polygonsList = (json['geometry']['coordinates'] as List)
-        .map((polygon) => Polygon.fromGeoJSON(polygon as Map<String, dynamic>))
-        .toList();
+    var polygonsList =
+        (json['geometry']['coordinates'] as List)
+            .map((polygon) => Polygon.fromGeoJSON(polygon as Map<String, dynamic>))
+            .toList();
 
-    return MultiPolygon(
-      polygons: polygonsList,
-    );
+    return MultiPolygon(polygons: polygonsList);
   }
 
   final List<Polygon> polygons;

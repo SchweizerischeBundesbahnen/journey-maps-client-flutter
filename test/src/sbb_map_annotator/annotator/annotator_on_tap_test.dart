@@ -58,11 +58,7 @@ void main() {
         sut.onSymbolTapped(mockCallback.call);
 
         // verify + expect
-        expect(
-          mockCallbackList.isNotEmpty,
-          equals(true),
-          reason: 'Callback should be registered.',
-        );
+        expect(mockCallbackList.isNotEmpty, equals(true), reason: 'Callback should be registered.');
       });
 
       test('should not call callback when unknown annotation', () {
@@ -118,18 +114,12 @@ void main() {
       _callAllWithAnnotation(mockCallbackList, registeredI);
 
       // verify + expect
-      verifyInOrder([
-        mockCallback(registeredS),
-        rokasIconCallback(registeredI),
-      ]);
+      verifyInOrder([mockCallback(registeredS), rokasIconCallback(registeredI)]);
     });
   });
 }
 
-void _callAllWithAnnotation(
-  List<OnFeatureInteractionCallback> mockCallbackList,
-  SBBMapAnnotation registeredA,
-) {
+void _callAllWithAnnotation(List<OnFeatureInteractionCallback> mockCallbackList, SBBMapAnnotation registeredA) {
   for (final callback in mockCallbackList) {
     callback.call(
       registeredA.id,

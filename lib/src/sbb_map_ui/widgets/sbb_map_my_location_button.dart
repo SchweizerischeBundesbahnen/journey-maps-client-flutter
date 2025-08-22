@@ -8,9 +8,7 @@ import 'package:sbb_maps_flutter/src/sbb_map_ui/widgets/sbb_map_icon_button.dart
 ///
 /// Triggers the tracking of the device location.
 class SBBMapMyLocationButton extends StatelessWidget {
-  const SBBMapMyLocationButton({
-    super.key,
-  });
+  const SBBMapMyLocationButton({super.key});
 
   @override
   Widget build(BuildContext context) {

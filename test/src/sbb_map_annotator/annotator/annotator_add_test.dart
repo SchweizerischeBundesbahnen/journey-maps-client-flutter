@@ -31,9 +31,7 @@ void main() {
         await sut.addAnnotations([AnnotatorFixture.simpleRokasIcon()]);
 
         // verify
-        verify(
-          mockController.addGeoJsonSource(AnnotatorFixture.kSourceId, any),
-        ).called(1);
+        verify(mockController.addGeoJsonSource(AnnotatorFixture.kSourceId, any)).called(1);
       });
 
       test('subsequent annotations should not add GeoJsonSource even if not awaited', () async {
@@ -43,9 +41,7 @@ void main() {
         await sut.addAnnotations([AnnotatorFixture.simpleRokasIcon()]);
 
         // verify
-        verify(
-          mockController.addGeoJsonSource(AnnotatorFixture.kSourceId, any),
-        ).called(1);
+        verify(mockController.addGeoJsonSource(AnnotatorFixture.kSourceId, any)).called(1);
       });
 
       test('second annotation of same type should not add new layer', () async {
@@ -108,34 +104,27 @@ void main() {
         await sut.addAnnotations([AnnotatorFixture.simpleSymbol()]);
 
         // verify
-        verify(
-          mockController.addGeoJsonSource(
-            AnnotatorFixture.kSourceId,
-            buildFeatureCollection([]),
-          ),
-        ).called(1);
+        verify(mockController.addGeoJsonSource(AnnotatorFixture.kSourceId, buildFeatureCollection([]))).called(1);
       });
       test('subsequent annotations should not add GeoJsonSource', () async {
         // act
-        await sut.addAnnotations([
-          AnnotatorFixture.simpleSymbol(),
-          AnnotatorFixture.simpleSymbol(),
-        ]);
+        await sut.addAnnotations([AnnotatorFixture.simpleSymbol(), AnnotatorFixture.simpleSymbol()]);
 
         // verify
-        verify(
-          mockController.addGeoJsonSource(AnnotatorFixture.kSourceId, any),
-        ).called(1);
+        verify(mockController.addGeoJsonSource(AnnotatorFixture.kSourceId, any)).called(1);
       });
 
       test('error from addGeoJsonSource should throw AnnotationException', () async {
         // when
-        when(mockController.addGeoJsonSource(any, any))
-            .thenAnswer((_) => Future.error(PlatformException(code: 'fakeCode')));
+        when(
+          mockController.addGeoJsonSource(any, any),
+        ).thenAnswer((_) => Future.error(PlatformException(code: 'fakeCode')));
 
         // act + expect
         await expectLater(
-            sut.addAnnotations([AnnotatorFixture.simpleSymbol()]), throwsA(const TypeMatcher<AnnotationException>()));
+          sut.addAnnotations([AnnotatorFixture.simpleSymbol()]),
+          throwsA(const TypeMatcher<AnnotationException>()),
+        );
       });
 
       test('first annotation should add new layer', () async {
@@ -160,10 +149,7 @@ void main() {
         // setup
         final symbol = AnnotatorFixture.simpleSymbol();
         // act
-        await sut.addAnnotations([
-          symbol,
-          AnnotatorFixture.simpleSymbol(),
-        ]);
+        await sut.addAnnotations([symbol, AnnotatorFixture.simpleSymbol()]);
 
         // verify
         verify(
@@ -189,24 +175,22 @@ void main() {
             AnnotatorFixture.kSourceId,
             argThat(anyOf([AnnotatorFixture.kRokasIconIdentifier, AnnotatorFixture.kSymbolIdentifier])),
             argThat(isA<SymbolLayerProperties>()),
-            filter: argThat(
-                anyOf([
-                  symbol.annotationFilter,
-                  rokasIcon.annotationFilter,
-                ]),
-                named: 'filter'),
+            filter: argThat(anyOf([symbol.annotationFilter, rokasIcon.annotationFilter]), named: 'filter'),
           ),
         ).called(2);
       });
 
       test('error from addLayer should throw AnnotationException', () async {
         // when
-        when(mockController.addLayer(any, any, any, filter: anyNamed('filter')))
-            .thenAnswer((_) => Future.error(PlatformException(code: 'fakeCode')));
+        when(
+          mockController.addLayer(any, any, any, filter: anyNamed('filter')),
+        ).thenAnswer((_) => Future.error(PlatformException(code: 'fakeCode')));
 
         // act + expect
         await expectLater(
-            sut.addAnnotations([AnnotatorFixture.simpleSymbol()]), throwsA(const TypeMatcher<AnnotationException>()));
+          sut.addAnnotations([AnnotatorFixture.simpleSymbol()]),
+          throwsA(const TypeMatcher<AnnotationException>()),
+        );
       });
 
       test('adding new annotaton should call setGeoJson', () async {
@@ -217,21 +201,21 @@ void main() {
 
         // verify
         verify(
-          mockController.setGeoJsonSource(
-            AnnotatorFixture.kSourceId,
-            buildFeatureCollection([annotation.toGeoJson()]),
-          ),
+          mockController.setGeoJsonSource(AnnotatorFixture.kSourceId, buildFeatureCollection([annotation.toGeoJson()])),
         ).called(1);
       });
 
       test('error from setGeoJson should throw AnnotationException', () async {
         // when
-        when(mockController.setGeoJsonSource(any, any))
-            .thenAnswer((_) => Future.error(PlatformException(code: 'fakeCode')));
+        when(
+          mockController.setGeoJsonSource(any, any),
+        ).thenAnswer((_) => Future.error(PlatformException(code: 'fakeCode')));
 
         // act + expect
         await expectLater(
-            sut.addAnnotations([AnnotatorFixture.simpleSymbol()]), throwsA(const TypeMatcher<AnnotationException>()));
+          sut.addAnnotations([AnnotatorFixture.simpleSymbol()]),
+          throwsA(const TypeMatcher<AnnotationException>()),
+        );
       });
 
       test('adding same annotation twice should quietly fail', () async {
@@ -243,12 +227,7 @@ void main() {
 
         // verify
         // add GeoJsonSource
-        verify(
-          mockController.addGeoJsonSource(
-            AnnotatorFixture.kSourceId,
-            buildFeatureCollection([]),
-          ),
-        ).called(1);
+        verify(mockController.addGeoJsonSource(AnnotatorFixture.kSourceId, buildFeatureCollection([]))).called(1);
         // layer
         verify(
           mockController.addLayer(
@@ -260,10 +239,7 @@ void main() {
         ).called(1);
         // set GeoJsonSource
         verify(
-          mockController.setGeoJsonSource(
-            AnnotatorFixture.kSourceId,
-            buildFeatureCollection([annotation.toGeoJson()]),
-          ),
+          mockController.setGeoJsonSource(AnnotatorFixture.kSourceId, buildFeatureCollection([annotation.toGeoJson()])),
         ).called(1);
       });
 

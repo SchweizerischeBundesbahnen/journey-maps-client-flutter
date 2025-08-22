@@ -23,7 +23,7 @@ class SBBRokasPOIControllerImpl with ChangeNotifier implements SBBRokasPOIContro
     _rokasHighlightedPoiLayerId,
     _rokasBaseLvlPoiClickableLayerId,
     _rokasBaseLvlPoiNonClickableLayerId,
-    _rokasBasePoiClickableLayerId
+    _rokasBasePoiClickableLayerId,
   };
 
   SBBRokasPOIControllerImpl({
@@ -42,7 +42,7 @@ class SBBRokasPOIControllerImpl with ChangeNotifier implements SBBRokasPOIContro
 
   Map<SBBRokasPoiLayer, Set<SBBPoiCategoryType>> _layerToCategoryFilters = {
     SBBRokasPoiLayer.highlighted: _allPoiCategories(),
-    SBBRokasPoiLayer.baseWithFloor: _allPoiCategories()
+    SBBRokasPoiLayer.baseWithFloor: _allPoiCategories(),
   };
   Map<SBBRokasPoiLayer, bool> _layerToVisibility = _allLayersWithVisibilityToFalse();
   RokasPOI? _selectedPOI;
@@ -143,12 +143,14 @@ class SBBRokasPOIControllerImpl with ChangeNotifier implements SBBRokasPOIContro
   ///
   /// This reapplies all filters and visibilities to the style / layers.
   Future<void> synchronizeWithNewStyle() async {
-    return _controller.then((c) async {
-      await _hideAllPointsOfInterest(c);
-      await _reapplyAllFilters(c);
-      if (_isAnyPoiLayerVisible) await _reapplyVisibilities(c);
-      // calling updateListeners for "losing" the POI
-    }).then((_) => _updateAndNotifyListenersIfChanged(filters: null, visibility: null, selectedPOI: null));
+    return _controller
+        .then((c) async {
+          await _hideAllPointsOfInterest(c);
+          await _reapplyAllFilters(c);
+          if (_isAnyPoiLayerVisible) await _reapplyVisibilities(c);
+          // calling updateListeners for "losing" the POI
+        })
+        .then((_) => _updateAndNotifyListenersIfChanged(filters: null, visibility: null, selectedPOI: null));
   }
 
   Future<RokasPOI?> _searchPOIAtPoint(Point<double> p) async {
@@ -180,34 +182,27 @@ class SBBRokasPOIControllerImpl with ChangeNotifier implements SBBRokasPOIContro
 
   Future<RokasPOI?> _getPoiFromSBBId(String sbbId) async {
     return _controller.then((c) async {
-      final pois = await c.querySourceFeatures(
-        _rokasPoiSourceId,
-        _rokasPoiSourceLayerId,
-        _buildSbbIdFilter(sbbId),
-      );
+      final pois = await c.querySourceFeatures(_rokasPoiSourceId, _rokasPoiSourceLayerId, _buildSbbIdFilter(sbbId));
       final poi = pois.map((poi) => RokasPOI.fromGeoJSON(poi)).firstOrNull;
       return poi;
     });
   }
 
   List<Object>? _buildSbbIdFilter(String sbbId) {
-    return _buildPlatformSpecificFilter(
-      [
-        '==',
-        ['get', 'sbbId'],
-        sbbId
-      ],
-    );
+    return _buildPlatformSpecificFilter([
+      '==',
+      ['get', 'sbbId'],
+      sbbId,
+    ]);
   }
 
   Future<void> _selectPointOfInterest(RokasPOI poi) async {
     await _controller.then((c) async {
-      c.setFilter(
-        _rokasSelectedPoiLayerId,
-        _buildSbbIdFilter(poi.sbbId),
-      );
+      c.setFilter(_rokasSelectedPoiLayerId, _buildSbbIdFilter(poi.sbbId));
       c.setLayerProperties(
-          _rokasSelectedPoiLayerId, const SymbolLayerProperties(iconOpacity: 1.0, visibility: 'visible'));
+        _rokasSelectedPoiLayerId,
+        const SymbolLayerProperties(iconOpacity: 1.0, visibility: 'visible'),
+      );
       onPoiSelected?.call(poi);
     });
   }
@@ -229,10 +224,10 @@ class SBBRokasPOIControllerImpl with ChangeNotifier implements SBBRokasPOIContro
   }
 
   String _layerIdFromPoiLayer(SBBRokasPoiLayer layer) => switch (layer) {
-        SBBRokasPoiLayer.baseWithFloor =>
-          onPoiSelected != null ? _rokasBaseLvlPoiClickableLayerId : _rokasBaseLvlPoiNonClickableLayerId,
-        SBBRokasPoiLayer.highlighted => _rokasHighlightedPoiLayerId,
-      };
+    SBBRokasPoiLayer.baseWithFloor =>
+      onPoiSelected != null ? _rokasBaseLvlPoiClickableLayerId : _rokasBaseLvlPoiNonClickableLayerId,
+    SBBRokasPoiLayer.highlighted => _rokasHighlightedPoiLayerId,
+  };
 
   FutureOr _hideAllPointsOfInterest(MapLibreMapController c) async =>
       Future.wait(_allPoiLayerIds.map((layerId) => c.setLayerVisibility(layerId, false)));
@@ -314,7 +309,7 @@ class SBBRokasPOIControllerImpl with ChangeNotifier implements SBBRokasPOIContro
     final filter = [
       'filter-in',
       'subCategory',
-      ...categoryFilters.isEmpty ? [''] : categoryFilters.map((e) => e.name)
+      ...categoryFilters.isEmpty ? [''] : categoryFilters.map((e) => e.name),
     ];
     return _buildPlatformSpecificFilter(filter)!;
   }

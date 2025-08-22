@@ -15,9 +15,9 @@ class SBBRokasIcon implements SBBMapAnnotation {
     required this.coords,
     this.data,
     required bool draggable,
-  })  : _id = id,
-        _symbolURI = symbolURI,
-        _draggable = draggable;
+  }) : _id = id,
+       _symbolURI = symbolURI,
+       _draggable = draggable;
 
   /// A RokasIcon to be placed in a [SBBMap].
   ///
@@ -30,41 +30,26 @@ class SBBRokasIcon implements SBBMapAnnotation {
   /// * [data] can be used to associate custom data with the [SBBMapSymbol].
   /// * [draggable] will allow the feature to become draggable.<br>
   ///   The default is false.
-  SBBRokasIcon({
-    required String symbolURI,
-    required LatLng coords,
-    Map<String, dynamic>? data,
-    bool draggable = false,
-  }) : this._(
-          id: randomString(),
-          symbolURI: symbolURI,
-          coords: coords,
-          data: data,
-          draggable: draggable,
-        );
+  SBBRokasIcon({required String symbolURI, required LatLng coords, Map<String, dynamic>? data, bool draggable = false})
+    : this._(id: randomString(), symbolURI: symbolURI, coords: coords, data: data, draggable: draggable);
 
   @override
   String get id => _id;
 
   @override
   Map<String, dynamic> toGeoJson() => {
-        "type": "Feature",
-        "id": id,
-        "properties": {
-          "id": id,
-          "iconImage": _symbolURI,
-          "draggable": _draggable,
-          "sbbAnnotationType": runtimeType.toString(),
-        },
-        "geometry": {"type": "Point", "coordinates": coords.toGeoJsonCoordinates()}
-      };
+    "type": "Feature",
+    "id": id,
+    "properties": {
+      "id": id,
+      "iconImage": _symbolURI,
+      "draggable": _draggable,
+      "sbbAnnotationType": runtimeType.toString(),
+    },
+    "geometry": {"type": "Point", "coordinates": coords.toGeoJsonCoordinates()},
+  };
 
-  SBBRokasIcon copyWith({
-    String? symbolURI,
-    LatLng? coords,
-    bool? draggable,
-    Map<String, String>? data,
-  }) {
+  SBBRokasIcon copyWith({String? symbolURI, LatLng? coords, bool? draggable, Map<String, String>? data}) {
     return SBBRokasIcon._(
       id: _id,
       symbolURI: symbolURI ?? _symbolURI,
@@ -93,8 +78,8 @@ class SBBRokasIcon implements SBBMapAnnotation {
 
   @override
   List<Object> get annotationFilter => [
-        Expressions.equal,
-        [Expressions.get, _kPropertyTypeKey],
-        runtimeType.toString()
-      ];
+    Expressions.equal,
+    [Expressions.get, _kPropertyTypeKey],
+    runtimeType.toString(),
+  ];
 }

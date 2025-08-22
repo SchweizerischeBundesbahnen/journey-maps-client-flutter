@@ -5,10 +5,7 @@ import 'package:sbb_maps_flutter/sbb_maps_flutter.dart';
 import 'package:sbb_maps_flutter/src/sbb_map_locator/geolocator_facade.dart';
 
 class SBBMapLocatorImpl with ChangeNotifier implements SBBMapLocator {
-  SBBMapLocatorImpl(
-    this._mapController,
-    this._geolocator,
-  );
+  SBBMapLocatorImpl(this._mapController, this._geolocator);
 
   final Future<MapLibreMapController> _mapController;
   final GeolocatorFacade _geolocator;
@@ -39,9 +36,9 @@ class SBBMapLocatorImpl with ChangeNotifier implements SBBMapLocator {
     }
 
     await _mapController.then((controller) {
-      return controller.updateMyLocationTrackingMode(MyLocationTrackingMode.none).then(
-            (_) => _notifyListeners(isTracking: false),
-          );
+      return controller
+          .updateMyLocationTrackingMode(MyLocationTrackingMode.none)
+          .then((_) => _notifyListeners(isTracking: false));
     });
   }
 
@@ -69,9 +66,9 @@ class SBBMapLocatorImpl with ChangeNotifier implements SBBMapLocator {
 
   Future<void> _enableTrackingMode() async {
     await _mapController.then((controller) {
-      return controller.updateMyLocationTrackingMode(MyLocationTrackingMode.tracking).then(
-            (_) => _notifyListeners(isTracking: true, enableMyLocation: true),
-          );
+      return controller
+          .updateMyLocationTrackingMode(MyLocationTrackingMode.tracking)
+          .then((_) => _notifyListeners(isTracking: true, enableMyLocation: true));
     });
   }
 
@@ -83,11 +80,7 @@ class SBBMapLocatorImpl with ChangeNotifier implements SBBMapLocator {
     });
   }
 
-  void _notifyListeners({
-    bool? isTracking,
-    bool? enableMyLocation,
-    LatLng? lastKnownLocation,
-  }) {
+  void _notifyListeners({bool? isTracking, bool? enableMyLocation, LatLng? lastKnownLocation}) {
     final bool prevIsLocEnabled = _isLocationEnabled;
     final bool prevIsTracking = _isTracking;
     final LatLng? prevLastKnownLocation = _lastKnownLocation;

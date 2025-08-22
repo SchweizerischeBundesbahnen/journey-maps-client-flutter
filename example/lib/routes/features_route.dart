@@ -3,10 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:sbb_maps_example/widgets/theme_segmented_button.dart';
 
 const _kHeaderTitle = 'SBB Karten';
-const _kPadding = EdgeInsets.symmetric(
-  horizontal: sbbDefaultSpacing,
-  vertical: sbbDefaultSpacing,
-);
+const _kPadding = EdgeInsets.symmetric(horizontal: sbbDefaultSpacing, vertical: sbbDefaultSpacing);
 
 class FeaturesRoute extends StatefulWidget {
   const FeaturesRoute({super.key});
@@ -30,23 +27,10 @@ class _FeaturesRouteState extends State<FeaturesRoute> {
               SBBGroup(
                 child: Column(
                   children: [
-                    _FeatureRoute(
-                      title: 'Standard',
-                      routeName: '/standard',
-                    ),
-                    _FeatureRoute(
-                      title: 'Plain',
-                      routeName: '/plain',
-                    ),
-                    _FeatureRoute(
-                      title: 'Track Device',
-                      routeName: '/track_device_location',
-                    ),
-                    _FeatureRoute(
-                      title: 'Moving Camera',
-                      routeName: '/camera',
-                      isLastElement: true,
-                    ),
+                    _FeatureRoute(title: 'Standard', routeName: '/standard'),
+                    _FeatureRoute(title: 'Plain', routeName: '/plain'),
+                    _FeatureRoute(title: 'Track Device', routeName: '/track_device_location'),
+                    _FeatureRoute(title: 'Moving Camera', routeName: '/camera', isLastElement: true),
                   ],
                 ),
               ),
@@ -55,27 +39,11 @@ class _FeaturesRouteState extends State<FeaturesRoute> {
               SBBGroup(
                 child: Column(
                   children: [
-                    _FeatureRoute(
-                      title: 'Map Properties',
-                      routeName: '/map_properties',
-                    ),
-                    _FeatureRoute(
-                      title: 'Integration Data',
-                      routeName: '/integration_data',
-                    ),
-                    _FeatureRoute(
-                      title: 'Custom UI',
-                      routeName: '/custom_ui',
-                    ),
-                    _FeatureRoute(
-                      title: 'POI',
-                      routeName: '/poi',
-                    ),
-                    _FeatureRoute(
-                      title: 'Routing',
-                      routeName: '/routing',
-                      isLastElement: true,
-                    )
+                    _FeatureRoute(title: 'Map Properties', routeName: '/map_properties'),
+                    _FeatureRoute(title: 'Integration Data', routeName: '/integration_data'),
+                    _FeatureRoute(title: 'Custom UI', routeName: '/custom_ui'),
+                    _FeatureRoute(title: 'POI', routeName: '/poi'),
+                    _FeatureRoute(title: 'Routing', routeName: '/routing', isLastElement: true),
                   ],
                 ),
               ),
@@ -84,11 +52,7 @@ class _FeaturesRouteState extends State<FeaturesRoute> {
               SBBGroup(
                 child: Column(
                   children: [
-                    _FeatureRoute(
-                      title: 'Display Annotations',
-                      routeName: '/display_annotations',
-                      isLastElement: true,
-                    ),
+                    _FeatureRoute(title: 'Display Annotations', routeName: '/display_annotations', isLastElement: true),
                   ],
                 ),
               ),
@@ -101,11 +65,7 @@ class _FeaturesRouteState extends State<FeaturesRoute> {
 }
 
 class _FeatureRoute extends StatelessWidget {
-  const _FeatureRoute({
-    required this.title,
-    required this.routeName,
-    this.isLastElement = false,
-  });
+  const _FeatureRoute({required this.title, required this.routeName, this.isLastElement = false});
 
   final String routeName;
   final String title;

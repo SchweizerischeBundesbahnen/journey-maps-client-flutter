@@ -5,7 +5,4 @@ import 'package:sbb_maps_flutter/sbb_maps_flutter.dart';
 /// * [baseWithFloor] are circles / rounded squares icons shown in the 'background' on the map.
 ///   They are dependent on the currently selected floor.
 /// * [highlighted] are symbols appearing as 'pins' more in the 'foreground' on the map.
-enum SBBRokasPoiLayer {
-  baseWithFloor,
-  highlighted,
-}
+enum SBBRokasPoiLayer { baseWithFloor, highlighted }

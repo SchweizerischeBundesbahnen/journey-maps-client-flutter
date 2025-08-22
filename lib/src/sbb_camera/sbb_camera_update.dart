@@ -29,23 +29,13 @@ class SBBCameraUpdate {
     double right = 0,
     double bottom = 0,
   }) {
-    return SBBCameraUpdate._(
-      CameraUpdate.newLatLngBounds(
-        bounds,
-        left: left,
-        top: top,
-        right: right,
-        bottom: bottom,
-      ),
-    );
+    return SBBCameraUpdate._(CameraUpdate.newLatLngBounds(bounds, left: left, top: top, right: right, bottom: bottom));
   }
 
   /// Returns a [SBBCameraUpdate] that moves the camera target to the specified
   /// geographical location and zoom level.
   static SBBCameraUpdate newLatLngZoom(LatLng latLng, double zoom) {
-    return SBBCameraUpdate._(
-      CameraUpdate.newLatLngZoom(latLng, zoom),
-    );
+    return SBBCameraUpdate._(CameraUpdate.newLatLngZoom(latLng, zoom));
   }
 
   /// Returns a [SBBCameraUpdate] that moves the camera target the specified screen
@@ -55,9 +45,7 @@ class SBBCameraUpdate {
   /// the camera's target to a geographical location that is 50 to the east and
   /// 75 to the south of the current location, measured in screen coordinates.
   static SBBCameraUpdate scrollBy(double dx, double dy) {
-    return SBBCameraUpdate._(
-      CameraUpdate.scrollBy(dx, dy),
-    );
+    return SBBCameraUpdate._(CameraUpdate.scrollBy(dx, dy));
   }
 
   /// Returns a [SBBCameraUpdate] that zooms the camera in, bringing the camera

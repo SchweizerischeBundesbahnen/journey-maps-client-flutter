@@ -6,11 +6,7 @@ import 'package:sbb_maps_flutter/src/sbb_map_ui/sbb_map_ui_container/sbb_map_ui_
 const _kActionButtonPadding = EdgeInsets.fromLTRB(0, 16, 8, 0);
 
 class SBBMapDefaultUI extends StatelessWidget {
-  const SBBMapDefaultUI({
-    super.key,
-    required this.locationEnabled,
-    required this.isFloorSwitchingEnabled,
-  });
+  const SBBMapDefaultUI({super.key, required this.locationEnabled, required this.isFloorSwitchingEnabled});
 
   final bool locationEnabled;
   final bool isFloorSwitchingEnabled;

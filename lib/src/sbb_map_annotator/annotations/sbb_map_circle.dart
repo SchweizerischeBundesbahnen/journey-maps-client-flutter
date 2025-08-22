@@ -9,15 +9,10 @@ class SBBMapCircle implements SBBMapAnnotation {
   @override
   final Map<String, dynamic>? data;
 
-  const SBBMapCircle._({
-    required String id,
-    required LatLng center,
-    this.style,
-    required bool draggable,
-    this.data,
-  })  : _id = id,
-        _center = center,
-        _draggable = draggable;
+  const SBBMapCircle._({required String id, required LatLng center, this.style, required bool draggable, this.data})
+    : _id = id,
+      _center = center,
+      _draggable = draggable;
 
   /// A circle to be placed in a [SBBMap].
   ///
@@ -27,18 +22,8 @@ class SBBMapCircle implements SBBMapAnnotation {
   /// * [style] contains the style properties for this circle.
   /// * [data] can be used to associate custom data with the [SBBMapCircle].
   /// * [draggable] will allow the feature to become draggable. The default is false.
-  SBBMapCircle({
-    required LatLng center,
-    SBBMapCircleStyle? style,
-    Map<String, dynamic>? data,
-    bool draggable = false,
-  }) : this._(
-          id: randomString(),
-          center: center,
-          style: style,
-          draggable: draggable,
-          data: data,
-        );
+  SBBMapCircle({required LatLng center, SBBMapCircleStyle? style, Map<String, dynamic>? data, bool draggable = false})
+    : this._(id: randomString(), center: center, style: style, draggable: draggable, data: data);
 
   @override
   String get id => _id;
@@ -50,29 +35,17 @@ class SBBMapCircle implements SBBMapAnnotation {
   @override
   Map<String, dynamic> toGeoJson() {
     final properties = style != null ? style!.toJson() : <String, dynamic>{};
-    properties.addAll({
-      "id": _id,
-      "draggable": _draggable,
-      _kPropertyTypeKey: runtimeType.toString(),
-    });
+    properties.addAll({"id": _id, "draggable": _draggable, _kPropertyTypeKey: runtimeType.toString()});
 
     return {
       "type": "Feature",
       "id": _id,
       "properties": properties,
-      "geometry": {
-        "type": "Point",
-        "coordinates": _center.toGeoJsonCoordinates(),
-      },
+      "geometry": {"type": "Point", "coordinates": _center.toGeoJsonCoordinates()},
     };
   }
 
-  SBBMapCircle copyWith({
-    LatLng? center,
-    SBBMapCircleStyle? style,
-    bool? draggable,
-    Map<String, dynamic>? data,
-  }) {
+  SBBMapCircle copyWith({LatLng? center, SBBMapCircleStyle? style, bool? draggable, Map<String, dynamic>? data}) {
     return SBBMapCircle._(
       id: _id,
       center: center ?? _center,
@@ -107,10 +80,10 @@ class SBBMapCircle implements SBBMapAnnotation {
 
   @override
   List<Object> get annotationFilter => [
-        Expressions.equal,
-        [Expressions.get, _kPropertyTypeKey],
-        runtimeType.toString()
-      ];
+    Expressions.equal,
+    [Expressions.get, _kPropertyTypeKey],
+    runtimeType.toString(),
+  ];
 }
 
 class SBBMapCircleStyle {
@@ -214,14 +187,6 @@ class SBBMapCircleStyle {
 
   @override
   int get hashCode {
-    return Object.hash(
-      radius,
-      fillColor,
-      fillOpacity,
-      fillBlur,
-      strokeColor,
-      strokeOpacity,
-      strokeWidth,
-    );
+    return Object.hash(radius, fillColor, fillOpacity, fillBlur, strokeColor, strokeOpacity, strokeWidth);
   }
 }

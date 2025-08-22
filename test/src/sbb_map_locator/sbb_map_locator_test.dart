@@ -24,10 +24,7 @@ void main() {
     setUp(() {
       mockController = ListenableMockMapLibreMapController();
       mockGeolocator = MockGeolocatorFacade();
-      sut = SBBMapLocatorImpl(
-        Future.value(mockController),
-        mockGeolocator,
-      );
+      sut = SBBMapLocatorImpl(Future.value(mockController), mockGeolocator);
       sut.addListener(listener.call);
     });
 
@@ -237,9 +234,7 @@ void main() {
         expect(sut.isTracking, false);
         expect(sut.isLocationEnabled, true);
         verify(listener()).called(1);
-        verify(mockController.updateMyLocationTrackingMode(
-          MyLocationTrackingMode.none,
-        )).called(1);
+        verify(mockController.updateMyLocationTrackingMode(MyLocationTrackingMode.none)).called(1);
       });
     });
   });

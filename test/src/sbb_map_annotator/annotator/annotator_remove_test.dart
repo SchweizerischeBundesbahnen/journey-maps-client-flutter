@@ -38,12 +38,7 @@ void main() {
       await sut.removeAnnotations([a]);
 
       // verify
-      verify(
-        mockController.setGeoJsonSource(
-          AnnotatorFixture.kSourceId,
-          buildFeatureCollection([]),
-        ),
-      ).called(1);
+      verify(mockController.setGeoJsonSource(AnnotatorFixture.kSourceId, buildFeatureCollection([]))).called(1);
     });
 
     test('removing a known annotation should keep all the other annotations', () async {
@@ -58,10 +53,7 @@ void main() {
 
       // verify
       verify(
-        mockController.setGeoJsonSource(
-          AnnotatorFixture.kSourceId,
-          buildFeatureCollection([b.toGeoJson()]),
-        ),
+        mockController.setGeoJsonSource(AnnotatorFixture.kSourceId, buildFeatureCollection([b.toGeoJson()])),
       ).called(1);
     });
 
@@ -69,14 +61,12 @@ void main() {
       // setup
       final a = AnnotatorFixture.simpleSymbol();
       await sut.addAnnotation(a);
-      when(mockController.setGeoJsonSource(any, any))
-          .thenAnswer((_) => Future.error(PlatformException(code: 'fakeCode')));
+      when(
+        mockController.setGeoJsonSource(any, any),
+      ).thenAnswer((_) => Future.error(PlatformException(code: 'fakeCode')));
 
       // act + expect
-      await expectLater(
-        sut.removeAnnotations([a]),
-        throwsA(const TypeMatcher<AnnotationException>()),
-      );
+      await expectLater(sut.removeAnnotations([a]), throwsA(const TypeMatcher<AnnotationException>()));
     });
   });
 }

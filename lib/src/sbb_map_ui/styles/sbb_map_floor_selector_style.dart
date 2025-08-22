@@ -14,9 +14,7 @@ class SBBMapFloorSelectorStyle extends ThemeExtension<SBBMapFloorSelectorStyle> 
     this.pressedColor,
   });
 
-  factory SBBMapFloorSelectorStyle.$default({
-    required SBBMapBaseStyle baseStyle,
-  }) {
+  factory SBBMapFloorSelectorStyle.$default({required SBBMapBaseStyle baseStyle}) {
     return SBBMapFloorSelectorStyle(
       selectedBackgroundColor: baseStyle.themeValue(SBBMapColors.charcoal, SBBMapColors.graphite),
       borderSide: baseStyle.themeValue(BorderSide.none, const BorderSide(color: SBBMapColors.metal)),

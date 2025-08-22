@@ -12,9 +12,9 @@ class SBBRoutingControllerImpl with ChangeNotifier implements SBBRoutingControll
     required Future<SBBMapAnnotator> annotator,
     required Future<MapLibreMapController> controller,
     required SBBMapFloorController floorController,
-  })  : _annotator = annotator,
-        _controller = controller,
-        _floorController = floorController {
+  }) : _annotator = annotator,
+       _controller = controller,
+       _floorController = floorController {
     _floorController.addListener(_floorControllerListener);
   }
 

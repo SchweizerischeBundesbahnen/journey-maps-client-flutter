@@ -4,17 +4,9 @@ import 'package:sbb_maps_flutter/src/sbb_map_ui/styles/sbb_map_base_style.dart';
 
 /// A style for the [SBBMapIconButton].
 class SBBMapIconButtonStyle extends ThemeExtension<SBBMapIconButtonStyle> {
-  SBBMapIconButtonStyle({
-    this.iconColor,
-    this.borderSide,
-    this.backgroundColor,
-    this.shadowColor,
-    this.pressedColor,
-  });
+  SBBMapIconButtonStyle({this.iconColor, this.borderSide, this.backgroundColor, this.shadowColor, this.pressedColor});
 
-  factory SBBMapIconButtonStyle.$default({
-    required SBBMapBaseStyle baseStyle,
-  }) {
+  factory SBBMapIconButtonStyle.$default({required SBBMapBaseStyle baseStyle}) {
     return SBBMapIconButtonStyle(
       iconColor: baseStyle.themeValue(SBBMapColors.black, SBBMapColors.white),
       borderSide: baseStyle.themeValue(BorderSide.none, const BorderSide(color: SBBMapColors.metal)),

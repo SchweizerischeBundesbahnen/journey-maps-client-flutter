@@ -15,7 +15,7 @@ void main() {
           "type": "Feature",
           "id": sut.id,
           "properties": {"id": sut.id, "draggable": false, "sbbAnnotationType": "SBBMapCircle"},
-          "geometry": {"type": "Point", "coordinates": fakeCenter.toGeoJsonCoordinates()}
+          "geometry": {"type": "Point", "coordinates": fakeCenter.toGeoJsonCoordinates()},
         };
         // act + expect
         expect(sut.toGeoJson(), equals(expected));
@@ -29,7 +29,7 @@ void main() {
           "type": "Feature",
           "id": sut.id,
           "properties": {"id": sut.id, "draggable": false, "circleRadius": radius, "sbbAnnotationType": "SBBMapCircle"},
-          "geometry": {"type": "Point", "coordinates": fakeCenter.toGeoJsonCoordinates()}
+          "geometry": {"type": "Point", "coordinates": fakeCenter.toGeoJsonCoordinates()},
         };
         // act + expect
         expect(sut.toGeoJson(), equals(expected));
@@ -110,12 +110,7 @@ void main() {
         final sut = createCircleFixture();
 
         // expect
-        expect(
-          sut.annotationFilter,
-          equals(
-            createAnnotationFilter(sut.runtimeType.toString()),
-          ),
-        );
+        expect(sut.annotationFilter, equals(createAnnotationFilter(sut.runtimeType.toString())));
       });
     });
   });
@@ -145,15 +140,17 @@ void main() {
     // Test copyWith
     test('copyWith', () {
       const original = SBBMapCircleStyle();
-      final copied = original.copyWith(const SBBMapCircleStyle(
-        radius: testRadius,
-        fillColor: testFillColor,
-        fillOpacity: testFillOpacity,
-        fillBlur: testFillBlur,
-        strokeColor: testStrokeColor,
-        strokeOpacity: testStrokeOpacity,
-        strokeWidth: testStrokeWidth,
-      ));
+      final copied = original.copyWith(
+        const SBBMapCircleStyle(
+          radius: testRadius,
+          fillColor: testFillColor,
+          fillOpacity: testFillOpacity,
+          fillBlur: testFillBlur,
+          strokeColor: testStrokeColor,
+          strokeOpacity: testStrokeOpacity,
+          strokeWidth: testStrokeWidth,
+        ),
+      );
 
       expect(copied.radius, testRadius);
       expect(copied.fillColor, testFillColor);
@@ -188,14 +185,8 @@ void main() {
 
     // Test equality and hashCode
     test('equality and hashCode', () {
-      const style1 = SBBMapCircleStyle(
-        radius: testRadius,
-        fillColor: testFillColor,
-      );
-      const style2 = SBBMapCircleStyle(
-        radius: testRadius,
-        fillColor: testFillColor,
-      );
+      const style1 = SBBMapCircleStyle(radius: testRadius, fillColor: testFillColor);
+      const style2 = SBBMapCircleStyle(radius: testRadius, fillColor: testFillColor);
       const style3 = SBBMapCircleStyle(
         radius: testRadius,
         fillColor: Colors.green, // Different color

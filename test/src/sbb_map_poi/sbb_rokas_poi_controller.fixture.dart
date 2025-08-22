@@ -10,11 +10,11 @@ const selectedPoiLayerId = 'journey-pois-selected';
 // applied filter fixtures
 const emptySubCategoryFilterFixture = [
   'all',
-  ['filter-in', 'subCategory', '']
+  ['filter-in', 'subCategory', ''],
 ];
 const subCategoryFilterWithBakeryFixture = [
   'all',
-  ['filter-in', 'subCategory', 'bakery']
+  ['filter-in', 'subCategory', 'bakery'],
 ];
 final subCategoryFilterWithAllCategoriesFixture = ['all', allPOICategoriesFiltureFixture];
 
@@ -22,17 +22,17 @@ final lvlZeroWithEmptySubCategoryFilterFixture = ['all', ...lvlZeroFilterFixture
 final lvlZeroWithBakerySubCategoryFilterFixture = [
   'all',
   ...lvlZeroFilterFixture,
-  subCategoryFilterWithBakeryFixture[1]
+  subCategoryFilterWithBakeryFixture[1],
 ];
 final lvlZeroMultiFilterWithBakerySubCategoryFilterFixture = [
   'all',
   ..._lvlZeroMultiFilterFixture,
-  subCategoryFilterWithBakeryFixture[1]
+  subCategoryFilterWithBakeryFixture[1],
 ];
 
 const bikeParkingCategoriesFiltureFixture = [
   'all',
-  ['filter-in', 'subCategory', 'bike_parking']
+  ['filter-in', 'subCategory', 'bike_parking'],
 ];
 
 // lvl filter fixtures without categories
@@ -43,12 +43,12 @@ const lvlZeroFilterFixture = [
     [
       "==",
       ["has", "level"],
-      true
+      true,
     ],
     ["get", "level"],
-    0
+    0,
   ],
-  0
+  0,
 ];
 const _lvlZeroMultiFilterFixture = [
   [
@@ -58,12 +58,12 @@ const _lvlZeroMultiFilterFixture = [
       [
         "==",
         ["has", "level"],
-        true
+        true,
       ],
       ["get", "level"],
-      0
+      0,
     ],
-    0
+    0,
   ],
   [
     "==",
@@ -72,13 +72,13 @@ const _lvlZeroMultiFilterFixture = [
       [
         "==",
         ["has", "level"],
-        true
+        true,
       ],
       ["get", "level"],
-      0
+      0,
     ],
-    0
-  ]
+    0,
+  ],
 ];
 const lvlZeroMultiFilterFixture = ["all", ..._lvlZeroMultiFilterFixture];
 
@@ -110,11 +110,8 @@ const mobilityBikesharingPoiGeoJSONFixture = {
 };
 const mobilityBikeSharingFilterFixture = [
   '==',
-  [
-    'get',
-    'sbbId',
-  ],
-  'c595b6be-8387-4659-9adf-d62a6a1d3f17'
+  ['get', 'sbbId'],
+  'c595b6be-8387-4659-9adf-d62a6a1d3f17',
 ];
 
 const allPOICategoriesFiltureFixture = [

@@ -37,15 +37,12 @@ class _POIRouteState extends State<POIRoute> {
             !_poiController.isCompleted ? _poiController.complete(poiController) : null;
             poiController.showPointsOfInterest();
           },
-          onPoiSelected: (poi) => showSBBModalSheet(
-            context: context,
-            title: poi.name,
-            child: const SizedBox(height: 64),
-          ).then(
-            (_) => _poiController.future.then(
-              (c) => c.deselectPointOfInterest(),
-            ),
-          ),
+          onPoiSelected:
+              (poi) => showSBBModalSheet(
+                context: context,
+                title: poi.name,
+                child: const SizedBox(height: 64),
+              ).then((_) => _poiController.future.then((c) => c.deselectPointOfInterest())),
         ),
       ),
     );

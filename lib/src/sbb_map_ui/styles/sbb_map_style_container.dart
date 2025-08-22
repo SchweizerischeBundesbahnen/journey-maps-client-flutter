@@ -15,10 +15,7 @@ class SBBMapStyleContainer extends StatelessWidget {
   final Widget child;
   @override
   Widget build(BuildContext context) {
-    return Theme(
-      data: _addSBBMapDefaultStyles(context),
-      child: child,
-    );
+    return Theme(data: _addSBBMapDefaultStyles(context), child: child);
   }
 
   _addSBBMapDefaultStyles(BuildContext context) {
@@ -26,9 +23,10 @@ class SBBMapStyleContainer extends StatelessWidget {
     final baseStyle = SBBMapBaseStyle(brightness: theme.brightness);
     final parentExtensions = theme.extensions.values.toList();
     return theme.copyWith(
-      extensions: parentExtensions
-        ..add(SBBMapIconButtonStyle.$default(baseStyle: baseStyle))
-        ..add(SBBMapFloorSelectorStyle.$default(baseStyle: baseStyle)),
+      extensions:
+          parentExtensions
+            ..add(SBBMapIconButtonStyle.$default(baseStyle: baseStyle))
+            ..add(SBBMapFloorSelectorStyle.$default(baseStyle: baseStyle)),
     );
   }
 }

@@ -46,18 +46,13 @@ class SBBMapFloorControllerImpl with ChangeNotifier implements SBBMapFloorContro
       _selectFloor(floor: 0);
       updatedFloor = null;
     }
-    _notifyListenersIfChanged(
-      currentFloor: updatedFloor,
-      availableFloors: updatedFloors,
-    );
+    _notifyListenersIfChanged(currentFloor: updatedFloor, availableFloors: updatedFloors);
   }
 
   Future<List<dynamic>> _queryFeaturesWithFloorsFromSource() async {
-    return await _controller.then((controller) => controller.querySourceFeatures(
-          _servicePointSourceId,
-          _servicePointLayerId,
-          null,
-        ));
+    return await _controller.then(
+      (controller) => controller.querySourceFeatures(_servicePointSourceId, _servicePointLayerId, null),
+    );
   }
 
   List<int> _extractUniqueSortedFloors(List<dynamic> features) {
@@ -86,10 +81,7 @@ class SBBMapFloorControllerImpl with ChangeNotifier implements SBBMapFloorContro
   bool _currentFloorShouldBeReset(List<int> updatedFloors) =>
       _currentFloor != null && !updatedFloors.contains(_currentFloor);
 
-  void _notifyListenersIfChanged({
-    required int? currentFloor,
-    List<int>? availableFloors,
-  }) {
+  void _notifyListenersIfChanged({required int? currentFloor, List<int>? availableFloors}) {
     final previousAvailableFloors = _availableFloors;
     final previousFloor = _currentFloor;
 
@@ -112,9 +104,11 @@ class SBBMapFloorControllerImpl with ChangeNotifier implements SBBMapFloorContro
           final oldFilterString = jsonEncode(oldFilter);
           final newFilterString = jsonEncode(newFilter);
           if (oldFilterString != newFilterString) {
-            _logger.d("Updating Filter on Layer: $layerId\n"
-                "OLD Filter $oldFilterString\n"
-                "NEW Filter $newFilterString");
+            _logger.d(
+              "Updating Filter on Layer: $layerId\n"
+              "OLD Filter $oldFilterString\n"
+              "NEW Filter $newFilterString",
+            );
             controller.setFilter(layerId, newFilter);
           }
         } catch (e) {

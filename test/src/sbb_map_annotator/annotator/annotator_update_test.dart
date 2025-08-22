@@ -42,10 +42,7 @@ void main() {
 
         // verify
         verify(
-          mockController.setGeoJsonSource(
-            AnnotatorFixture.kSourceId,
-            buildFeatureCollection([update.toGeoJson()]),
-          ),
+          mockController.setGeoJsonSource(AnnotatorFixture.kSourceId, buildFeatureCollection([update.toGeoJson()])),
         ).called(1);
       });
     });
@@ -56,22 +53,17 @@ void main() {
         // setup
         final a = AnnotatorFixture.simpleSymbol();
         await sut.addAnnotation(a);
-        when(mockController.setGeoJsonSource(any, any))
-            .thenAnswer((_) => Future.error(PlatformException(code: 'fakeCode')));
+        when(
+          mockController.setGeoJsonSource(any, any),
+        ).thenAnswer((_) => Future.error(PlatformException(code: 'fakeCode')));
 
         // act + expect
-        await expectLater(
-          sut.updateAnnotations([a]),
-          throwsA(const TypeMatcher<AnnotationException>()),
-        );
+        await expectLater(sut.updateAnnotations([a]), throwsA(const TypeMatcher<AnnotationException>()));
       });
 
       test('updating an unknown annotation should quietly fail', () async {
         // act
-        await sut.updateAnnotations([
-          AnnotatorFixture.simpleSymbol(),
-          AnnotatorFixture.simpleSymbol(),
-        ]);
+        await sut.updateAnnotations([AnnotatorFixture.simpleSymbol(), AnnotatorFixture.simpleSymbol()]);
 
         // verify
         verifyZeroInteractions(mockController);
@@ -93,10 +85,7 @@ void main() {
         verify(
           mockController.setGeoJsonSource(
             AnnotatorFixture.kSourceId,
-            buildFeatureCollection([
-              update.toGeoJson(),
-              secondUpdate.toGeoJson(),
-            ]),
+            buildFeatureCollection([update.toGeoJson(), secondUpdate.toGeoJson()]),
           ),
         ).called(1);
       });
@@ -114,12 +103,7 @@ void main() {
 
         // verify
         verify(
-          mockController.setGeoJsonSource(
-            AnnotatorFixture.kSourceId,
-            buildFeatureCollection([
-              update.toGeoJson(),
-            ]),
-          ),
+          mockController.setGeoJsonSource(AnnotatorFixture.kSourceId, buildFeatureCollection([update.toGeoJson()])),
         ).called(1);
       });
     });
@@ -155,12 +139,14 @@ void main() {
         await sut.onStyleChanged();
 
         // verify
-        verify(mockController.addLayer(
-          AnnotatorFixture.kSourceId,
-          AnnotatorFixture.kRokasIconIdentifier,
-          argThat(isA<SymbolLayerProperties>()),
-          filter: AnnotatorFixture.simpleRokasIcon().annotationFilter,
-        )).called(1);
+        verify(
+          mockController.addLayer(
+            AnnotatorFixture.kSourceId,
+            AnnotatorFixture.kRokasIconIdentifier,
+            argThat(isA<SymbolLayerProperties>()),
+            filter: AnnotatorFixture.simpleRokasIcon().annotationFilter,
+          ),
+        ).called(1);
       });
 
       test('should add all layers back to map if has multiple type annotations', () async {
@@ -173,12 +159,14 @@ void main() {
         await sut.onStyleChanged();
 
         // verify
-        verify(mockController.addLayer(
-          AnnotatorFixture.kSourceId,
-          argThat(anyOf([AnnotatorFixture.kRokasIconIdentifier, AnnotatorFixture.kSymbolIdentifier])),
-          argThat(isA<SymbolLayerProperties>()),
-          filter: anyNamed('filter'),
-        )).called(2);
+        verify(
+          mockController.addLayer(
+            AnnotatorFixture.kSourceId,
+            argThat(anyOf([AnnotatorFixture.kRokasIconIdentifier, AnnotatorFixture.kSymbolIdentifier])),
+            argThat(isA<SymbolLayerProperties>()),
+            filter: anyNamed('filter'),
+          ),
+        ).called(2);
       });
 
       test('should add features back to map if has annotation', () async {
@@ -191,10 +179,9 @@ void main() {
         await sut.onStyleChanged();
 
         // verify
-        verify(mockController.setGeoJsonSource(
-          AnnotatorFixture.kSourceId,
-          buildFeatureCollection([a.toGeoJson()]),
-        )).called(1);
+        verify(
+          mockController.setGeoJsonSource(AnnotatorFixture.kSourceId, buildFeatureCollection([a.toGeoJson()])),
+        ).called(1);
       });
 
       test('should add all features back to map if has multiple annotation', () async {
@@ -209,28 +196,24 @@ void main() {
         await sut.onStyleChanged();
 
         // verify
-        verify(mockController.setGeoJsonSource(
-          AnnotatorFixture.kSourceId,
-          buildFeatureCollection([a.toGeoJson(), b.toGeoJson()]),
-        )).called(1);
+        verify(
+          mockController.setGeoJsonSource(
+            AnnotatorFixture.kSourceId,
+            buildFeatureCollection([a.toGeoJson(), b.toGeoJson()]),
+          ),
+        ).called(1);
       });
 
       test('should add image back if has images', () async {
         // setup
-        await sut.addImage(
-          imageId: AnnotatorFixture.fakeImageName,
-          imageBytes: AnnotatorFixture.fakeImage,
-        );
+        await sut.addImage(imageId: AnnotatorFixture.fakeImageName, imageBytes: AnnotatorFixture.fakeImage);
         reset(mockController);
 
         // act
         await sut.onStyleChanged();
 
         // verify
-        verify(mockController.addImage(
-          AnnotatorFixture.fakeImageName,
-          AnnotatorFixture.fakeImage,
-        )).called(1);
+        verify(mockController.addImage(AnnotatorFixture.fakeImageName, AnnotatorFixture.fakeImage)).called(1);
       });
     });
   });

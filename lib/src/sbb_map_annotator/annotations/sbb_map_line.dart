@@ -15,9 +15,9 @@ class SBBMapLine implements SBBMapAnnotation {
     this.style,
     required bool draggable,
     this.data,
-  })  : _id = id,
-        _vertices = vertices,
-        _draggable = draggable;
+  }) : _id = id,
+       _vertices = vertices,
+       _draggable = draggable;
 
   /// A line to be placed in a [SBBMap].
   ///
@@ -32,13 +32,7 @@ class SBBMapLine implements SBBMapAnnotation {
     SBBMapLineStyle? style,
     Map<String, dynamic>? data,
     bool draggable = false,
-  }) : this._(
-          id: randomString(),
-          vertices: vertices,
-          style: style,
-          draggable: draggable,
-          data: data,
-        );
+  }) : this._(id: randomString(), vertices: vertices, style: style, draggable: draggable, data: data);
 
   @override
   String get id => _id;
@@ -50,29 +44,17 @@ class SBBMapLine implements SBBMapAnnotation {
   @override
   Map<String, dynamic> toGeoJson() {
     final properties = style != null ? style!.toJson() : <String, dynamic>{};
-    properties.addAll({
-      "id": _id,
-      "draggable": _draggable,
-      "sbbAnnotationType": runtimeType.toString(),
-    });
+    properties.addAll({"id": _id, "draggable": _draggable, "sbbAnnotationType": runtimeType.toString()});
 
     return {
       "type": "Feature",
       "id": _id,
       "properties": properties,
-      "geometry": {
-        "type": "LineString",
-        "coordinates": _vertices.map((n) => n.toGeoJsonCoordinates()).toList(),
-      },
+      "geometry": {"type": "LineString", "coordinates": _vertices.map((n) => n.toGeoJsonCoordinates()).toList()},
     };
   }
 
-  SBBMapLine copyWith({
-    List<LatLng>? nodes,
-    SBBMapLineStyle? style,
-    bool? draggable,
-    Map<String, dynamic>? data,
-  }) {
+  SBBMapLine copyWith({List<LatLng>? nodes, SBBMapLineStyle? style, bool? draggable, Map<String, dynamic>? data}) {
     return SBBMapLine._(
       id: _id,
       vertices: nodes ?? _vertices,
@@ -107,10 +89,10 @@ class SBBMapLine implements SBBMapAnnotation {
 
   @override
   List<Object> get annotationFilter => [
-        Expressions.equal,
-        [Expressions.get, _kPropertyTypeKey],
-        runtimeType.toString()
-      ];
+    Expressions.equal,
+    [Expressions.get, _kPropertyTypeKey],
+    runtimeType.toString(),
+  ];
 }
 
 class SBBMapLineStyle {

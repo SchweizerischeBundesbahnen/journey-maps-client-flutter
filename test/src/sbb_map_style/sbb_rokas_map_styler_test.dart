@@ -25,7 +25,8 @@ void main() {
 
     test('whenFull_shouldReturnStyleUriInBrightMode', () {
       // arrange
-      const expectedUri = 'https://journey-maps-tiles.geocdn.sbb.ch'
+      const expectedUri =
+          'https://journey-maps-tiles.geocdn.sbb.ch'
           '/styles/journey_maps_bright_v1/style.json?api_key=key';
 
       // act
@@ -52,7 +53,8 @@ void main() {
 
     test('whenUseIntegrationDataIsTrue_uriShouldBeIntPointing', () {
       // arrange
-      const expectedUri = 'https://journey-maps-tiles.geocdn-int.sbb.ch'
+      const expectedUri =
+          'https://journey-maps-tiles.geocdn-int.sbb.ch'
           '/styles/journey_maps_bright_v1/style.json?api_key=key';
 
       // act

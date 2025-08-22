@@ -12,11 +12,7 @@ const _kCircleIdentifier = 'sbb_map_annotator_circle';
 const _kLineIdentifier = 'sbb_map_annotator_line';
 const _kFillIdentifier = 'sbb_map_annotator_fill';
 
-typedef Layer = ({
-  String layerId,
-  LayerProperties properties,
-  List<Object>? filter,
-});
+typedef Layer = ({String layerId, LayerProperties properties, List<Object>? filter});
 
 class SBBMapAnnotatorImpl implements SBBMapAnnotator {
   final MapLibreMapController _controller;
@@ -28,17 +24,12 @@ class SBBMapAnnotatorImpl implements SBBMapAnnotator {
 
   bool _isGeoJsonSourceAdded = false;
 
-  SBBMapAnnotatorImpl({
-    required MapLibreMapController controller,
-  }) : _controller = controller {
+  SBBMapAnnotatorImpl({required MapLibreMapController controller}) : _controller = controller {
     _controller.onFeatureTapped.add(_delegateToAnnotationCallback());
   }
 
   @override
-  Future<void> addImage({
-    required String imageId,
-    required Uint8List imageBytes,
-  }) {
+  Future<void> addImage({required String imageId, required Uint8List imageBytes}) {
     if (imageBytes.isEmpty) return Future.value();
     _addedImages[imageId] = imageBytes;
 
@@ -157,24 +148,16 @@ class SBBMapAnnotatorImpl implements SBBMapAnnotator {
         .then(_completeGeoJsonAdding());
   }
 
-  Future<void> _addAnnotationsToLayer(
-    Iterable<SBBMapAnnotation> annotations,
-  ) async {
+  Future<void> _addAnnotationsToLayer(Iterable<SBBMapAnnotation> annotations) async {
     await _addLayersIfNecessary(annotations);
     return _updateAll(annotations);
   }
 
-  Future<void> _addLayersIfNecessary(
-    Iterable<SBBMapAnnotation> annotations,
-  ) async {
+  Future<void> _addLayersIfNecessary(Iterable<SBBMapAnnotation> annotations) async {
     for (final a in annotations) {
       final layerId = _getAnnotationIdentifier(a);
       if (_addedLayers.keys.contains(layerId)) continue;
-      final Layer layer = (
-        layerId: layerId,
-        properties: _getLayerProperties(a),
-        filter: a.annotationFilter,
-      );
+      final Layer layer = (layerId: layerId, properties: _getLayerProperties(a), filter: a.annotationFilter);
 
       await _applyLayerToStyle(layer);
     }
@@ -182,31 +165,26 @@ class SBBMapAnnotatorImpl implements SBBMapAnnotator {
 
   Future<void> _applyLayerToStyle(Layer layer) {
     return _controller
-        .addLayer(
-          _kSourceId,
-          layer.layerId,
-          layer.properties,
-          filter: layer.filter,
-        )
+        .addLayer(_kSourceId, layer.layerId, layer.properties, filter: layer.filter)
         .catchError(_throwAnnotatorException('Adding layer ${layer.layerId} failed with exception: '))
         .then((_) => _addedLayers[layer.layerId] = layer);
   }
 
   String _getAnnotationIdentifier(SBBMapAnnotation annotation) => switch (annotation) {
-        SBBMapSymbol() => _kSymbolIdentifier,
-        SBBRokasIcon() => _kRokasIconIdentifier,
-        SBBMapCircle() => _kCircleIdentifier,
-        SBBMapLine() => _kLineIdentifier,
-        SBBMapFill() => _kFillIdentifier,
-      };
+    SBBMapSymbol() => _kSymbolIdentifier,
+    SBBRokasIcon() => _kRokasIconIdentifier,
+    SBBMapCircle() => _kCircleIdentifier,
+    SBBMapLine() => _kLineIdentifier,
+    SBBMapFill() => _kFillIdentifier,
+  };
 
   LayerProperties _getLayerProperties(SBBMapAnnotation annotation) => switch (annotation) {
-        SBBMapSymbol() => SBBMapSymbolLayer().makeLayerExpressions(),
-        SBBRokasIcon() => SBBMapSymbolLayer().makeLayerExpressions(),
-        SBBMapCircle() => SBBMapCircleLayer().makeLayerExpressions(),
-        SBBMapLine() => SBBMapLineLayer().makeLayerExpressions(),
-        SBBMapFill() => SBBMapFillLayer().makeLayerExpressions(),
-      };
+    SBBMapSymbol() => SBBMapSymbolLayer().makeLayerExpressions(),
+    SBBRokasIcon() => SBBMapSymbolLayer().makeLayerExpressions(),
+    SBBMapCircle() => SBBMapCircleLayer().makeLayerExpressions(),
+    SBBMapLine() => SBBMapLineLayer().makeLayerExpressions(),
+    SBBMapFill() => SBBMapFillLayer().makeLayerExpressions(),
+  };
 
   Future<void> _updateAll(Iterable<SBBMapAnnotation> updates) {
     final updatedIdToAnnotations = _applyUpdatesToCopiedMap(updates);
@@ -219,9 +197,9 @@ class SBBMapAnnotatorImpl implements SBBMapAnnotator {
   }
 
   Future<void> _applyFeaturesToGeoSource(Map<String, SBBMapAnnotation> updatedIdToAnnotations) {
-    final annotationsAsFeatures = buildFeatureCollection(
-      [for (final a in updatedIdToAnnotations.values) a.toGeoJson()],
-    );
+    final annotationsAsFeatures = buildFeatureCollection([
+      for (final a in updatedIdToAnnotations.values) a.toGeoJson(),
+    ]);
 
     return _controller
         .setGeoJsonSource(_kSourceId, annotationsAsFeatures)

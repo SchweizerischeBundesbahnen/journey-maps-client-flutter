@@ -220,17 +220,17 @@ class _SBBMapState extends State<SBBMap> {
     super.initState();
     widget.mapStyler.addListener(_setStyleLoadedFalse);
 
-    _mapLocator = SBBMapLocatorImpl(
-      _mlController.future,
-      GeolocatorFacade(),
-    );
+    _mapLocator = SBBMapLocatorImpl(_mlController.future, GeolocatorFacade());
     _mapLocator.addListener(_setState);
 
     _floorController = SBBMapFloorControllerImpl(_mlController.future);
     _floorController.addListener(_setState);
 
     _routingController = SBBRoutingControllerImpl(
-        annotator: _mapAnnotator.future, controller: _mlController.future, floorController: _floorController);
+      annotator: _mapAnnotator.future,
+      controller: _mlController.future,
+      floorController: _floorController,
+    );
     _routingController.addListener(_setState);
 
     _poiController = SBBRokasPOIControllerImpl(
@@ -311,9 +311,7 @@ class _SBBMapState extends State<SBBMap> {
   }
 
   _onMapCreated(MapLibreMapController controller) {
-    SBBMapController sbbMapController = SBBMapControllerImpl(
-      maplibreMapController: controller,
-    );
+    SBBMapController sbbMapController = SBBMapControllerImpl(maplibreMapController: controller);
 
     _mlController.complete(controller);
     _controller.complete(sbbMapController);
@@ -330,11 +328,12 @@ class _SBBMapState extends State<SBBMap> {
         mapLocator: _mapLocator,
         mapFloorController: _floorController,
         child: Builder(
-          builder: widget.builder ??
+          builder:
+              widget.builder ??
               (context) => SBBMapDefaultUI(
-                    locationEnabled: widget.isMyLocationEnabled,
-                    isFloorSwitchingEnabled: widget.isFloorSwitchingEnabled,
-                  ),
+                locationEnabled: widget.isMyLocationEnabled,
+                isFloorSwitchingEnabled: widget.isFloorSwitchingEnabled,
+              ),
         ),
       ),
     );
@@ -384,10 +383,7 @@ class _SBBMapState extends State<SBBMap> {
   Future<void> _delayedMoveToCHBounds() {
     return Future.delayed(const Duration(milliseconds: 10)).then(
       (_) => _controller.future.then(
-        (c) => c.animateCameraMove(
-          cameraUpdate: _getSwitzerlandLatLngBounds(),
-          duration: Durations.short1,
-        ),
+        (c) => c.animateCameraMove(cameraUpdate: _getSwitzerlandLatLngBounds(), duration: Durations.short1),
       ),
     );
   }

@@ -8,10 +8,7 @@ void main() {
     const LatLng testLatLng = LatLng(47.3769, 8.5417); // Coordinates for Zurich, for example
     const double testZoom = 15.0;
     const double testBearing = 45.0;
-    LatLngBounds testBounds = LatLngBounds(
-      southwest: const LatLng(47.0, 8.0),
-      northeast: const LatLng(48.0, 9.0),
-    );
+    LatLngBounds testBounds = LatLngBounds(southwest: const LatLng(47.0, 8.0), northeast: const LatLng(48.0, 9.0));
     const double testPadding = 10.0;
 
     test('newCameraPosition creates correct CameraUpdate', () {
@@ -21,10 +18,7 @@ void main() {
       const cameraMlPosition = CameraPosition(target: testLatLng);
       final cameraMlUpdate = CameraUpdate.newCameraPosition(cameraMlPosition);
       expect(sbbCameraUpdate.toMaplibre(), isA<CameraUpdate>());
-      expect(
-        sbbCameraUpdate.toMaplibre().toJson(),
-        equals(cameraMlUpdate.toJson()),
-      );
+      expect(sbbCameraUpdate.toMaplibre().toJson(), equals(cameraMlUpdate.toJson()));
     });
 
     test('newLatLng creates correct CameraUpdate', () {
@@ -32,10 +26,7 @@ void main() {
 
       final cameraMlUpdate = CameraUpdate.newLatLng(testLatLng);
       expect(sbbCameraUpdate.toMaplibre(), isA<CameraUpdate>());
-      expect(
-        sbbCameraUpdate.toMaplibre().toJson(),
-        equals(cameraMlUpdate.toJson()),
-      );
+      expect(sbbCameraUpdate.toMaplibre().toJson(), equals(cameraMlUpdate.toJson()));
     });
 
     test('newLatLngBounds creates correct CameraUpdate with default padding', () {
@@ -43,10 +34,7 @@ void main() {
 
       final cameraMlUpdate = CameraUpdate.newLatLngBounds(testBounds);
       expect(sbbCameraUpdate.toMaplibre(), isA<CameraUpdate>());
-      expect(
-        sbbCameraUpdate.toMaplibre().toJson(),
-        equals(cameraMlUpdate.toJson()),
-      );
+      expect(sbbCameraUpdate.toMaplibre().toJson(), equals(cameraMlUpdate.toJson()));
     });
 
     test('newLatLngBounds creates correct CameraUpdate with custom padding', () {
@@ -66,10 +54,7 @@ void main() {
         bottom: testPadding,
       );
       expect(sbbCameraUpdate.toMaplibre(), isA<CameraUpdate>());
-      expect(
-        sbbCameraUpdate.toMaplibre().toJson(),
-        equals(cameraMlUpdate.toJson()),
-      );
+      expect(sbbCameraUpdate.toMaplibre().toJson(), equals(cameraMlUpdate.toJson()));
     });
 
     test('newLatLngZoom creates correct CameraUpdate', () {
@@ -77,10 +62,7 @@ void main() {
 
       final cameraMlUpdate = CameraUpdate.newLatLngZoom(testLatLng, testZoom);
       expect(sbbCameraUpdate.toMaplibre(), isA<CameraUpdate>());
-      expect(
-        sbbCameraUpdate.toMaplibre().toJson(),
-        equals(cameraMlUpdate.toJson()),
-      );
+      expect(sbbCameraUpdate.toMaplibre().toJson(), equals(cameraMlUpdate.toJson()));
     });
 
     test('scrollBy creates correct CameraUpdate', () {
@@ -88,10 +70,7 @@ void main() {
 
       final cameraMlUpdate = CameraUpdate.scrollBy(50.0, 75.0);
       expect(sbbCameraUpdate.toMaplibre(), isA<CameraUpdate>());
-      expect(
-        sbbCameraUpdate.toMaplibre().toJson(),
-        equals(cameraMlUpdate.toJson()),
-      );
+      expect(sbbCameraUpdate.toMaplibre().toJson(), equals(cameraMlUpdate.toJson()));
     });
 
     test('zoomIn creates correct CameraUpdate', () {
@@ -99,10 +78,7 @@ void main() {
 
       final cameraMlUpdate = CameraUpdate.zoomIn();
       expect(sbbCameraUpdate.toMaplibre(), isA<CameraUpdate>());
-      expect(
-        sbbCameraUpdate.toMaplibre().toJson(),
-        equals(cameraMlUpdate.toJson()),
-      );
+      expect(sbbCameraUpdate.toMaplibre().toJson(), equals(cameraMlUpdate.toJson()));
     });
 
     test('zoomOut creates correct CameraUpdate', () {
@@ -110,10 +86,7 @@ void main() {
 
       final cameraMlUpdate = CameraUpdate.zoomOut();
       expect(sbbCameraUpdate.toMaplibre(), isA<CameraUpdate>());
-      expect(
-        sbbCameraUpdate.toMaplibre().toJson(),
-        equals(cameraMlUpdate.toJson()),
-      );
+      expect(sbbCameraUpdate.toMaplibre().toJson(), equals(cameraMlUpdate.toJson()));
     });
 
     test('zoomTo creates correct CameraUpdate', () {
@@ -121,10 +94,7 @@ void main() {
 
       final cameraMlUpdate = CameraUpdate.zoomTo(testZoom);
       expect(sbbCameraUpdate.toMaplibre(), isA<CameraUpdate>());
-      expect(
-        sbbCameraUpdate.toMaplibre().toJson(),
-        equals(cameraMlUpdate.toJson()),
-      );
+      expect(sbbCameraUpdate.toMaplibre().toJson(), equals(cameraMlUpdate.toJson()));
     });
 
     test('bearingTo creates correct CameraUpdate', () {
@@ -132,10 +102,7 @@ void main() {
 
       final cameraMlUpdate = CameraUpdate.bearingTo(testBearing);
       expect(sbbCameraUpdate.toMaplibre(), isA<CameraUpdate>());
-      expect(
-        sbbCameraUpdate.toMaplibre().toJson(),
-        equals(cameraMlUpdate.toJson()),
-      );
+      expect(sbbCameraUpdate.toMaplibre().toJson(), equals(cameraMlUpdate.toJson()));
     });
   });
 }

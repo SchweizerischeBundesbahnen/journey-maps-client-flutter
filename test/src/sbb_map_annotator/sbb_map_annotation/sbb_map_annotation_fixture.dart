@@ -9,16 +9,13 @@ const Map<String, dynamic> fakeData = {'key': 'value'};
 final simpleSymbolFixture = SBBMapSymbol(symbolURI: fakeURI, coords: fakeCoords);
 
 const fakeRokasIconURI = RokasIcons.brightActiveBlackConstruction;
-final simpleRokasIconFixture = SBBRokasIcon(
-  symbolURI: fakeRokasIconURI,
-  coords: fakeCoords,
-);
+final simpleRokasIconFixture = SBBRokasIcon(symbolURI: fakeRokasIconURI, coords: fakeCoords);
 
 List<Object> createAnnotationFilter(String type) {
   return [
     '==',
     ['get', 'sbbAnnotationType'],
-    type
+    type,
   ];
 }
 
@@ -30,12 +27,7 @@ SBBMapCircle createCircleFixture({
   Map<String, dynamic>? data,
   bool draggable = false,
 }) {
-  return SBBMapCircle(
-    center: center,
-    style: style,
-    data: data,
-    draggable: draggable,
-  );
+  return SBBMapCircle(center: center, style: style, data: data, draggable: draggable);
 }
 
 SBBMapLine createLineFixture({
@@ -61,9 +53,10 @@ SBBMapFill createFillFixture({
   bool draggable = false,
 }) {
   return SBBMapFill(
-    coords: coords ??
+    coords:
+        coords ??
         [
-          [const LatLng(0, 0), const LatLng(0, 1), const LatLng(1, 1), const LatLng(1, 0)]
+          [const LatLng(0, 0), const LatLng(0, 1), const LatLng(1, 1), const LatLng(1, 0)],
         ],
     style: style,
     data: data,

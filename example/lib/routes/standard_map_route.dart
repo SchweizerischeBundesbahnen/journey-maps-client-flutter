@@ -15,10 +15,7 @@ class StandardMapRoute extends StatelessWidget {
     );
     return Scaffold(
       appBar: const SBBHeader(title: 'Standard'),
-      body: SBBMap(
-        isMyLocationEnabled: true,
-        mapStyler: mapStyler,
-      ),
+      body: SBBMap(isMyLocationEnabled: true, mapStyler: mapStyler),
     );
   }
 }

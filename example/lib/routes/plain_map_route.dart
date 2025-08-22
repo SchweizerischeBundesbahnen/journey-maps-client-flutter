@@ -15,11 +15,7 @@ class PlainMapRoute extends StatelessWidget {
     );
     return Scaffold(
       appBar: const SBBHeader(title: 'Plain'),
-      body: SBBMap(
-        mapStyler: mapStyler,
-        isMyLocationEnabled: false,
-        isFloorSwitchingEnabled: false,
-      ),
+      body: SBBMap(mapStyler: mapStyler, isMyLocationEnabled: false, isFloorSwitchingEnabled: false),
     );
   }
 }

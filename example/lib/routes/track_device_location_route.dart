@@ -33,27 +33,25 @@ class _TrackDeviceLocationRouteState extends State<TrackDeviceLocationRoute> {
         mapStyler: mapStyler,
         onMapLocatorAvailable: (locator) => locator.trackDeviceLocation(),
         onMapCreated: (c) => controller = c,
-        builder: (context) => Align(
-          alignment: Alignment.topRight,
-          child: Padding(
-            padding: const EdgeInsets.only(
-              top: sbbDefaultSpacing,
-              right: sbbDefaultSpacing / 2,
+        builder:
+            (context) => Align(
+              alignment: Alignment.topRight,
+              child: Padding(
+                padding: const EdgeInsets.only(top: sbbDefaultSpacing, right: sbbDefaultSpacing / 2),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    const SBBMapMyLocationButton(),
+                    const SizedBox(height: sbbDefaultSpacing),
+                    SBBMapIconButton(
+                      onPressed: () => controller.animateCameraMove(cameraUpdate: _kCameraZurich),
+                      icon: SBBIcons.station_small,
+                    ),
+                  ],
+                ),
+              ),
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                const SBBMapMyLocationButton(),
-                const SizedBox(height: sbbDefaultSpacing),
-                SBBMapIconButton(
-                  onPressed: () => controller.animateCameraMove(cameraUpdate: _kCameraZurich),
-                  icon: SBBIcons.station_small,
-                )
-              ],
-            ),
-          ),
-        ),
       ),
     );
   }
