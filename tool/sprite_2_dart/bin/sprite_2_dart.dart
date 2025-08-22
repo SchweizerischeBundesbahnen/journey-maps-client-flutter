@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:http/http.dart' as http;
 
 Future<void> main() async {
@@ -11,8 +12,9 @@ Future<void> main() async {
 
   bool isFirst = true;
   for (final path in rokasStyles) {
-    final json =
-        await fetchJsonFromUrl('https://journey-maps-tiles.geocdn.sbb.ch/styles/$path/sprite@2x.json?api_key=');
+    final json = await fetchJsonFromUrl(
+      'https://journey-maps-tiles.geocdn.sbb.ch/styles/$path/sprite@2x.json?api_key=',
+    );
     final iconNameToId = buildIconNameToIdMap(json);
     final uniqueIconNames = iconNameToId.keys.toSet();
     allIcons.addAll(iconNameToId);
