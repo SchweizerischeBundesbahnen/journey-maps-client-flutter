@@ -7,12 +7,12 @@ class SBBMapLineLayer implements SBBMapLayerProperties {
 
   @override
   LayerProperties makeLayerExpressions() => const LineLayerProperties(
-        lineJoin: [Expressions.get, 'lineJoin'],
-        lineOpacity: [Expressions.get, 'lineOpacity'],
-        lineColor: [Expressions.get, 'lineColor'],
-        lineWidth: [Expressions.get, 'lineWidth'],
-        lineGapWidth: [Expressions.get, 'lineGapWidth'],
-        lineOffset: [Expressions.get, 'lineOffset'],
-        lineBlur: [Expressions.get, 'lineBlur'],
-      );
+    lineJoin: [Expressions.get, 'lineJoin'],
+    lineOpacity: [Expressions.get, 'lineOpacity'],
+    lineColor: [Expressions.get, 'lineColor'],
+    lineWidth: [Expressions.get, 'lineWidth'],
+    lineGapWidth: [Expressions.get, 'lineGapWidth'],
+    lineOffset: [Expressions.get, 'lineOffset'],
+    lineBlur: [Expressions.get, 'lineBlur'],
+  );
 }

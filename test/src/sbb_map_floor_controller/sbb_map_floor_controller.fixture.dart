@@ -6,30 +6,22 @@ const threeFloorsFromThreeFeatures = [1, 0, -1];
 const threeFeatureWithThreeFloors = [
   {
     'type': 'Feature',
-    'properties': {
-      'floor_liststring': '1',
-    }
+    'properties': {'floor_liststring': '1'},
   },
   {
     'type': 'Feature',
-    'properties': {
-      'floor_liststring': '-1,1',
-    }
+    'properties': {'floor_liststring': '-1,1'},
   },
   {
     'type': 'Feature',
-    'properties': {
-      'floor_liststring': '-1,0',
-    }
-  }
+    'properties': {'floor_liststring': '-1,0'},
+  },
 ];
 const oneFeatureGroundAndFirstFloor = [
   {
     'type': 'Feature',
-    'properties': {
-      'floor_liststring': '0,1',
-    }
-  }
+    'properties': {'floor_liststring': '0,1'},
+  },
 ];
 
 /// Layers
@@ -45,21 +37,21 @@ const layer2Level0Filter = [
       'case',
       ['has', 'level'],
       ['get', 'level'],
-      0.0
+      0.0,
     ],
-    0.0
+    0.0,
   ],
   [
     '==',
     ['get', 'rail'],
-    1.0
+    1.0,
   ],
   [
     '==',
     ['get', 'class'],
-    'stop_position'
+    'stop_position',
   ],
-  ['has', 'platform']
+  ['has', 'platform'],
 ];
 const layer2Level1Filter = [
   'all',
@@ -69,19 +61,19 @@ const layer2Level1Filter = [
       'case',
       ['has', 'level'],
       ['get', 'level'],
-      0
+      0,
     ],
-    1
+    1,
   ],
   [
     '==',
     ['get', 'rail'],
-    1
+    1,
   ],
   [
     '==',
     ['get', 'class'],
-    'stop_position'
+    'stop_position',
   ],
-  ['has', 'platform']
+  ['has', 'platform'],
 ];

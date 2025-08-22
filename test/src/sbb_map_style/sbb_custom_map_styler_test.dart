@@ -12,9 +12,7 @@ void main() {
 
     group('Single Style', () {
       setUp(() {
-        sut = SBBCustomMapStyler(
-          styles: [fullWithApiKey],
-        );
+        sut = SBBCustomMapStyler(styles: [fullWithApiKey]);
         sut.addListener(spyListener.call);
       });
       tearDown(() {
@@ -48,9 +46,7 @@ void main() {
 
       test('currentStyleURI of styler with only bright style should return brightStyle after toggling dark mode', () {
         // arrange sut with bright only style
-        sut = SBBCustomMapStyler(
-          styles: [brightOnlyWithApiKey],
-        );
+        sut = SBBCustomMapStyler(styles: [brightOnlyWithApiKey]);
         sut.addListener(spyListener.call);
         // act
         sut.toggleDarkMode();
@@ -89,9 +85,7 @@ void main() {
 
     group('Two Styles', () {
       setUp(() {
-        sut = SBBCustomMapStyler(
-          styles: [fullWithApiKey, aerialWithApiKey],
-        );
+        sut = SBBCustomMapStyler(styles: [fullWithApiKey, aerialWithApiKey]);
         sut.addListener(spyListener.call);
       });
       tearDown(() {
@@ -116,10 +110,7 @@ void main() {
 
       test('initialStyle set to second should return styleURI of second style', () {
         // arrange sut with initial style set to second style
-        sut = SBBCustomMapStyler(
-          styles: [fullWithApiKey, aerialWithApiKey],
-          initialStyleId: aerialWithApiKey.id,
-        );
+        sut = SBBCustomMapStyler(styles: [fullWithApiKey, aerialWithApiKey], initialStyleId: aerialWithApiKey.id);
         // act
         final result = sut.currentStyleURI;
         // assert
@@ -139,10 +130,7 @@ void main() {
 
     group('Styler with aerial style', () {
       setUp(() {
-        sut = SBBCustomMapStyler(
-          styles: [fullWithApiKey],
-          aerialStyle: aerialWithApiKey,
-        );
+        sut = SBBCustomMapStyler(styles: [fullWithApiKey], aerialStyle: aerialWithApiKey);
         sut.addListener(spyListener.call);
       });
       tearDown(() {

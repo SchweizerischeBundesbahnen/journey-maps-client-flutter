@@ -34,10 +34,7 @@ class SBBMapFloorSelectorTile extends StatelessWidget {
 
     return Material(
       elevation: _kElevation,
-      borderRadius: _determineFirstOrLastBorder(
-        diameter: _kFloorSelectorWidth,
-        defaultRadius: Radius.zero,
-      ),
+      borderRadius: _determineFirstOrLastBorder(diameter: _kFloorSelectorWidth, defaultRadius: Radius.zero),
       shadowColor: resolvedStyle.shadowColor,
       color: resolvedStyle.backgroundColor,
       child: InkResponse(
@@ -73,20 +70,11 @@ class SBBMapFloorSelectorTile extends StatelessWidget {
   }
 
   /// enables drawing the first and last tile with a rounded border
-  BorderRadius _determineFirstOrLastBorder({
-    required double diameter,
-    required Radius defaultRadius,
-  }) {
+  BorderRadius _determineFirstOrLastBorder({required double diameter, required Radius defaultRadius}) {
     if (isFirst) {
-      return BorderRadius.vertical(
-        top: Radius.circular(diameter / 2),
-        bottom: defaultRadius,
-      );
+      return BorderRadius.vertical(top: Radius.circular(diameter / 2), bottom: defaultRadius);
     } else if (isLast) {
-      return BorderRadius.vertical(
-        top: defaultRadius,
-        bottom: Radius.circular(diameter / 2),
-      );
+      return BorderRadius.vertical(top: defaultRadius, bottom: Radius.circular(diameter / 2));
     } else {
       return BorderRadius.all(defaultRadius);
     }

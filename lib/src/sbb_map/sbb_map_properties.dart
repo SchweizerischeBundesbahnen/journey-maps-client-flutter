@@ -17,13 +17,13 @@ class SBBMapProperties {
 
   /// Sets all properties to false.
   const SBBMapProperties.allDisabled()
-      : this(
-          compassEnabled: false,
-          rotateGesturesEnabled: false,
-          scrollGesturesEnabled: false,
-          doubleClickZoomEnabled: false,
-          zoomGesturesEnabled: false,
-        );
+    : this(
+        compassEnabled: false,
+        rotateGesturesEnabled: false,
+        scrollGesturesEnabled: false,
+        doubleClickZoomEnabled: false,
+        zoomGesturesEnabled: false,
+      );
 
   /// Whether the compass of the map should be shown,
   /// once the camera is rotated.

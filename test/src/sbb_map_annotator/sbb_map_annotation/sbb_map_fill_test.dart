@@ -19,7 +19,7 @@ void main() {
             "type": "Polygon",
             "coordinates":
                 sut.coords.map((e) => e.map((LatLng latLng) => [latLng.longitude, latLng.latitude]).toList()).toList(),
-          }
+          },
         };
         // act + expect
         expect(sut.toGeoJson(), equals(expected));
@@ -42,7 +42,7 @@ void main() {
             "type": "Polygon",
             "coordinates":
                 sut.coords.map((e) => e.map((LatLng latLng) => [latLng.longitude, latLng.latitude]).toList()).toList(),
-          }
+          },
         };
         // act + expect
         expect(sut.toGeoJson(), equals(expected));
@@ -63,9 +63,11 @@ void main() {
         final sut = createFillFixture();
 
         // act
-        final result = sut.copyWith(coords: [
-          [const LatLng(0, 0), const LatLng(0, 1), const LatLng(1, 1), const LatLng(1, 0)]
-        ]);
+        final result = sut.copyWith(
+          coords: [
+            [const LatLng(0, 0), const LatLng(0, 1), const LatLng(1, 1), const LatLng(1, 0)],
+          ],
+        );
 
         // act + expect
         expect(identical(sut, result), equals(false));
@@ -111,7 +113,7 @@ void main() {
         // setup
         final sut = createFillFixture();
         final newCoords = [
-          [const LatLng(12.0, 22.0), const LatLng(13.0, 23.0)]
+          [const LatLng(12.0, 22.0), const LatLng(13.0, 23.0)],
         ];
 
         // act
@@ -140,12 +142,7 @@ void main() {
         final sut = createFillFixture();
 
         // expect
-        expect(
-          sut.annotationFilter,
-          equals(
-            createAnnotationFilter(sut.runtimeType.toString()),
-          ),
-        );
+        expect(sut.annotationFilter, equals(createAnnotationFilter(sut.runtimeType.toString())));
       });
     });
   });
@@ -194,14 +191,8 @@ void main() {
       final json = style.toJson();
 
       expect(json['fillOpacity'], 0.5);
-      expect(
-        json['fillColor'],
-        Colors.blue.toHexStringRGB(),
-      );
-      expect(
-        json['fillOutlineColor'],
-        Colors.green.toHexStringRGB(),
-      );
+      expect(json['fillColor'], Colors.blue.toHexStringRGB());
+      expect(json['fillOutlineColor'], Colors.green.toHexStringRGB());
       expect(json['fillPattern'], 'pattern-image');
     });
 

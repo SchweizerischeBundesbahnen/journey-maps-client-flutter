@@ -60,12 +60,12 @@ class _CameraRouteState extends State<CameraRoute> {
                   SBBTertiaryButtonSmall(
                     label: 'Zurich',
                     icon: SBBIcons.station_small,
-                    onPressed: () =>
-                        mapController.future.then((c) => c.animateCameraMove(cameraUpdate: _kCameraZurich)),
-                  )
+                    onPressed:
+                        () => mapController.future.then((c) => c.animateCameraMove(cameraUpdate: _kCameraZurich)),
+                  ),
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),

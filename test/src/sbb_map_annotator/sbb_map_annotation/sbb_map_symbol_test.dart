@@ -13,13 +13,8 @@ void main() {
         final expected = {
           "type": "Feature",
           "id": sut.id,
-          "properties": {
-            "id": sut.id,
-            "iconImage": fakeURI,
-            "draggable": false,
-            "sbbAnnotationType": "SBBMapSymbol",
-          },
-          "geometry": {"type": "Point", "coordinates": fakeCoords.toGeoJsonCoordinates()}
+          "properties": {"id": sut.id, "iconImage": fakeURI, "draggable": false, "sbbAnnotationType": "SBBMapSymbol"},
+          "geometry": {"type": "Point", "coordinates": fakeCoords.toGeoJsonCoordinates()},
         };
         // act + expect
         expect(sut.toGeoJson(), equals(expected));
@@ -46,7 +41,7 @@ void main() {
             "textField": text,
             "sbbAnnotationType": "SBBMapSymbol",
           },
-          "geometry": {"type": "Point", "coordinates": fakeCoords.toGeoJsonCoordinates()}
+          "geometry": {"type": "Point", "coordinates": fakeCoords.toGeoJsonCoordinates()},
         };
         // act + expect
         expect(sut.toGeoJson(), equals(expected));
@@ -122,18 +117,8 @@ void main() {
       });
       test('should not be same if more annotated', () {
         // setup
-        final sut = SBBMapSymbol(
-          symbolURI: fakeURI,
-          coords: fakeCoords,
-          text: 'someText',
-          data: {'hello': 'world'},
-        );
-        final other = SBBMapSymbol(
-          symbolURI: fakeURI,
-          coords: fakeCoords,
-          text: 'someText',
-          data: {'hello': 'world'},
-        );
+        final sut = SBBMapSymbol(symbolURI: fakeURI, coords: fakeCoords, text: 'someText', data: {'hello': 'world'});
+        final other = SBBMapSymbol(symbolURI: fakeURI, coords: fakeCoords, text: 'someText', data: {'hello': 'world'});
 
         // expect
         expect(sut.id, isNot(equals(other.id)));
@@ -145,12 +130,7 @@ void main() {
         final sut = simpleSymbolFixture;
 
         // expect
-        expect(
-          sut.annotationFilter,
-          equals(
-            createAnnotationFilter(sut.runtimeType.toString()),
-          ),
-        );
+        expect(sut.annotationFilter, equals(createAnnotationFilter(sut.runtimeType.toString())));
       });
     });
   });
@@ -167,10 +147,11 @@ void main() {
       test('should return fixed json', () {
         // setup
         const sut = SBBMapSymbolStyle(
-            iconOffset: Offset(10.0, 20.0),
-            iconAnchor: 'center',
-            fontNames: ["Arial", "Helvetica", "Sans-serif"],
-            textSize: 16.0);
+          iconOffset: Offset(10.0, 20.0),
+          iconAnchor: 'center',
+          fontNames: ["Arial", "Helvetica", "Sans-serif"],
+          textSize: 16.0,
+        );
 
         const expected = {
           "iconOffset": [10.0, 20.0],
@@ -209,27 +190,16 @@ void main() {
         const other = SBBMapSymbolStyle(iconAnchor: 'center');
 
         //act + expect
-        expect(
-            sut.copyWith(other),
-            equals(
-              const SBBMapSymbolStyle(textAnchor: 'center', iconAnchor: 'center'),
-            ));
+        expect(sut.copyWith(other), equals(const SBBMapSymbolStyle(textAnchor: 'center', iconAnchor: 'center')));
       });
 
       test('should override src properties from copy', () {
         // setup
-        const sut = SBBMapSymbolStyle(
-          iconAnchor: 'center',
-          textColor: Colors.black,
-        );
+        const sut = SBBMapSymbolStyle(iconAnchor: 'center', textColor: Colors.black);
         const other = SBBMapSymbolStyle(iconAnchor: 'topLeft');
 
         //act + expect
-        expect(
-            sut.copyWith(other),
-            equals(
-              const SBBMapSymbolStyle(textColor: Colors.black, iconAnchor: 'topLeft'),
-            ));
+        expect(sut.copyWith(other), equals(const SBBMapSymbolStyle(textColor: Colors.black, iconAnchor: 'topLeft')));
       });
     });
   });

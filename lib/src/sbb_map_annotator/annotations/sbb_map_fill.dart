@@ -15,9 +15,9 @@ class SBBMapFill implements SBBMapAnnotation {
     this.style,
     required bool draggable,
     this.data,
-  })  : _id = id,
-        _coords = coords,
-        _draggable = draggable;
+  }) : _id = id,
+       _coords = coords,
+       _draggable = draggable;
 
   /// A fill to be placed in a [SBBMap].
   ///
@@ -33,13 +33,7 @@ class SBBMapFill implements SBBMapAnnotation {
     SBBMapFillStyle? style,
     Map<String, dynamic>? data,
     bool draggable = false,
-  }) : this._(
-          id: randomString(),
-          coords: coords,
-          style: style,
-          draggable: draggable,
-          data: data,
-        );
+  }) : this._(id: randomString(), coords: coords, style: style, draggable: draggable, data: data);
 
   @override
   String get id => _id;
@@ -51,11 +45,7 @@ class SBBMapFill implements SBBMapAnnotation {
   @override
   Map<String, dynamic> toGeoJson() {
     final properties = style != null ? style!.toJson() : <String, dynamic>{};
-    properties.addAll({
-      "id": _id,
-      "draggable": _draggable,
-      "sbbAnnotationType": runtimeType.toString(),
-    });
+    properties.addAll({"id": _id, "draggable": _draggable, "sbbAnnotationType": runtimeType.toString()});
 
     return {
       "type": "Feature",
@@ -63,9 +53,13 @@ class SBBMapFill implements SBBMapAnnotation {
       "properties": properties,
       "geometry": {
         "type": "Polygon",
-        "coordinates": _coords
-            .map((List<LatLng> latLngList) => latLngList.map((LatLng latLng) => latLng.toGeoJsonCoordinates()).toList())
-            .toList()
+        "coordinates":
+            _coords
+                .map(
+                  (List<LatLng> latLngList) =>
+                      latLngList.map((LatLng latLng) => latLng.toGeoJsonCoordinates()).toList(),
+                )
+                .toList(),
       },
     };
   }
@@ -104,16 +98,16 @@ class SBBMapFill implements SBBMapAnnotation {
       const DeepCollectionEquality().hash(_coords),
       style.hashCode,
       _draggable.hashCode,
-      const MapEquality().hash(data)
+      const MapEquality().hash(data),
     ]);
   }
 
   @override
   List<Object> get annotationFilter => [
-        Expressions.equal,
-        [Expressions.get, _kPropertyTypeKey],
-        runtimeType.toString()
-      ];
+    Expressions.equal,
+    [Expressions.get, _kPropertyTypeKey],
+    runtimeType.toString(),
+  ];
 }
 
 class SBBMapFillStyle {
@@ -146,12 +140,7 @@ class SBBMapFillStyle {
   /// at integer zoom levels.
   final String? fillPattern;
 
-  const SBBMapFillStyle({
-    this.fillOpacity,
-    this.fillColor,
-    this.fillOutlineColor,
-    this.fillPattern,
-  });
+  const SBBMapFillStyle({this.fillOpacity, this.fillColor, this.fillOutlineColor, this.fillPattern});
 
   SBBMapFillStyle copyWith(SBBMapFillStyle other) {
     return SBBMapFillStyle(
@@ -184,11 +173,6 @@ class SBBMapFillStyle {
 
   @override
   int get hashCode {
-    return Object.hash(
-      fillOpacity,
-      fillColor,
-      fillOutlineColor,
-      fillPattern,
-    );
+    return Object.hash(fillOpacity, fillColor, fillOutlineColor, fillPattern);
   }
 }

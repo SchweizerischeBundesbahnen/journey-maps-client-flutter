@@ -7,39 +7,20 @@ class SBBMapStyle {
   final String? _apiKey;
   final String _darkStyleURI;
 
-  const SBBMapStyle._(
-    this._id,
-    this._brightStyleURI,
-    this._apiKey,
-    this._darkStyleURI,
-  );
+  const SBBMapStyle._(this._id, this._brightStyleURI, this._apiKey, this._darkStyleURI);
 
   /// Will create a new [SBBMapStyle] with the given [id] and [brightStyleURL].
   ///
   /// The [darkStyleURL] is optional and defaults to [brightStyleURL].
   /// If an [apiKey] is given, the [uri] will contain the API key as query parameter.
-  const SBBMapStyle.fromURL({
-    required String id,
-    required String brightStyleURL,
-    String? apiKey,
-    String? darkStyleURL,
-  }) : this._(
-          id,
-          brightStyleURL,
-          apiKey,
-          darkStyleURL ?? brightStyleURL,
-        );
+  const SBBMapStyle.fromURL({required String id, required String brightStyleURL, String? apiKey, String? darkStyleURL})
+    : this._(id, brightStyleURL, apiKey, darkStyleURL ?? brightStyleURL);
 
   const SBBMapStyle.fromLocalAsset({
     required String id,
     required String brightStyleRelativePath,
     String? darkStyleRelativePath,
-  }) : this._(
-          id,
-          brightStyleRelativePath,
-          null,
-          darkStyleRelativePath ?? brightStyleRelativePath,
-        );
+  }) : this._(id, brightStyleRelativePath, null, darkStyleRelativePath ?? brightStyleRelativePath);
 
   /// The URI of the style depending on the [isDarkStyle].
   ///

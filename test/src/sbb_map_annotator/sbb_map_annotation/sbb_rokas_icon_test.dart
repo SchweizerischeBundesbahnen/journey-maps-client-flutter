@@ -19,7 +19,7 @@ void main() {
             "draggable": false,
             "sbbAnnotationType": "SBBRokasIcon",
           },
-          "geometry": {"type": "Point", "coordinates": fakeCoords.toGeoJsonCoordinates()}
+          "geometry": {"type": "Point", "coordinates": fakeCoords.toGeoJsonCoordinates()},
         };
         // act + expect
         expect(sut.toGeoJson(), equals(expected));
@@ -44,12 +44,7 @@ void main() {
         final sut = simpleRokasIconFixture;
 
         // expect
-        expect(
-          sut.annotationFilter,
-          equals(
-            createAnnotationFilter(sut.runtimeType.toString()),
-          ),
-        );
+        expect(sut.annotationFilter, equals(createAnnotationFilter(sut.runtimeType.toString())));
       });
     });
 

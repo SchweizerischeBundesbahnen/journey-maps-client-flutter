@@ -14,9 +14,9 @@ const featureCollectionFixtureGeneralJSON = {
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [40.0, 0.5]
+        "coordinates": [40.0, 0.5],
       },
-      "properties": {"name": "Example Point"}
+      "properties": {"name": "Example Point"},
     },
     {
       "type": "Feature",
@@ -26,10 +26,10 @@ const featureCollectionFixtureGeneralJSON = {
           [40.0, 0.0],
           [41.0, 1.0],
           [42.0, 2.0],
-          [43.0, 3.0]
-        ]
+          [43.0, 3.0],
+        ],
       },
-      "properties": {"name": "Example LineString"}
+      "properties": {"name": "Example LineString"},
     },
     {
       "type": "Feature",
@@ -41,75 +41,60 @@ const featureCollectionFixtureGeneralJSON = {
             [41.0, 0.0],
             [41.0, 1.0],
             [40.0, 1.0],
-            [40.0, 0.0]
-          ]
-        ]
+            [40.0, 0.0],
+          ],
+        ],
       },
-      "properties": {"name": "Example Polygon"}
-    }
+      "properties": {"name": "Example Polygon"},
+    },
   ],
-  "bbox": [0.0, 40.0, 1.0, 41.0]
+  "bbox": [0.0, 40.0, 1.0, 41.0],
 };
 
-const featureCollectionFixtureGeneral = FeatureCollection(features: [
-  Feature(
+const featureCollectionFixtureGeneral = FeatureCollection(
+  features: [
+    Feature(
       geometry: Point(coordinates: LatLng(0.5, 40.0)),
       geometryType: GeometryType.point,
-      properties: {"name": "Example Point"}),
-  Feature(
-      geometry: LineString(coordinates: [
-        LatLng(0.0, 40.0),
-        LatLng(1.0, 41.0),
-        LatLng(2.0, 42.0),
-        LatLng(3.0, 43.0),
-      ]),
+      properties: {"name": "Example Point"},
+    ),
+    Feature(
+      geometry: LineString(coordinates: [LatLng(0.0, 40.0), LatLng(1.0, 41.0), LatLng(2.0, 42.0), LatLng(3.0, 43.0)]),
       geometryType: GeometryType.lineString,
-      properties: {"name": "Example LineString"}),
-  Feature(
-      geometry: Polygon(coordinates: [
-        [
-          LatLng(0.0, 40.0),
-          LatLng(0.0, 41.0),
-          LatLng(1.0, 41.0),
-          LatLng(1.0, 40.0),
-          LatLng(0.0, 40.0),
-        ]
-      ]),
+      properties: {"name": "Example LineString"},
+    ),
+    Feature(
+      geometry: Polygon(
+        coordinates: [
+          [LatLng(0.0, 40.0), LatLng(0.0, 41.0), LatLng(1.0, 41.0), LatLng(1.0, 40.0), LatLng(0.0, 40.0)],
+        ],
+      ),
       geometryType: GeometryType.polygon,
-      properties: {"name": "Example Polygon"}),
-], bbox: [
-  0.0,
-  40.0,
-  1.0,
-  41.0
-]);
+      properties: {"name": "Example Polygon"},
+    ),
+  ],
+  bbox: [0.0, 40.0, 1.0, 41.0],
+);
 
 final pointAnnotationFixtureGeneral = SBBMapCircle(center: const LatLng(102.0, 0.5));
-final lineAnnotationFixtureGeneral = SBBMapLine(vertices: [
-  const LatLng(40.0, 0.0),
-  const LatLng(41.0, 1.0),
-  const LatLng(42.0, 0.0),
-  const LatLng(43.0, 1.0),
-]);
-final polygonAnnotationFixtureGeneral = SBBMapFill(coords: [
-  [
-    const LatLng(40.0, 0.0),
-    const LatLng(41.0, 0.0),
-    const LatLng(41.0, 1.0),
-    const LatLng(40.0, 1.0),
-    const LatLng(40.0, 0.0),
-  ]
-]);
-
-const lineStyleFixtureCurrentFloor = SBBMapLineStyle(
-  lineColor: SBBMapColors.sky,
-  lineWidth: 5,
+final lineAnnotationFixtureGeneral = SBBMapLine(
+  vertices: [const LatLng(40.0, 0.0), const LatLng(41.0, 1.0), const LatLng(42.0, 0.0), const LatLng(43.0, 1.0)],
+);
+final polygonAnnotationFixtureGeneral = SBBMapFill(
+  coords: [
+    [
+      const LatLng(40.0, 0.0),
+      const LatLng(41.0, 0.0),
+      const LatLng(41.0, 1.0),
+      const LatLng(40.0, 1.0),
+      const LatLng(40.0, 0.0),
+    ],
+  ],
 );
 
-const lineStyleFixtureOtherFloors = SBBMapLineStyle(
-  lineColor: SBBMapColors.smoke,
-  lineWidth: 5,
-);
+const lineStyleFixtureCurrentFloor = SBBMapLineStyle(lineColor: SBBMapColors.sky, lineWidth: 5);
+
+const lineStyleFixtureOtherFloors = SBBMapLineStyle(lineColor: SBBMapColors.smoke, lineWidth: 5);
 
 const featureCollectionFixtureSBBJSON = {
   "type": "FeatureCollection",
@@ -118,7 +103,7 @@ const featureCollectionFixtureSBBJSON = {
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [7.54268921098, 47.20419250288]
+        "coordinates": [7.54268921098, 47.20419250288],
       },
       "properties": {
         "endpointType": "from",
@@ -126,15 +111,15 @@ const featureCollectionFixtureSBBJSON = {
         "transportType": "",
         "label": "Solothurn",
         "distanceInMeter": 975,
-        "type": "endpoint"
+        "type": "endpoint",
       },
-      "id": null
+      "id": null,
     },
     {
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [7.53194915011, 47.20671728842]
+        "coordinates": [7.53194915011, 47.20671728842],
       },
       "properties": {
         "endpointType": "to",
@@ -142,9 +127,9 @@ const featureCollectionFixtureSBBJSON = {
         "transportType": "",
         "label": "Solothurn West",
         "distanceInMeter": 975,
-        "type": "endpoint"
+        "type": "endpoint",
       },
-      "id": null
+      "id": null,
     },
     {
       "type": "Feature",
@@ -154,7 +139,7 @@ const featureCollectionFixtureSBBJSON = {
           [7.542682938487567, 47.204188655990855],
           [7.5426226891142525, 47.20417602654045],
           [7.542558335092475, 47.20416703462801],
-        ]
+        ],
       },
       "properties": {
         "stationLevels": [0, -1],
@@ -166,7 +151,7 @@ const featureCollectionFixtureSBBJSON = {
           "id": 8500207,
           "distanceInMeter": 975,
           "platform": "Solothurn",
-          "longitude": 7.54268921098
+          "longitude": 7.54268921098,
         },
         "station_to": {
           "durationInSeconds": 988,
@@ -176,22 +161,22 @@ const featureCollectionFixtureSBBJSON = {
           "id": 8500206,
           "distanceInMeter": 975,
           "platform": "Solothurn West",
-          "longitude": 7.53194915011
+          "longitude": 7.53194915011,
         },
         "step": 1,
         "type": "path",
         "pathType": "walk_indoor",
         "floor": 0,
         "routeStartLevel": 0,
-        "layer": 0
+        "layer": 0,
       },
-      "id": null
+      "id": null,
     },
     {
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [7.5419544894522605, 47.20421359527064]
+        "coordinates": [7.5419544894522605, 47.20421359527064],
       },
       "properties": {
         "travelType": "RAMP",
@@ -204,7 +189,7 @@ const featureCollectionFixtureSBBJSON = {
           "id": 8500207,
           "distanceInMeter": 975,
           "platform": "Solothurn",
-          "longitude": 7.54268921098
+          "longitude": 7.54268921098,
         },
         "station_to": {
           "durationInSeconds": 988,
@@ -214,7 +199,7 @@ const featureCollectionFixtureSBBJSON = {
           "id": 8500206,
           "distanceInMeter": 975,
           "platform": "Solothurn West",
-          "longitude": 7.53194915011
+          "longitude": 7.53194915011,
         },
         "step": 2,
         "placement": "SOUTHWEST",
@@ -222,9 +207,9 @@ const featureCollectionFixtureSBBJSON = {
         "type": "path",
         "pathType": "leit_poi",
         "floor": 0,
-        "direction": "downstairs"
+        "direction": "downstairs",
       },
-      "id": null
+      "id": null,
     },
     {
       "type": "Feature",
@@ -233,8 +218,8 @@ const featureCollectionFixtureSBBJSON = {
         "coordinates": [
           [7.5419544894522605, 47.20421359527064],
           [7.54193680380646, 47.204295937872764],
-          [7.5419094466869945, 47.20438482047204]
-        ]
+          [7.5419094466869945, 47.20438482047204],
+        ],
       },
       "properties": {
         "station_from": {
@@ -245,7 +230,7 @@ const featureCollectionFixtureSBBJSON = {
           "id": 8500207,
           "distanceInMeter": 975,
           "platform": "Solothurn",
-          "longitude": 7.54268921098
+          "longitude": 7.54268921098,
         },
         "station_to": {
           "durationInSeconds": 988,
@@ -255,21 +240,21 @@ const featureCollectionFixtureSBBJSON = {
           "id": 8500206,
           "distanceInMeter": 975,
           "platform": "Solothurn West",
-          "longitude": 7.53194915011
+          "longitude": 7.53194915011,
         },
         "step": 3,
         "type": "path",
         "pathType": "walk",
         "floor": -1,
-        "layer": -1
+        "layer": -1,
       },
-      "id": null
+      "id": null,
     },
     {
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [7.541558052762115, 47.20464413456318]
+        "coordinates": [7.541558052762115, 47.20464413456318],
       },
       "properties": {
         "travelType": "RAMP",
@@ -282,7 +267,7 @@ const featureCollectionFixtureSBBJSON = {
           "id": 8500207,
           "distanceInMeter": 975,
           "platform": "Solothurn",
-          "longitude": 7.54268921098
+          "longitude": 7.54268921098,
         },
         "station_to": {
           "durationInSeconds": 988,
@@ -292,7 +277,7 @@ const featureCollectionFixtureSBBJSON = {
           "id": 8500206,
           "distanceInMeter": 975,
           "platform": "Solothurn West",
-          "longitude": 7.53194915011
+          "longitude": 7.53194915011,
         },
         "step": 4,
         "placement": "SOUTHEAST",
@@ -300,9 +285,9 @@ const featureCollectionFixtureSBBJSON = {
         "type": "path",
         "pathType": "leit_poi",
         "floor": -1,
-        "direction": "upstairs"
+        "direction": "upstairs",
       },
-      "id": null
+      "id": null,
     },
     {
       "type": "Feature",
@@ -312,7 +297,7 @@ const featureCollectionFixtureSBBJSON = {
           [7.541558052762115, 47.20464413456318],
           [7.541442314083994, 47.20465373004942],
           [7.541410316720975, 47.204660686974485],
-        ]
+        ],
       },
       "properties": {
         "station_from": {
@@ -323,7 +308,7 @@ const featureCollectionFixtureSBBJSON = {
           "id": 8500207,
           "distanceInMeter": 975,
           "platform": "Solothurn",
-          "longitude": 7.54268921098
+          "longitude": 7.54268921098,
         },
         "station_to": {
           "durationInSeconds": 988,
@@ -333,16 +318,16 @@ const featureCollectionFixtureSBBJSON = {
           "id": 8500206,
           "distanceInMeter": 975,
           "platform": "Solothurn West",
-          "longitude": 7.53194915011
+          "longitude": 7.53194915011,
         },
         "step": 5,
         "type": "path",
         "pathType": "walk",
         "floor": 0,
-        "layer": 0
+        "layer": 0,
       },
-      "id": null
-    }
+      "id": null,
+    },
   ],
-  "bbox": [7.532241111213004, 47.20412512135358, 7.542682938487567, 47.20672317314559]
+  "bbox": [7.532241111213004, 47.20412512135358, 7.542682938487567, 47.20672317314559],
 };

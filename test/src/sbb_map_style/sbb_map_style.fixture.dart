@@ -8,20 +8,9 @@ const darkStyleURL = 'dark_uri';
 const aerialStyleURL = 'aerial_uri';
 const apiKey = 'bright_key';
 
-const brightOnlyWithoutApiKey = SBBMapStyle.fromURL(
-  id: brightId,
-  brightStyleURL: brightStyleURL,
-);
-const brightOnlyWithApiKey = SBBMapStyle.fromURL(
-  id: brightId,
-  brightStyleURL: brightStyleURL,
-  apiKey: apiKey,
-);
-const fullWithoutApiKey = SBBMapStyle.fromURL(
-  id: darkId,
-  brightStyleURL: brightStyleURL,
-  darkStyleURL: darkStyleURL,
-);
+const brightOnlyWithoutApiKey = SBBMapStyle.fromURL(id: brightId, brightStyleURL: brightStyleURL);
+const brightOnlyWithApiKey = SBBMapStyle.fromURL(id: brightId, brightStyleURL: brightStyleURL, apiKey: apiKey);
+const fullWithoutApiKey = SBBMapStyle.fromURL(id: darkId, brightStyleURL: brightStyleURL, darkStyleURL: darkStyleURL);
 const fullWithApiKey = SBBMapStyle.fromURL(
   id: darkId,
   brightStyleURL: brightStyleURL,
@@ -29,8 +18,4 @@ const fullWithApiKey = SBBMapStyle.fromURL(
   apiKey: apiKey,
 );
 
-const aerialWithApiKey = SBBMapStyle.fromURL(
-  id: aerialId,
-  brightStyleURL: aerialStyleURL,
-  apiKey: apiKey,
-);
+const aerialWithApiKey = SBBMapStyle.fromURL(id: aerialId, brightStyleURL: aerialStyleURL, apiKey: apiKey);

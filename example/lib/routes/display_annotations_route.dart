@@ -44,28 +44,33 @@ final Map<String, List<SBBMapAnnotation>> _annotations = {
     SBBMapCircle(center: const LatLng(46.9513, 7.44533)),
   ],
   _kLines: [
-    SBBMapLine(vertices: [
-      const LatLng(46.94908, 7.43819),
-      const LatLng(46.94773, 7.43034),
-      const LatLng(46.9513, 7.42317),
-      const LatLng(46.95186, 7.41924),
-      const LatLng(46.95094, 7.41654),
-      const LatLng(46.94399, 7.40602),
-    ], style: const SBBMapLineStyle(lineColor: SBBColors.green, lineWidth: 5.0))
+    SBBMapLine(
+      vertices: [
+        const LatLng(46.94908, 7.43819),
+        const LatLng(46.94773, 7.43034),
+        const LatLng(46.9513, 7.42317),
+        const LatLng(46.95186, 7.41924),
+        const LatLng(46.95094, 7.41654),
+        const LatLng(46.94399, 7.40602),
+      ],
+      style: const SBBMapLineStyle(lineColor: SBBColors.green, lineWidth: 5.0),
+    ),
   ],
   _kFills: [
-    SBBMapFill(coords: [
-      [
-        const LatLng(46.94549, 7.42021),
-        const LatLng(46.94486, 7.42064),
-        const LatLng(46.94515, 7.42233),
-        const LatLng(46.94669, 7.42583),
-        const LatLng(46.94757, 7.42845),
-        const LatLng(46.9496, 7.42459),
-        const LatLng(46.94685, 7.42126),
-      ]
-    ])
-  ]
+    SBBMapFill(
+      coords: [
+        [
+          const LatLng(46.94549, 7.42021),
+          const LatLng(46.94486, 7.42064),
+          const LatLng(46.94515, 7.42233),
+          const LatLng(46.94669, 7.42583),
+          const LatLng(46.94757, 7.42845),
+          const LatLng(46.9496, 7.42459),
+          const LatLng(46.94685, 7.42126),
+        ],
+      ],
+    ),
+  ],
 };
 
 class DisplayAnnotationsRoute extends StatefulWidget {
@@ -110,51 +115,48 @@ class _DisplayAnnotationsRouteState extends State<DisplayAnnotationsRoute> {
         isMyLocationEnabled: false,
         isFloorSwitchingEnabled: true,
         onMapAnnotatorAvailable: (annotator) => !_annotator.isCompleted ? _annotator.complete(annotator) : null,
-        builder: (context) => Align(
-          alignment: Alignment.topRight,
-          child: Padding(
-            padding: const EdgeInsets.all(sbbDefaultSpacing),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                const SBBMapStyleSwitcher(),
-                const SizedBox(height: sbbDefaultSpacing),
-                SBBMapIconButton(
-                  onPressed: () {
-                    showSBBModalSheet<_AnnotationVisibilitySettings>(
-                      context: context,
-                      title: 'Show Annotations',
-                      child: _AnnotationVisibilitySettingModal(settings: properties),
-                    ).then(_setStateWithProperties);
-                  },
-                  icon: SBBIcons.gears_small,
+        builder:
+            (context) => Align(
+              alignment: Alignment.topRight,
+              child: Padding(
+                padding: const EdgeInsets.all(sbbDefaultSpacing),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    const SBBMapStyleSwitcher(),
+                    const SizedBox(height: sbbDefaultSpacing),
+                    SBBMapIconButton(
+                      onPressed: () {
+                        showSBBModalSheet<_AnnotationVisibilitySettings>(
+                          context: context,
+                          title: 'Show Annotations',
+                          child: _AnnotationVisibilitySettingModal(settings: properties),
+                        ).then(_setStateWithProperties);
+                      },
+                      icon: SBBIcons.gears_small,
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
-          ),
-        ),
       ),
     );
   }
 
   void _setStateWithProperties(_AnnotationVisibilitySettings? properties) {
-    setState(
-      () {
-        if (properties != null) {
-          this.properties = properties;
-          _loadAnnotationsFrom(properties);
-        }
-      },
-    );
+    setState(() {
+      if (properties != null) {
+        this.properties = properties;
+        _loadAnnotationsFrom(properties);
+      }
+    });
   }
 
   Future<void> _addIconToAnnotator(String imageId, String imageURI) async {
     final ByteData bytes = await rootBundle.load(imageURI);
     final Uint8List imageBytes = bytes.buffer.asUint8List();
-    _annotator.future.then(
-      (a) => a.addImage(imageId: imageId, imageBytes: imageBytes),
-    );
+    _annotator.future.then((a) => a.addImage(imageId: imageId, imageBytes: imageBytes));
   }
 
   void _loadAnnotationsFrom(_AnnotationVisibilitySettings properties) {
@@ -204,10 +206,7 @@ class _AnnotationVisibilitySettingModalState extends State<_AnnotationVisibility
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        vertical: sbbDefaultSpacing,
-        horizontal: sbbDefaultSpacing,
-      ),
+      padding: const EdgeInsets.symmetric(vertical: sbbDefaultSpacing, horizontal: sbbDefaultSpacing),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -215,41 +214,46 @@ class _AnnotationVisibilitySettingModalState extends State<_AnnotationVisibility
             value: settings.isCustomSymbolVisible,
             label: 'Show Symbols',
             secondaryLabel: 'Show custom symbol annotations around Bern.',
-            onChanged: (v) => setState(() {
-              settings.isCustomSymbolVisible = !settings.isCustomSymbolVisible;
-            }),
+            onChanged:
+                (v) => setState(() {
+                  settings.isCustomSymbolVisible = !settings.isCustomSymbolVisible;
+                }),
           ),
           SBBCheckboxListItem(
             value: settings.isRokasIconVisible,
             label: 'Show SBB Rokas Symbols',
             secondaryLabel: 'Show SBB Rokas symbols around Wankdorf stadium.',
-            onChanged: (v) => setState(() {
-              settings.isRokasIconVisible = !settings.isRokasIconVisible;
-            }),
+            onChanged:
+                (v) => setState(() {
+                  settings.isRokasIconVisible = !settings.isRokasIconVisible;
+                }),
           ),
           SBBCheckboxListItem(
             value: settings.isCircleVisible,
             label: 'Show Circles',
             secondaryLabel: 'Display circle annotations between Lorrainebrücke and Kornhausbrücke.',
-            onChanged: (v) => setState(() {
-              settings.isCircleVisible = !settings.isCircleVisible;
-            }),
+            onChanged:
+                (v) => setState(() {
+                  settings.isCircleVisible = !settings.isCircleVisible;
+                }),
           ),
           SBBCheckboxListItem(
             value: settings.isLineVisible,
             label: 'Show Lines',
             secondaryLabel: 'Display line annotations between Bern Bahnhof and Bern Europaplatz.',
-            onChanged: (v) => setState(() {
-              settings.isLineVisible = !settings.isLineVisible;
-            }),
+            onChanged:
+                (v) => setState(() {
+                  settings.isLineVisible = !settings.isLineVisible;
+                }),
           ),
           SBBCheckboxListItem(
             value: settings.isFillVisible,
             label: 'Show Fills',
             secondaryLabel: 'Display fill annotation at Bern Inselspital.',
-            onChanged: (v) => setState(() {
-              settings.isFillVisible = !settings.isFillVisible;
-            }),
+            onChanged:
+                (v) => setState(() {
+                  settings.isFillVisible = !settings.isFillVisible;
+                }),
             isLastElement: true,
           ),
           const SizedBox(height: sbbDefaultSpacing),

@@ -26,10 +26,10 @@ class SBBMapSymbol implements SBBMapAnnotation {
     this.style,
     this.data,
     required bool draggable,
-  })  : _id = id,
-        _symbolURI = symbolURI,
-        _text = text,
-        _draggable = draggable;
+  }) : _id = id,
+       _symbolURI = symbolURI,
+       _text = text,
+       _draggable = draggable;
 
   /// A symbol to be placed in a [SBBMap].
   ///
@@ -49,14 +49,14 @@ class SBBMapSymbol implements SBBMapAnnotation {
     Map<String, dynamic>? data,
     bool draggable = false,
   }) : this._(
-          id: randomString(),
-          symbolURI: symbolURI,
-          coords: coords,
-          text: text,
-          style: style,
-          data: data,
-          draggable: draggable,
-        );
+         id: randomString(),
+         symbolURI: symbolURI,
+         coords: coords,
+         text: text,
+         style: style,
+         data: data,
+         draggable: draggable,
+       );
 
   @override
   String get id => _id;
@@ -67,7 +67,7 @@ class SBBMapSymbol implements SBBMapAnnotation {
       "type": "Feature",
       "id": id,
       "properties": _buildFeaturePropertiesFromStyle(),
-      "geometry": {"type": "Point", "coordinates": coords.toGeoJsonCoordinates()}
+      "geometry": {"type": "Point", "coordinates": coords.toGeoJsonCoordinates()},
     };
   }
 
@@ -126,16 +126,16 @@ class SBBMapSymbol implements SBBMapAnnotation {
       coords.hashCode,
       style.hashCode,
       _draggable.hashCode,
-      const MapEquality().hash(data)
+      const MapEquality().hash(data),
     ]);
   }
 
   @override
   List<Object> get annotationFilter => [
-        Expressions.equal,
-        [Expressions.get, _kPropertyTypeKey],
-        runtimeType.toString()
-      ];
+    Expressions.equal,
+    [Expressions.get, _kPropertyTypeKey],
+    runtimeType.toString(),
+  ];
 }
 
 /// Configuration options for [SBBMapSymbol] instances.
@@ -355,7 +355,7 @@ class SBBMapSymbolStyle {
       if (iconSize != null) ...{'iconSize': iconSize},
       if (iconRotate != null) ...{'iconRotate': iconRotate},
       if (iconOffset != null) ...{
-        'iconOffset': [iconOffset!.dx, iconOffset!.dy]
+        'iconOffset': [iconOffset!.dx, iconOffset!.dy],
       },
       if (iconAnchor != null) ...{'iconAnchor': iconAnchor},
       if (fontNames != null) ...{'fontNames': fontNames},
@@ -367,7 +367,7 @@ class SBBMapSymbolStyle {
       if (textRotate != null) ...{'textRotate': textRotate},
       if (textTransform != null) ...{'textTransform': textTransform},
       if (textOffset != null) ...{
-        'textOffset': [textOffset!.dx, textOffset!.dy]
+        'textOffset': [textOffset!.dx, textOffset!.dy],
       },
       if (iconOpacity != null) ...{'iconOpacity': iconOpacity},
       if (iconColor != null) ...{'iconColor': iconColor!.toHexStringRGB()},

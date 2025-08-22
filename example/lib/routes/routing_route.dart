@@ -49,7 +49,7 @@ const geoJson = {
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [7.54268921098, 47.20419250288]
+        "coordinates": [7.54268921098, 47.20419250288],
       },
       "properties": {
         "endpointType": "from",
@@ -57,15 +57,15 @@ const geoJson = {
         "transportType": "",
         "label": "Solothurn",
         "distanceInMeter": 975,
-        "type": "endpoint"
+        "type": "endpoint",
       },
-      "id": null
+      "id": null,
     },
     {
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [7.53194915011, 47.20671728842]
+        "coordinates": [7.53194915011, 47.20671728842],
       },
       "properties": {
         "endpointType": "to",
@@ -73,9 +73,9 @@ const geoJson = {
         "transportType": "",
         "label": "Solothurn West",
         "distanceInMeter": 975,
-        "type": "endpoint"
+        "type": "endpoint",
       },
-      "id": null
+      "id": null,
     },
     {
       "type": "Feature",
@@ -93,8 +93,8 @@ const geoJson = {
           [7.542077844664744, 47.20418775317639],
           [7.542055973068727, 47.2042037941462],
           [7.54201448203873, 47.204212144743586],
-          [7.5419544894522605, 47.20421359527064]
-        ]
+          [7.5419544894522605, 47.20421359527064],
+        ],
       },
       "properties": {
         "stationLevels": [0, -1],
@@ -106,7 +106,7 @@ const geoJson = {
           "id": 8500207,
           "distanceInMeter": 975,
           "platform": "Solothurn",
-          "longitude": 7.54268921098
+          "longitude": 7.54268921098,
         },
         "station_to": {
           "durationInSeconds": 988,
@@ -116,22 +116,22 @@ const geoJson = {
           "id": 8500206,
           "distanceInMeter": 975,
           "platform": "Solothurn West",
-          "longitude": 7.53194915011
+          "longitude": 7.53194915011,
         },
         "step": 1,
         "type": "path",
         "pathType": "walk_indoor",
         "floor": 0,
         "routeStartLevel": 0,
-        "layer": 0
+        "layer": 0,
       },
-      "id": null
+      "id": null,
     },
     {
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [7.5419544894522605, 47.20421359527064]
+        "coordinates": [7.5419544894522605, 47.20421359527064],
       },
       "properties": {
         "travelType": "RAMP",
@@ -144,7 +144,7 @@ const geoJson = {
           "id": 8500207,
           "distanceInMeter": 975,
           "platform": "Solothurn",
-          "longitude": 7.54268921098
+          "longitude": 7.54268921098,
         },
         "station_to": {
           "durationInSeconds": 988,
@@ -154,7 +154,7 @@ const geoJson = {
           "id": 8500206,
           "distanceInMeter": 975,
           "platform": "Solothurn West",
-          "longitude": 7.53194915011
+          "longitude": 7.53194915011,
         },
         "step": 2,
         "placement": "SOUTHWEST",
@@ -162,9 +162,9 @@ const geoJson = {
         "type": "path",
         "pathType": "leit_poi",
         "floor": 0,
-        "direction": "downstairs"
+        "direction": "downstairs",
       },
-      "id": null
+      "id": null,
     },
     {
       "type": "Feature",
@@ -177,8 +177,8 @@ const geoJson = {
           [7.541897993851269, 47.204413799996296],
           [7.541879397411206, 47.204440371424255],
           [7.541840351509436, 47.204469845025116],
-          [7.541558052762115, 47.20464413456318]
-        ]
+          [7.541558052762115, 47.20464413456318],
+        ],
       },
       "properties": {
         "station_from": {
@@ -189,7 +189,7 @@ const geoJson = {
           "id": 8500207,
           "distanceInMeter": 975,
           "platform": "Solothurn",
-          "longitude": 7.54268921098
+          "longitude": 7.54268921098,
         },
         "station_to": {
           "durationInSeconds": 988,
@@ -199,21 +199,21 @@ const geoJson = {
           "id": 8500206,
           "distanceInMeter": 975,
           "platform": "Solothurn West",
-          "longitude": 7.53194915011
+          "longitude": 7.53194915011,
         },
         "step": 3,
         "type": "path",
         "pathType": "walk",
         "floor": -1,
-        "layer": -1
+        "layer": -1,
       },
-      "id": null
+      "id": null,
     },
     {
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [7.541558052762115, 47.20464413456318]
+        "coordinates": [7.541558052762115, 47.20464413456318],
       },
       "properties": {
         "travelType": "RAMP",
@@ -226,7 +226,7 @@ const geoJson = {
           "id": 8500207,
           "distanceInMeter": 975,
           "platform": "Solothurn",
-          "longitude": 7.54268921098
+          "longitude": 7.54268921098,
         },
         "station_to": {
           "durationInSeconds": 988,
@@ -236,7 +236,7 @@ const geoJson = {
           "id": 8500206,
           "distanceInMeter": 975,
           "platform": "Solothurn West",
-          "longitude": 7.53194915011
+          "longitude": 7.53194915011,
         },
         "step": 4,
         "placement": "SOUTHEAST",
@@ -244,9 +244,9 @@ const geoJson = {
         "type": "path",
         "pathType": "leit_poi",
         "floor": -1,
-        "direction": "upstairs"
+        "direction": "upstairs",
       },
-      "id": null
+      "id": null,
     },
     {
       "type": "Feature",
@@ -343,8 +343,8 @@ const geoJson = {
           [7.532341636266251, 47.20672317314559],
           [7.532315722623324, 47.20671630551018],
           [7.532285448981898, 47.20669400963345],
-          [7.532241111213004, 47.206641297103815]
-        ]
+          [7.532241111213004, 47.206641297103815],
+        ],
       },
       "properties": {
         "station_from": {
@@ -355,7 +355,7 @@ const geoJson = {
           "id": 8500207,
           "distanceInMeter": 975,
           "platform": "Solothurn",
-          "longitude": 7.54268921098
+          "longitude": 7.54268921098,
         },
         "station_to": {
           "durationInSeconds": 988,
@@ -365,16 +365,16 @@ const geoJson = {
           "id": 8500206,
           "distanceInMeter": 975,
           "platform": "Solothurn West",
-          "longitude": 7.53194915011
+          "longitude": 7.53194915011,
         },
         "step": 5,
         "type": "path",
         "pathType": "walk",
         "floor": 0,
-        "layer": 0
+        "layer": 0,
       },
-      "id": null
-    }
+      "id": null,
+    },
   ],
-  "bbox": [7.532241111213004, 47.20412512135358, 7.542682938487567, 47.20672317314559]
+  "bbox": [7.532241111213004, 47.20412512135358, 7.542682938487567, 47.20672317314559],
 };

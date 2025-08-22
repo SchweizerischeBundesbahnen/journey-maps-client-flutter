@@ -2,5 +2,8 @@
 # Created by `dart pub`
 .dart_tool/
 
+# lock file
+pubspec.lock
+
 # env
 .env

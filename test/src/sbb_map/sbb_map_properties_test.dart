@@ -52,15 +52,9 @@ void main() {
 
     // Test equality and hashcode
     test('equality and hashCode', () {
-      const properties1 = SBBMapProperties(
-        compassViewMargins: Point(5, 5),
-      );
-      const properties2 = SBBMapProperties(
-        compassViewMargins: Point(5, 5),
-      );
-      const properties3 = SBBMapProperties(
-        compassViewMargins: Point(10, 10),
-      );
+      const properties1 = SBBMapProperties(compassViewMargins: Point(5, 5));
+      const properties2 = SBBMapProperties(compassViewMargins: Point(5, 5));
+      const properties3 = SBBMapProperties(compassViewMargins: Point(10, 10));
 
       expect(properties1, equals(properties2));
       expect(properties1.hashCode, equals(properties2.hashCode));

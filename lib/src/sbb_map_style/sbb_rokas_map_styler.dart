@@ -43,11 +43,7 @@ class SBBRokasMapStyler {
   /// [useIntegrationData] to true.
   ///
   /// The [initialStyleId] is `journey_maps_bright_v1`.
-  static SBBMapStyler full({
-    String? apiKey,
-    bool isDarkMode = false,
-    bool useIntegrationData = false,
-  }) {
+  static SBBMapStyler full({String? apiKey, bool isDarkMode = false, bool useIntegrationData = false}) {
     final key = _apiKeyElseThrow(apiKey);
 
     final isInt = useIntegrationData || _intEnvVarSet();
@@ -93,11 +89,7 @@ class SBBRokasMapStyler {
   /// [useIntegrationData] to true.
   ///
   /// The [initialStyleId] is `journey_maps_bright_v1`.
-  static SBBMapStyler noAerial({
-    String? apiKey,
-    bool isDarkMode = false,
-    bool useIntegrationData = false,
-  }) {
+  static SBBMapStyler noAerial({String? apiKey, bool isDarkMode = false, bool useIntegrationData = false}) {
     String key = _apiKeyElseThrow(apiKey);
 
     final isInt = useIntegrationData || _intEnvVarSet();
@@ -110,11 +102,7 @@ class SBBRokasMapStyler {
       darkStyleURL: _rokasStyleUrl(_darkV1, isInt: isInt),
     );
 
-    return SBBCustomMapStyler(
-      styles: [rokasDefaultStyle],
-      initialStyleId: _brightV1,
-      isDarkMode: isDarkMode,
-    );
+    return SBBCustomMapStyler(styles: [rokasDefaultStyle], initialStyleId: _brightV1, isDarkMode: isDarkMode);
   }
 
   static String _apiKeyElseThrow(String? apiKey) {
@@ -123,9 +111,7 @@ class SBBRokasMapStyler {
     if (result.isEmpty) result = _fetchLegacyApiKeyFromEnv();
 
     if (result.isEmpty) {
-      throw ApiKeyMissing(
-        'Set JOURNEY_MAPS_TILES_API_KEY as env var or as a constructor parameter.',
-      );
+      throw ApiKeyMissing('Set JOURNEY_MAPS_TILES_API_KEY as env var or as a constructor parameter.');
     }
     return result;
   }

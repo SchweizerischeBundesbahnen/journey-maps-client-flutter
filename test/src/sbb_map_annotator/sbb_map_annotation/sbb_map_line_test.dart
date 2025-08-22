@@ -14,15 +14,8 @@ void main() {
         final expected = {
           "type": "Feature",
           "id": sut.id,
-          "properties": {
-            "id": sut.id,
-            "draggable": sut.draggable,
-            "sbbAnnotationType": "SBBMapLine",
-          },
-          "geometry": {
-            "type": "LineString",
-            "coordinates": sut.vertices.map((n) => n.toGeoJsonCoordinates()).toList(),
-          }
+          "properties": {"id": sut.id, "draggable": sut.draggable, "sbbAnnotationType": "SBBMapLine"},
+          "geometry": {"type": "LineString", "coordinates": sut.vertices.map((n) => n.toGeoJsonCoordinates()).toList()},
         };
         // act + expect
         expect(sut.toGeoJson(), equals(expected));
@@ -41,10 +34,7 @@ void main() {
             "lineWidth": style.lineWidth,
             "sbbAnnotationType": "SBBMapLine",
           },
-          "geometry": {
-            "type": "LineString",
-            "coordinates": sut.vertices.map((n) => n.toGeoJsonCoordinates()).toList(),
-          }
+          "geometry": {"type": "LineString", "coordinates": sut.vertices.map((n) => n.toGeoJsonCoordinates()).toList()},
         };
         // act + expect
         expect(sut.toGeoJson(), equals(expected));
@@ -125,12 +115,7 @@ void main() {
         final sut = createLineFixture();
 
         // expect
-        expect(
-          sut.annotationFilter,
-          equals(
-            createAnnotationFilter(sut.runtimeType.toString()),
-          ),
-        );
+        expect(sut.annotationFilter, equals(createAnnotationFilter(sut.runtimeType.toString())));
       });
     });
   });
@@ -200,10 +185,7 @@ void main() {
 
       expect(json['lineJoin'], 'bevel');
       expect(json['lineOpacity'], 0.5);
-      expect(
-        json['lineColor'],
-        Colors.blue.toHexStringRGB(),
-      );
+      expect(json['lineColor'], Colors.blue.toHexStringRGB());
       expect(json['lineWidth'], 2.0);
       expect(json['lineGapWidth'], 1.0);
       expect(json['lineOffset'], 3.0);

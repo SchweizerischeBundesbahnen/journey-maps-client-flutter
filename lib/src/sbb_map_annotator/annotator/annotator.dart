@@ -40,10 +40,7 @@ abstract class SBBMapAnnotator {
   ///  await annotator.addAnnotation(symbolAnnotation);
   /// }
   /// ```
-  Future<void> addImage({
-    required String imageId,
-    required Uint8List imageBytes,
-  }) async {}
+  Future<void> addImage({required String imageId, required Uint8List imageBytes}) async {}
 
   /// Add an annotation to the [SBBMap].
   ///
@@ -82,9 +79,7 @@ abstract class SBBMapAnnotator {
   /// Use [addAnnotation] to add the annotation first.
   ///
   /// Should be awaited before interacting further with the map.
-  Future<void> updateAnnotations(
-    Iterable<SBBMapAnnotation> annotations,
-  ) async {}
+  Future<void> updateAnnotations(Iterable<SBBMapAnnotation> annotations) async {}
 
   /// Remove a [SBBMapAnnotation] in the [SBBMap].
   ///

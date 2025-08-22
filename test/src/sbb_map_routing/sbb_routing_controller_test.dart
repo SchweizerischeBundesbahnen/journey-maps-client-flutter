@@ -11,11 +11,7 @@ import '../../util/mock_callback_function.dart';
 import 'feature_collection.fixture.dart';
 import 'sbb_routing_controller_test.mocks.dart';
 
-@GenerateNiceMocks([
-  MockSpec<MapLibreMapController>(),
-  MockSpec<SBBMapAnnotator>(),
-  MockSpec<SBBMapFloorController>(),
-])
+@GenerateNiceMocks([MockSpec<MapLibreMapController>(), MockSpec<SBBMapAnnotator>(), MockSpec<SBBMapFloorController>()])
 void main() {
   late SBBRoutingControllerImpl sut;
   late MockMapLibreMapController mockMapLibreController;
@@ -24,17 +20,20 @@ void main() {
   final listener = MockCallbackFunction();
 
   group('Unit Test SBBRoutingController', () {
-    setUp(() => {
-          mockMapLibreController = MockMapLibreMapController(),
-          mockAnnotator = MockSBBMapAnnotator(),
-          mockFloorController = ListenableMockSBBMapFloorController(),
-          sut = SBBRoutingControllerImpl(
-              controller: Future.value(mockMapLibreController),
-              annotator: Future.value(mockAnnotator),
-              floorController: mockFloorController),
-          reset(mockMapLibreController),
-          reset(listener)
-        });
+    setUp(
+      () => {
+        mockMapLibreController = MockMapLibreMapController(),
+        mockAnnotator = MockSBBMapAnnotator(),
+        mockFloorController = ListenableMockSBBMapFloorController(),
+        sut = SBBRoutingControllerImpl(
+          controller: Future.value(mockMapLibreController),
+          annotator: Future.value(mockAnnotator),
+          floorController: mockFloorController,
+        ),
+        reset(mockMapLibreController),
+        reset(listener),
+      },
+    );
 
     test('routeFromFeatureCollection calls addAnnotations but not removeAnnotations', () async {
       const featureCollection = featureCollectionFixtureGeneral;
@@ -54,9 +53,13 @@ void main() {
 
       LatLngBounds expectedBounds = LatLngBounds(
         southwest: LatLng(
-            featureCollectionFixtureGeneral.bbox[1] - latMargin, featureCollectionFixtureGeneral.bbox[0] - lngMargin),
+          featureCollectionFixtureGeneral.bbox[1] - latMargin,
+          featureCollectionFixtureGeneral.bbox[0] - lngMargin,
+        ),
         northeast: LatLng(
-            featureCollectionFixtureGeneral.bbox[3] + latMargin, featureCollectionFixtureGeneral.bbox[2] + lngMargin),
+          featureCollectionFixtureGeneral.bbox[3] + latMargin,
+          featureCollectionFixtureGeneral.bbox[2] + lngMargin,
+        ),
       );
       final expectedCameraUpdate = CameraUpdate.newLatLngBounds(expectedBounds);
 
@@ -87,9 +90,13 @@ void main() {
 
       LatLngBounds expectedBounds = LatLngBounds(
         southwest: LatLng(
-            featureCollectionFixtureGeneral.bbox[1] - latMargin, featureCollectionFixtureGeneral.bbox[0] - lngMargin),
+          featureCollectionFixtureGeneral.bbox[1] - latMargin,
+          featureCollectionFixtureGeneral.bbox[0] - lngMargin,
+        ),
         northeast: LatLng(
-            featureCollectionFixtureGeneral.bbox[3] + latMargin, featureCollectionFixtureGeneral.bbox[2] + lngMargin),
+          featureCollectionFixtureGeneral.bbox[3] + latMargin,
+          featureCollectionFixtureGeneral.bbox[2] + lngMargin,
+        ),
       );
       final expectedCameraUpdate = CameraUpdate.newLatLngBounds(expectedBounds);
 

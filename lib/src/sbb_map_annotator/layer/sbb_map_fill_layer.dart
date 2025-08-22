@@ -7,8 +7,8 @@ class SBBMapFillLayer implements SBBMapLayerProperties {
 
   @override
   LayerProperties makeLayerExpressions() => const FillLayerProperties(
-        fillOpacity: [Expressions.get, 'fillOpacity'],
-        fillColor: [Expressions.get, 'fillColor'],
-        fillOutlineColor: [Expressions.get, 'fillOutlineColor'],
-      );
+    fillOpacity: [Expressions.get, 'fillOpacity'],
+    fillColor: [Expressions.get, 'fillColor'],
+    fillOutlineColor: [Expressions.get, 'fillOutlineColor'],
+  );
 }

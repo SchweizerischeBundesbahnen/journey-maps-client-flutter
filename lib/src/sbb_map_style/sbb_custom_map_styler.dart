@@ -12,8 +12,8 @@ class SBBCustomMapStyler with ChangeNotifier implements SBBMapStyler {
     SBBMapStyle? aerialStyle,
     String? initialStyleId,
     bool isDarkMode = false,
-  })  : _aerialStyle = aerialStyle,
-        _styles = Map.fromEntries(styles.map((e) => MapEntry(e.id, e))) {
+  }) : _aerialStyle = aerialStyle,
+       _styles = Map.fromEntries(styles.map((e) => MapEntry(e.id, e))) {
     _currentStyle = initialStyleId != null ? _styles[initialStyleId] ?? _styles.values.first : _styles.values.first;
     if (_aerialStyle != null) {
       _styles[_aerialStyle.id] = aerialStyle!;

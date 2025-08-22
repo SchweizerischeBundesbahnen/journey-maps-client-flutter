@@ -4,8 +4,8 @@ import 'package:sbb_maps_flutter/sbb_maps_flutter.dart';
 
 class SBBMapControllerImpl with ChangeNotifier implements SBBMapController {
   SBBMapControllerImpl({required MapLibreMapController maplibreMapController})
-      : _maplibreMapController = maplibreMapController,
-        _isCameraMoving = maplibreMapController.isCameraMoving {
+    : _maplibreMapController = maplibreMapController,
+      _isCameraMoving = maplibreMapController.isCameraMoving {
     _maplibreMapController.addListener(_notifyListenersIfStateChanged);
   }
 
@@ -37,11 +37,7 @@ class SBBMapControllerImpl with ChangeNotifier implements SBBMapController {
 
   @override
   Future<List<dynamic>> querySourceFeatures(String sourceId, {String? sourceLayerId, List<Object>? filter}) {
-    return _maplibreMapController.querySourceFeatures(
-      sourceId,
-      sourceLayerId,
-      filter,
-    );
+    return _maplibreMapController.querySourceFeatures(sourceId, sourceLayerId, filter);
   }
 
   @override
@@ -68,9 +64,5 @@ class SBBMapControllerImpl with ChangeNotifier implements SBBMapController {
 }
 
 extension on CameraPosition {
-  SBBCameraPosition toSBBCameraPosition() => SBBCameraPosition(
-        target: target,
-        bearing: bearing,
-        zoom: zoom,
-      );
+  SBBCameraPosition toSBBCameraPosition() => SBBCameraPosition(target: target, bearing: bearing, zoom: zoom);
 }

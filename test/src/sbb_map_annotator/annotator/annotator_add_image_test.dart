@@ -19,25 +19,16 @@ void main() {
 
     test('should not add empty image and fail silently', () async {
       // act
-      await sut.addImage(
-        imageId: AnnotatorFixture.fakeImageName,
-        imageBytes: AnnotatorFixture.emptyImage,
-      );
+      await sut.addImage(imageId: AnnotatorFixture.fakeImageName, imageBytes: AnnotatorFixture.emptyImage);
       // verify
       verifyZeroInteractions(mockController);
     });
 
     test('should add non empty image', () async {
       // act
-      await sut.addImage(
-        imageId: AnnotatorFixture.fakeImageName,
-        imageBytes: AnnotatorFixture.fakeImage,
-      );
+      await sut.addImage(imageId: AnnotatorFixture.fakeImageName, imageBytes: AnnotatorFixture.fakeImage);
       // verify
-      verify(mockController.addImage(
-        AnnotatorFixture.fakeImageName,
-        AnnotatorFixture.fakeImage,
-      )).called(1);
+      verify(mockController.addImage(AnnotatorFixture.fakeImageName, AnnotatorFixture.fakeImage)).called(1);
     });
   });
 }

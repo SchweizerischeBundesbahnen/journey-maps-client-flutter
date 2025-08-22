@@ -7,9 +7,7 @@ const _kFloorSelectorWidth = 48.0;
 const _kFloorSelectorDividerHeight = 1.0;
 
 class Divider extends StatelessWidget {
-  const Divider({
-    super.key,
-  });
+  const Divider({super.key});
 
   @override
   Widget build(BuildContext context) {

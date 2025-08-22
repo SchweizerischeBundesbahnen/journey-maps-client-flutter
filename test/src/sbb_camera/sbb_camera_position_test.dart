@@ -15,27 +15,15 @@ void main() {
     });
 
     test('initialization with parameters', () {
-      const position = SBBCameraPosition(
-        target: testTarget,
-        bearing: testBearing,
-        zoom: testZoom,
-      );
+      const position = SBBCameraPosition(target: testTarget, bearing: testBearing, zoom: testZoom);
       expect(position.bearing, testBearing);
       expect(position.target, testTarget);
       expect(position.zoom, testZoom);
     });
 
     test('equality operator', () {
-      const position1 = SBBCameraPosition(
-        target: testTarget,
-        bearing: testBearing,
-        zoom: testZoom,
-      );
-      const position2 = SBBCameraPosition(
-        target: testTarget,
-        bearing: testBearing,
-        zoom: testZoom,
-      );
+      const position1 = SBBCameraPosition(target: testTarget, bearing: testBearing, zoom: testZoom);
+      const position2 = SBBCameraPosition(target: testTarget, bearing: testBearing, zoom: testZoom);
       const position3 = SBBCameraPosition(
         target: LatLng(0.0, 0.0), // Different target
       );
@@ -45,31 +33,19 @@ void main() {
     });
 
     test('hashCode', () {
-      const position = SBBCameraPosition(
-        target: testTarget,
-        bearing: testBearing,
-        zoom: testZoom,
-      );
+      const position = SBBCameraPosition(target: testTarget, bearing: testBearing, zoom: testZoom);
       final expectedHashCode = Object.hash(testBearing, testTarget, testZoom);
       expect(position.hashCode, expectedHashCode);
     });
 
     test('toString', () {
-      const position = SBBCameraPosition(
-        target: testTarget,
-        bearing: testBearing,
-        zoom: testZoom,
-      );
+      const position = SBBCameraPosition(target: testTarget, bearing: testBearing, zoom: testZoom);
       final stringRepresentation = 'SBBCameraPosition(bearing: $testBearing, target: $testTarget, zoom: $testZoom)';
       expect(position.toString(), stringRepresentation);
     });
 
     test('toMaplibre conversion', () {
-      const position = SBBCameraPosition(
-        target: testTarget,
-        bearing: testBearing,
-        zoom: testZoom,
-      );
+      const position = SBBCameraPosition(target: testTarget, bearing: testBearing, zoom: testZoom);
       final maplibrePosition = position.toMaplibre();
       expect(maplibrePosition.bearing, testBearing);
       expect(maplibrePosition.target, testTarget);

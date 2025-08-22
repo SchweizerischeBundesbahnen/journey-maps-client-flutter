@@ -18,11 +18,7 @@ class Feature {
   /// The [geometry] parameter is required and represents the geometric shape of the feature.
   /// The [geometryType] parameter is required and indicates the type of geometry.
   /// The [properties] parameter is required and represents additional data associated with the feature.
-  const Feature({
-    required this.geometry,
-    required this.geometryType,
-    required this.properties,
-  });
+  const Feature({required this.geometry, required this.geometryType, required this.properties});
 
   /// Creates a [Feature] from a GeoJSON map.
   ///

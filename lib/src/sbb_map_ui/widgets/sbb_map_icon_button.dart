@@ -8,12 +8,7 @@ const EdgeInsets _kButtonPadding = EdgeInsets.all(8.0);
 
 /// A styled icon button that can be placed on the [SBBMap].
 class SBBMapIconButton extends StatelessWidget {
-  const SBBMapIconButton({
-    super.key,
-    required this.onPressed,
-    required this.icon,
-    this.style,
-  });
+  const SBBMapIconButton({super.key, required this.onPressed, required this.icon, this.style});
 
   final void Function() onPressed;
   final IconData icon;
@@ -30,9 +25,7 @@ class SBBMapIconButton extends StatelessWidget {
       child: Ink(
         decoration: ShapeDecoration(
           color: resolvedStyle.backgroundColor,
-          shape: CircleBorder(
-            side: resolvedStyle.borderSide ?? BorderSide.none,
-          ),
+          shape: CircleBorder(side: resolvedStyle.borderSide ?? BorderSide.none),
         ),
         width: _kButtonSize,
         height: _kButtonSize,
@@ -42,10 +35,7 @@ class SBBMapIconButton extends StatelessWidget {
           containedInkWell: true,
           customBorder: const CircleBorder(),
           onTap: onPressed,
-          child: Padding(
-            padding: _kButtonPadding,
-            child: Icon(icon, color: resolvedStyle.iconColor),
-          ),
+          child: Padding(padding: _kButtonPadding, child: Icon(icon, color: resolvedStyle.iconColor)),
         ),
       ),
     );

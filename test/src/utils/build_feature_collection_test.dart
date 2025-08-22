@@ -18,17 +18,18 @@ void main() {
         "type": "FeatureCollection",
         "features": [
           {'hello': 'world'},
-          {'foo': 'bar'}
-        ]
+          {'foo': 'bar'},
+        ],
       };
 
       // act + expect
       expect(
-          sut([
-            {'hello': 'world'},
-            {'foo': 'bar'}
-          ]),
-          equals(expected));
+        sut([
+          {'hello': 'world'},
+          {'foo': 'bar'},
+        ]),
+        equals(expected),
+      );
     });
   });
 }

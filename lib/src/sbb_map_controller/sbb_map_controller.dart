@@ -35,11 +35,7 @@ abstract class SBBMapController with ChangeNotifier {
   ///
   /// The [sourceId] must be the id of a source in the current style.
   /// If specified, the [sourceLayerId] must be in the source.
-  Future<List<dynamic>> querySourceFeatures(
-    String sourceId, {
-    String? sourceLayerId,
-    List<Object>? filter,
-  });
+  Future<List<dynamic>> querySourceFeatures(String sourceId, {String? sourceLayerId, List<Object>? filter});
 
   /// Animates the movement of the camera from the
   /// current position to the position defined in [cameraUpdate].

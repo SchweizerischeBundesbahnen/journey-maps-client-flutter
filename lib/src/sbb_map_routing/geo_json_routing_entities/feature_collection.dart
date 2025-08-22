@@ -11,10 +11,7 @@ class FeatureCollection {
   ///
   /// The [features] parameter is required and represents the list of geographic features.
   /// The [bbox] parameter is required and represents the bounding box of the features.
-  const FeatureCollection({
-    required this.features,
-    required this.bbox,
-  });
+  const FeatureCollection({required this.features, required this.bbox});
 
   /// Creates a [FeatureCollection] from a GeoJSON map.
   ///
@@ -24,10 +21,7 @@ class FeatureCollection {
     var featuresList =
         (json['features'] as List).map((feature) => Feature.fromGeoJSON(feature as Map<String, dynamic>)).toList();
 
-    return FeatureCollection(
-      features: featuresList,
-      bbox: List<double>.from(json['bbox'] as List),
-    );
+    return FeatureCollection(features: featuresList, bbox: List<double>.from(json['bbox'] as List));
   }
 
   /// The list of geographic features in this collection.

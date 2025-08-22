@@ -19,13 +19,15 @@ void main() {
   final listener = MockCallbackFunction();
 
   group('Unit Test SBBRokasPoiController', () {
-    setUp(() => {
-          mockController = MockMapLibreMapController(),
-          sut = SBBRokasPOIControllerImpl(controller: Future.value(mockController)),
-          sut.addListener(listener.call),
-          reset(mockController),
-          reset(listener)
-        });
+    setUp(
+      () => {
+        mockController = MockMapLibreMapController(),
+        sut = SBBRokasPOIControllerImpl(controller: Future.value(mockController)),
+        sut.addListener(listener.call),
+        reset(mockController),
+        reset(listener),
+      },
+    );
 
     test('getAvailablePOICategories_shouldReturnAllAvailablePoiCategories', () {
       // arrange
@@ -147,18 +149,20 @@ void main() {
       verify(listener()).called(1);
     });
 
-    test('getCategoryFilterByLayer_whenShowPointsOfInterestWithVaryingPoiTypes_shouldReturnBaseOnFloorFilter',
-        () async {
-      // arrange
-      final categories = [SBBPoiCategoryType.bike_parking];
-      // act
-      await sut.showPointsOfInterest(layer: SBBRokasPoiLayer.baseWithFloor, categories: categories);
-      await sut.showPointsOfInterest(layer: SBBRokasPoiLayer.highlighted, categories: []);
-      final result = sut.getCategoryFilterByLayer(layer: SBBRokasPoiLayer.baseWithFloor);
-      // expect
-      expect(result, categories.toSet());
-      verify(listener()).called(2);
-    });
+    test(
+      'getCategoryFilterByLayer_whenShowPointsOfInterestWithVaryingPoiTypes_shouldReturnBaseOnFloorFilter',
+      () async {
+        // arrange
+        final categories = [SBBPoiCategoryType.bike_parking];
+        // act
+        await sut.showPointsOfInterest(layer: SBBRokasPoiLayer.baseWithFloor, categories: categories);
+        await sut.showPointsOfInterest(layer: SBBRokasPoiLayer.highlighted, categories: []);
+        final result = sut.getCategoryFilterByLayer(layer: SBBRokasPoiLayer.baseWithFloor);
+        // expect
+        expect(result, categories.toSet());
+        verify(listener()).called(2);
+      },
+    );
 
     test('isPointsOfInterestVisible_whenDefault_shouldReturnFalse', () {
       // act
@@ -390,10 +394,7 @@ void main() {
       // expect
       verify(mockController.setLayerVisibility(any, any)).called(1);
       verify(
-        mockController.setFilter(
-          rokasPoiBaseLayerIdWithFloorNonClickable,
-          emptySubCategoryFilterFixture,
-        ),
+        mockController.setFilter(rokasPoiBaseLayerIdWithFloorNonClickable, emptySubCategoryFilterFixture),
       ).called(1);
       verify(listener()).called(1);
     });
@@ -406,54 +407,48 @@ void main() {
       // expect
       verify(mockController.setLayerVisibility(any, any)).called(1);
       verify(
-        mockController.setFilter(
-          rokasPoiBaseLayerIdWithFloorNonClickable,
-          subCategoryFilterWithBakeryFixture,
-        ),
+        mockController.setFilter(rokasPoiBaseLayerIdWithFloorNonClickable, subCategoryFilterWithBakeryFixture),
       ).called(1);
       verify(listener()).called(1);
     });
 
     test('showPointsOfInterest_whenEmptyListAndExistingFilterWithoutSubCategory_shouldAddToLevelFilter', () async {
       // arrange
-      when(mockController.getFilter(rokasPoiBaseLayerIdWithFloorNonClickable))
-          .thenAnswer((_) => Future.value(lvlZeroFilterFixture));
+      when(
+        mockController.getFilter(rokasPoiBaseLayerIdWithFloorNonClickable),
+      ).thenAnswer((_) => Future.value(lvlZeroFilterFixture));
 
       // act
       await sut.showPointsOfInterest(categories: []);
       // expect
       verify(mockController.setLayerVisibility(any, any)).called(1);
       verify(
-        mockController.setFilter(
-          rokasPoiBaseLayerIdWithFloorNonClickable,
-          lvlZeroWithEmptySubCategoryFilterFixture,
-        ),
+        mockController.setFilter(rokasPoiBaseLayerIdWithFloorNonClickable, lvlZeroWithEmptySubCategoryFilterFixture),
       ).called(1);
       verify(listener()).called(1);
     });
 
     test('showPointsOfInterest_whenSingleCategoryAndExistingFilterWithoutSubCategory_shouldAddToFilter', () async {
       // arrange
-      when(mockController.getFilter(rokasPoiBaseLayerIdWithFloorNonClickable))
-          .thenAnswer((_) => Future.value(lvlZeroFilterFixture));
+      when(
+        mockController.getFilter(rokasPoiBaseLayerIdWithFloorNonClickable),
+      ).thenAnswer((_) => Future.value(lvlZeroFilterFixture));
 
       // act
       await sut.showPointsOfInterest(categories: [SBBPoiCategoryType.bakery]);
       // expect
       verify(mockController.setLayerVisibility(any, any)).called(1);
       verify(
-        mockController.setFilter(
-          rokasPoiBaseLayerIdWithFloorNonClickable,
-          lvlZeroWithBakerySubCategoryFilterFixture,
-        ),
+        mockController.setFilter(rokasPoiBaseLayerIdWithFloorNonClickable, lvlZeroWithBakerySubCategoryFilterFixture),
       ).called(1);
       verify(listener()).called(1);
     });
 
     test('showPointsOfInterest_whenSingleCategoryAndExistingMultiFilterWithoutSubCategory_shouldAddToFilter', () async {
       // arrange
-      when(mockController.getFilter(rokasPoiBaseLayerIdWithFloorNonClickable))
-          .thenAnswer((_) => Future.value(lvlZeroMultiFilterFixture));
+      when(
+        mockController.getFilter(rokasPoiBaseLayerIdWithFloorNonClickable),
+      ).thenAnswer((_) => Future.value(lvlZeroMultiFilterFixture));
 
       // act
       await sut.showPointsOfInterest(categories: [SBBPoiCategoryType.bakery]);
@@ -478,10 +473,7 @@ void main() {
       // expect
       verify(mockController.setLayerVisibility(any, any)).called(1);
       verify(
-        mockController.setFilter(
-          rokasPoiBaseLayerIdWithFloorNonClickable,
-          subCategoryFilterWithAllCategoriesFixture,
-        ),
+        mockController.setFilter(rokasPoiBaseLayerIdWithFloorNonClickable, subCategoryFilterWithAllCategoriesFixture),
       ).called(1);
       verify(listener()).called(1);
     });
@@ -562,8 +554,9 @@ void main() {
       await sut.showPointsOfInterest();
       reset(mockController);
       reset(listener);
-      when(mockController.querySourceFeatures(journeyPoisSource, 'journey_pois', mobilityBikeSharingFilterFixture))
-          .thenAnswer((_) async => Future.value([mobilityBikesharingPoiGeoJSONFixture]));
+      when(
+        mockController.querySourceFeatures(journeyPoisSource, 'journey_pois', mobilityBikeSharingFilterFixture),
+      ).thenAnswer((_) async => Future.value([mobilityBikesharingPoiGeoJSONFixture]));
 
       // act
       await sut.selectPointOfInterest(sbbId: mobilityBikesharingPoiFixture.sbbId);
@@ -617,8 +610,9 @@ void main() {
       reset(listener);
       when(mockController.moveCamera(any)).thenAnswer((_) => Future.value());
       when(mockController.toScreenLocation(coordinates)).thenAnswer((_) => Future.value(point));
-      when(mockController.queryRenderedFeatures(point, any, any))
-          .thenAnswer((_) => Future.value([mobilityBikesharingPoiGeoJSONFixture]));
+      when(
+        mockController.queryRenderedFeatures(point, any, any),
+      ).thenAnswer((_) => Future.value([mobilityBikesharingPoiGeoJSONFixture]));
 
       // act
       await sut.selectPointOfInterestAt(coordinates: coordinates);
@@ -635,8 +629,9 @@ void main() {
       // arrange
       await sut.showPointsOfInterest();
 
-      when(mockController.querySourceFeatures(journeyPoisSource, 'journey_pois', mobilityBikeSharingFilterFixture))
-          .thenAnswer((_) async => Future.value([mobilityBikesharingPoiGeoJSONFixture]));
+      when(
+        mockController.querySourceFeatures(journeyPoisSource, 'journey_pois', mobilityBikeSharingFilterFixture),
+      ).thenAnswer((_) async => Future.value([mobilityBikesharingPoiGeoJSONFixture]));
       await sut.selectPointOfInterest(sbbId: mobilityBikesharingPoiFixture.sbbId);
       expect(sut.selectedPointOfInterest, mobilityBikesharingPoiFixture);
       await sut.hidePointsOfInterest();
@@ -655,8 +650,9 @@ void main() {
       // arrange
       await sut.showPointsOfInterest();
 
-      when(mockController.querySourceFeatures(journeyPoisSource, 'journey_pois', mobilityBikeSharingFilterFixture))
-          .thenAnswer((_) async => Future.value([mobilityBikesharingPoiGeoJSONFixture]));
+      when(
+        mockController.querySourceFeatures(journeyPoisSource, 'journey_pois', mobilityBikeSharingFilterFixture),
+      ).thenAnswer((_) async => Future.value([mobilityBikesharingPoiGeoJSONFixture]));
       await sut.selectPointOfInterest(sbbId: mobilityBikesharingPoiFixture.sbbId);
       expect(sut.selectedPointOfInterest, mobilityBikesharingPoiFixture);
       reset(mockController);
@@ -685,8 +681,9 @@ void main() {
       await sut.showPointsOfInterest();
       reset(mockController);
       reset(listener);
-      when(mockController.queryRenderedFeatures(any, any, any))
-          .thenAnswer((_) async => Future.value([mobilityBikesharingPoiGeoJSONFixture]));
+      when(
+        mockController.queryRenderedFeatures(any, any, any),
+      ).thenAnswer((_) async => Future.value([mobilityBikesharingPoiGeoJSONFixture]));
 
       // act
       await sut.toggleSelectedPointOfInterest(const Point(0, 0));
@@ -735,10 +732,7 @@ void main() {
       // expect
       verify(mockController.setLayerVisibility(rokasPoiBaseLayerIdWithFloorNonClickable, true)).called(1);
       verify(
-        mockController.setFilter(
-          rokasPoiBaseLayerIdWithFloorNonClickable,
-          bikeParkingCategoriesFiltureFixture,
-        ),
+        mockController.setFilter(rokasPoiBaseLayerIdWithFloorNonClickable, bikeParkingCategoriesFiltureFixture),
       ).called(1);
       verifyNever(listener()); // never called except for POI dropped
     });

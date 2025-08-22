@@ -70,9 +70,7 @@ class FakeRandom implements Random {
   int _index;
   final _random = Random();
 
-  FakeRandom({this.nextInts})
-      : _index = 0,
-        super();
+  FakeRandom({this.nextInts}) : _index = 0, super();
 
   @override
   bool nextBool() {

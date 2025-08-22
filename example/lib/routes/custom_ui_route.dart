@@ -26,33 +26,34 @@ class _CustomUiRouteState extends State<CustomUiRoute> {
         mapStyler: mapStyler,
         isMyLocationEnabled: true,
         isFloorSwitchingEnabled: true,
-        builder: (context) => const Align(
-          alignment: Alignment.topRight,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              _ShadowedThemeButton(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
+        builder:
+            (context) => const Align(
+              alignment: Alignment.topRight,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Padding(
-                    padding: EdgeInsets.only(right: sbbDefaultSpacing, bottom: sbbDefaultSpacing * 2),
-                    child: SBBMapStyleSwitcher(),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(right: sbbDefaultSpacing, bottom: sbbDefaultSpacing * 2),
-                    child: SBBMapMyLocationButton(),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(right: sbbDefaultSpacing, bottom: sbbDefaultSpacing * 2),
-                    child: SBBMapFloorSelector(),
+                  _ShadowedThemeButton(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(right: sbbDefaultSpacing, bottom: sbbDefaultSpacing * 2),
+                        child: SBBMapStyleSwitcher(),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(right: sbbDefaultSpacing, bottom: sbbDefaultSpacing * 2),
+                        child: SBBMapMyLocationButton(),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(right: sbbDefaultSpacing, bottom: sbbDefaultSpacing * 2),
+                        child: SBBMapFloorSelector(),
+                      ),
+                    ],
                   ),
                 ],
-              )
-            ],
-          ),
-        ),
+              ),
+            ),
       ),
     );
   }
@@ -72,11 +73,7 @@ class _ShadowedThemeButton extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(sbbDefaultSpacing),
           boxShadow: [
-            BoxShadow(
-              blurRadius: _blurRadius,
-              color: SBBColors.black.withValues(alpha: 0.1),
-              offset: _shadowOffset,
-            )
+            BoxShadow(blurRadius: _blurRadius, color: SBBColors.black.withValues(alpha: 0.1), offset: _shadowOffset),
           ],
         ),
         child: const ThemeSegmentedButton(),

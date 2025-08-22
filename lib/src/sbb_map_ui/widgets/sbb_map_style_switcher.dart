@@ -13,10 +13,9 @@ class SBBMapStyleSwitcher extends StatelessWidget {
     final mapStyler = SBBMapUiContainer.of(context).mapStyler;
     return ListenableBuilder(
       listenable: mapStyler,
-      builder: (BuildContext context, Widget? child) => SBBMapIconButton(
-        onPressed: () => mapStyler.toggleAerialStyle(),
-        icon: SBBMapIcons.layers_small,
-      ),
+      builder:
+          (BuildContext context, Widget? child) =>
+              SBBMapIconButton(onPressed: () => mapStyler.toggleAerialStyle(), icon: SBBMapIcons.layers_small),
     );
   }
 }

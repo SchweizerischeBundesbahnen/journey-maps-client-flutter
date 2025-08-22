@@ -5,11 +5,7 @@ import 'package:maplibre_gl/maplibre_gl.dart';
 ///
 /// SBB Maps are always shown in 2D, so the tilt angle from Maplibre's camera position is always 0.0.
 class SBBCameraPosition {
-  const SBBCameraPosition({
-    required this.target,
-    this.bearing = 0.0,
-    this.zoom = 0.0,
-  });
+  const SBBCameraPosition({required this.target, this.bearing = 0.0, this.zoom = 0.0});
 
   /// Center of switzerland with low level zoom.
   ///
@@ -55,9 +51,5 @@ class SBBCameraPosition {
   @override
   String toString() => 'SBBCameraPosition(bearing: $bearing, target: $target, zoom: $zoom)';
 
-  CameraPosition toMaplibre() => CameraPosition(
-        bearing: bearing,
-        target: target,
-        zoom: zoom,
-      );
+  CameraPosition toMaplibre() => CameraPosition(bearing: bearing, target: target, zoom: zoom);
 }

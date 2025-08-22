@@ -29,34 +29,33 @@ class _MapPropertiesRouteState extends State<MapPropertiesRoute> {
         isMyLocationEnabled: false,
         isFloorSwitchingEnabled: true,
         properties: properties,
-        builder: (context) => Align(
-          alignment: Alignment.topRight,
-          child: Padding(
-            padding: const EdgeInsets.all(sbbDefaultSpacing),
-            child: SBBMapIconButton(
-              onPressed: () {
-                showSBBModalSheet<SBBMapProperties>(
-                  context: context,
-                  title: 'Map Properties',
-                  child: _MapPropertiesModalBody(properties: properties),
-                ).then(_setStateWithProperties);
-              },
-              icon: SBBIcons.gears_small,
+        builder:
+            (context) => Align(
+              alignment: Alignment.topRight,
+              child: Padding(
+                padding: const EdgeInsets.all(sbbDefaultSpacing),
+                child: SBBMapIconButton(
+                  onPressed: () {
+                    showSBBModalSheet<SBBMapProperties>(
+                      context: context,
+                      title: 'Map Properties',
+                      child: _MapPropertiesModalBody(properties: properties),
+                    ).then(_setStateWithProperties);
+                  },
+                  icon: SBBIcons.gears_small,
+                ),
+              ),
             ),
-          ),
-        ),
       ),
     );
   }
 
   void _setStateWithProperties(SBBMapProperties? properties) {
-    setState(
-      () {
-        if (properties != null) {
-          this.properties = properties;
-        }
-      },
-    );
+    setState(() {
+      if (properties != null) {
+        this.properties = properties;
+      }
+    });
   }
 }
 
@@ -81,10 +80,7 @@ class _MapPropertiesModalBodyState extends State<_MapPropertiesModalBody> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        vertical: sbbDefaultSpacing,
-        horizontal: sbbDefaultSpacing,
-      ),
+      padding: const EdgeInsets.symmetric(vertical: sbbDefaultSpacing, horizontal: sbbDefaultSpacing),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -92,33 +88,25 @@ class _MapPropertiesModalBodyState extends State<_MapPropertiesModalBody> {
             value: _properties.compassEnabled,
             label: 'Enable Compass',
             secondaryLabel: 'Show compass when map is rotated.',
-            onChanged: (v) => _setModalStateWithProperties(
-              _properties.copyWith(compassEnabled: v),
-            ),
+            onChanged: (v) => _setModalStateWithProperties(_properties.copyWith(compassEnabled: v)),
           ),
           SBBCheckboxListItem(
             value: _properties.zoomGesturesEnabled,
             label: 'Enable Zoom',
             secondaryLabel: 'Enable zoom gestures.',
-            onChanged: (v) => _setModalStateWithProperties(
-              _properties.copyWith(zoomGesturesEnabled: v),
-            ),
+            onChanged: (v) => _setModalStateWithProperties(_properties.copyWith(zoomGesturesEnabled: v)),
           ),
           SBBCheckboxListItem(
             value: _properties.rotateGesturesEnabled,
             label: 'Enable Rotation',
             secondaryLabel: 'Enable rotation gesture.',
-            onChanged: (v) => _setModalStateWithProperties(
-              _properties.copyWith(rotateGesturesEnabled: v),
-            ),
+            onChanged: (v) => _setModalStateWithProperties(_properties.copyWith(rotateGesturesEnabled: v)),
           ),
           SBBCheckboxListItem(
             value: _properties.scrollGesturesEnabled,
             label: 'Enable Scroll',
             secondaryLabel: 'Enable scrolling the map by pan gesture.',
-            onChanged: (v) => _setModalStateWithProperties(
-              _properties.copyWith(scrollGesturesEnabled: v),
-            ),
+            onChanged: (v) => _setModalStateWithProperties(_properties.copyWith(scrollGesturesEnabled: v)),
             isLastElement: true,
           ),
           const SizedBox(height: sbbDefaultSpacing),

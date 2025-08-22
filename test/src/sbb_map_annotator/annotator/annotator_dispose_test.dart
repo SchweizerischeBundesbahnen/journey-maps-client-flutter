@@ -70,7 +70,7 @@ void main() {
         // verify
         verifyInOrder([
           mockController.removeLayer(AnnotatorFixture.kRokasIconIdentifier),
-          mockController.removeSource(AnnotatorFixture.kSourceId)
+          mockController.removeSource(AnnotatorFixture.kSourceId),
         ]);
       });
 

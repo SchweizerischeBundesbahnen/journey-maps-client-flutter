@@ -3,18 +3,15 @@ import 'package:collection/collection.dart';
 import 'line_string.dart';
 
 class MultiLineString {
-  const MultiLineString({
-    required this.lineStrings,
-  });
+  const MultiLineString({required this.lineStrings});
 
   factory MultiLineString.fromGeoJSON(Map<String, dynamic> json) {
-    var lineStringsList = (json['geometry']['coordinates'] as List)
-        .map((lineString) => LineString.fromGeoJSON(lineString as Map<String, dynamic>))
-        .toList();
+    var lineStringsList =
+        (json['geometry']['coordinates'] as List)
+            .map((lineString) => LineString.fromGeoJSON(lineString as Map<String, dynamic>))
+            .toList();
 
-    return MultiLineString(
-      lineStrings: lineStringsList,
-    );
+    return MultiLineString(lineStrings: lineStringsList);
   }
 
   final List<LineString> lineStrings;

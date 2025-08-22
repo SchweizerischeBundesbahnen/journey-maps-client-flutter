@@ -3,18 +3,15 @@ import 'package:collection/collection.dart';
 import 'point.dart';
 
 class MultiPoint {
-  const MultiPoint({
-    required this.points,
-  });
+  const MultiPoint({required this.points});
 
   factory MultiPoint.fromGeoJSON(Map<String, dynamic> json) {
-    var pointsList = (json['geometry']['coordinates'] as List)
-        .map((point) => Point.fromGeoJSON(point as Map<String, dynamic>))
-        .toList();
+    var pointsList =
+        (json['geometry']['coordinates'] as List)
+            .map((point) => Point.fromGeoJSON(point as Map<String, dynamic>))
+            .toList();
 
-    return MultiPoint(
-      points: pointsList,
-    );
+    return MultiPoint(points: pointsList);
   }
 
   final List<Point> points;
