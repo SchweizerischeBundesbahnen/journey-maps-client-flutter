@@ -12,10 +12,14 @@ import 'package:sbb_maps_flutter/src/sbb_map_style/api_key_missing_exception.dar
 ///
 /// The [initialStyleId] is `journey_maps_bright_v1`.
 class SBBRokasMapStyler {
-  static _rokasProdStyleUrl(String styleId) => 'https://journey-maps-tiles.geocdn.sbb.ch/styles/$styleId/style.json';
-  static _rokasIntStyleUrl(String styleId) => 'https://journey-maps-tiles.geocdn-int.sbb.ch/styles/$styleId/style.json';
+  static String _rokasProdStyleUrl(String styleId) =>
+      'https://journey-maps-tiles.geocdn.sbb.ch/styles/$styleId/style.json';
 
-  static _rokasStyleUrl(String style, {isInt = false}) => isInt ? _rokasIntStyleUrl(style) : _rokasProdStyleUrl(style);
+  static String _rokasIntStyleUrl(String styleId) =>
+      'https://journey-maps-tiles.geocdn-int.sbb.ch/styles/$styleId/style.json';
+
+  static dynamic _rokasStyleUrl(String style, {isInt = false}) =>
+      isInt ? _rokasIntStyleUrl(style) : _rokasProdStyleUrl(style);
 
   static const _brightV1 = 'journey_maps_bright_v1';
   static const _darkV1 = 'journey_maps_dark_v1';
