@@ -65,13 +65,13 @@ class SBBCustomMapStyler with ChangeNotifier implements SBBMapStyler {
     notifyListeners();
   }
 
-  _resumePreviousStyle() {
+  void _resumePreviousStyle() {
     _currentStyle = _preAerialStyle ?? _styles.values.first;
     _preAerialStyle = null;
     _isAerialStyle = false;
   }
 
-  _switchToAerialStyle() {
+  void _switchToAerialStyle() {
     _preAerialStyle = _currentStyle;
     _currentStyle = _aerialStyle!;
     _isAerialStyle = true;

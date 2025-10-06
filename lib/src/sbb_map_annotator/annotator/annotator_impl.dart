@@ -207,7 +207,7 @@ class SBBMapAnnotatorImpl implements SBBMapAnnotator {
         .then((_) => _idToAnnotation = updatedIdToAnnotations);
   }
 
-  _throwAnnotatorException(msg) => (e) => throw AnnotationException('$msg $e');
+  Never Function(dynamic e) _throwAnnotatorException(String msg) => (e) => throw AnnotationException('$msg $e');
 
   bool _isKnown(SBBMapAnnotation annotation) {
     return _idToAnnotation.containsKey(annotation.id);
@@ -245,7 +245,7 @@ class SBBMapAnnotatorImpl implements SBBMapAnnotator {
   }
 
   OnFeatureInteractionCallback _delegateToAnnotationCallback() {
-    return (id, point, coordinates, layerId) {
+    return (point, coordinates, id, layerId, _) {
       if (_annotationTappedCallbacks.isEmpty) return; // no callbacks registered
       if (_idToAnnotation.isEmpty) return; // empty annotation cannot be clicked
 

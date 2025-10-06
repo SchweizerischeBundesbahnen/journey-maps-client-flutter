@@ -36,9 +36,11 @@ class SBBRokasPOIControllerImpl with ChangeNotifier implements SBBRokasPOIContro
   final OnPoiSelected? onPoiSelected;
   final VoidCallback? onPoiDeselected;
 
-  static get _allPoiCategories => () => Set<SBBPoiCategoryType>.from(SBBPoiCategoryType.values);
+  static Set<SBBPoiCategoryType> Function() get _allPoiCategories =>
+      () => Set<SBBPoiCategoryType>.from(SBBPoiCategoryType.values);
 
-  static get _allLayersWithVisibilityToFalse => () => {for (var k in SBBRokasPoiLayer.values) k: false};
+  static Map<SBBRokasPoiLayer, bool> Function() get _allLayersWithVisibilityToFalse =>
+      () => {for (var k in SBBRokasPoiLayer.values) k: false};
 
   Map<SBBRokasPoiLayer, Set<SBBPoiCategoryType>> _layerToCategoryFilters = {
     SBBRokasPoiLayer.highlighted: _allPoiCategories(),
@@ -300,7 +302,7 @@ class SBBRokasPOIControllerImpl with ChangeNotifier implements SBBRokasPOIContro
     return ['all', ...prunedFilter, _buildInnerCategoryFilter(categoryFilters)];
   }
 
-  bool _isSubCategoryFilter(filter) {
+  bool _isSubCategoryFilter(dynamic filter) {
     if (Platform.isIOS) return jsonEncode(filter).startsWith('["==",["filter-in",["subCategory"');
     return jsonEncode(filter).startsWith('["filter-in",["subCategory"');
   }

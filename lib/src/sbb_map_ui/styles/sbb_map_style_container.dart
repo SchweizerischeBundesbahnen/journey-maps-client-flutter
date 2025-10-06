@@ -13,12 +13,13 @@ class SBBMapStyleContainer extends StatelessWidget {
   const SBBMapStyleContainer({super.key, required this.child});
 
   final Widget child;
+
   @override
   Widget build(BuildContext context) {
     return Theme(data: _addSBBMapDefaultStyles(context), child: child);
   }
 
-  _addSBBMapDefaultStyles(BuildContext context) {
+  ThemeData _addSBBMapDefaultStyles(BuildContext context) {
     final theme = Theme.of(context);
     final baseStyle = SBBMapBaseStyle(brightness: theme.brightness);
     final parentExtensions = theme.extensions.values.toList();

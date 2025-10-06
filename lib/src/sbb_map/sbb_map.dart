@@ -258,7 +258,6 @@ class _SBBMapState extends State<SBBMap> {
 
   @override
   void dispose() {
-    super.dispose();
     _mapLocator.removeListener(_setState);
     _floorController.removeListener(_setState);
     _routingController.removeListener(_setState);
@@ -266,6 +265,7 @@ class _SBBMapState extends State<SBBMap> {
     if (_mapAnnotator.isCompleted) {
       _mapAnnotator.future.then((a) => a.dispose());
     }
+    super.dispose();
   }
 
   @override
@@ -310,7 +310,7 @@ class _SBBMapState extends State<SBBMap> {
     );
   }
 
-  _onMapCreated(MapLibreMapController controller) {
+  void _onMapCreated(MapLibreMapController controller) {
     SBBMapController sbbMapController = SBBMapControllerImpl(maplibreMapController: controller);
 
     _mlController.complete(controller);
@@ -321,23 +321,21 @@ class _SBBMapState extends State<SBBMap> {
     }
   }
 
-  _buildUserControls() {
-    return SBBMapStyleContainer(
-      child: SBBMapUiContainer(
-        mapStyler: widget.mapStyler,
-        mapLocator: _mapLocator,
-        mapFloorController: _floorController,
-        child: Builder(
-          builder:
-              widget.builder ??
-              (context) => SBBMapDefaultUI(
-                locationEnabled: widget.isMyLocationEnabled,
-                isFloorSwitchingEnabled: widget.isFloorSwitchingEnabled,
-              ),
-        ),
+  SBBMapStyleContainer _buildUserControls() => SBBMapStyleContainer(
+    child: SBBMapUiContainer(
+      mapStyler: widget.mapStyler,
+      mapLocator: _mapLocator,
+      mapFloorController: _floorController,
+      child: Builder(
+        builder:
+            widget.builder ??
+            (context) => SBBMapDefaultUI(
+              locationEnabled: widget.isMyLocationEnabled,
+              isFloorSwitchingEnabled: widget.isFloorSwitchingEnabled,
+            ),
       ),
-    );
-  }
+    ),
+  );
 
   void _onStyleLoadedCallback() async {
     setState(() {
