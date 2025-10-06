@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
+import 'package:maplibre_gl/maplibre_gl.dart';
 import 'package:sbb_maps_flutter/sbb_maps_flutter.dart';
 
 class AnnotatorFixture {
@@ -13,6 +14,7 @@ class AnnotatorFixture {
   static const fakeCoords = LatLng(0.1, 1.0);
   static const fakePoint = Point(0.2, 1.5);
   static const fakeLayerId = "fakeLayerId";
+  static final fakeAnnotation = Circle('fakeId', CircleOptions());
 
   static SBBMapSymbol simpleSymbol() => SBBMapSymbol(symbolURI: fakeURI, coords: fakeCoords);
 

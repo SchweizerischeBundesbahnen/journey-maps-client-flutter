@@ -245,7 +245,7 @@ class SBBMapAnnotatorImpl implements SBBMapAnnotator {
   }
 
   OnFeatureInteractionCallback _delegateToAnnotationCallback() {
-    return (id, point, coordinates, layerId) {
+    return (point, coordinates, id, layerId, _) {
       if (_annotationTappedCallbacks.isEmpty) return; // no callbacks registered
       if (_idToAnnotation.isEmpty) return; // empty annotation cannot be clicked
 

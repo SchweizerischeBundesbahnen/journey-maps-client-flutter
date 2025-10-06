@@ -7,7 +7,6 @@ import 'package:test/test.dart';
 
 import '../../../util/mock_callback_function.dart';
 import 'annotator.fixture.dart';
-
 import 'annotator_test.mocks.dart';
 
 void main() {
@@ -122,10 +121,11 @@ void main() {
 void _callAllWithAnnotation(List<OnFeatureInteractionCallback> mockCallbackList, SBBMapAnnotation registeredA) {
   for (final callback in mockCallbackList) {
     callback.call(
-      registeredA.id,
       AnnotatorFixture.fakePoint,
       AnnotatorFixture.fakeCoords,
+      registeredA.id,
       AnnotatorFixture.fakeLayerId,
+      AnnotatorFixture.fakeAnnotation,
     );
   }
 }
