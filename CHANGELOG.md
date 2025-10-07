@@ -1,5 +1,21 @@
 # Changelog
 
+## [2.6.2](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/compare/2.6.1...2.6.2) (2025-10-07)
+
+
+### Bug Fixes
+
+* **deps:** update dependency geolocator to v14 ([#161](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/161)) ([7f11c07](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/7f11c0760ce9adb17d47cf219fb2ea1896f442ef))
+* **deps:** update maplibre_gl to ^0.24.0 ([9fdc106](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/9fdc10634fca1eca94e0ce5c6e5a477447d4c87a))
+* **platform:** compileSDK must be set to 36 ([9fdc106](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/9fdc10634fca1eca94e0ce5c6e5a477447d4c87a))
+* **platform:** drop support for Flutter 3.27.x ([f2ec142](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/f2ec14229d3e82f05ad04a07192ff5ced37433a1))
+* **platform:** minimum iOS deployment target is 13.0 ([9fdc106](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/9fdc10634fca1eca94e0ce5c6e5a477447d4c87a))
+
+
+### Miscellaneous Chores
+
+* **docs:** update tested platforms ([#167](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/167)) ([fc89e67](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/fc89e67ba69b6568ec821e4db86d1be534739e90))
+
 ## [2.6.1](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/compare/2.6.0...2.6.1) (2025-07-11)
 
 
