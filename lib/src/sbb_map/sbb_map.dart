@@ -382,22 +382,18 @@ class _SBBMapState extends State<SBBMap> {
     _isFirstTimeStyleLoaded = false;
   }
 
-  Future<void> _delayedMoveToCHBounds() {
-    return Future.delayed(const Duration(milliseconds: 10)).then(
-      (_) => _controller.future.then(
-        (c) => c.animateCameraMove(cameraUpdate: _getSwitzerlandLatLngBounds(), duration: Durations.short1),
-      ),
-    );
-  }
+  Future<void> _delayedMoveToCHBounds() => Future.delayed(const Duration(milliseconds: 10)).then(
+    (_) => _controller.future.then(
+      (c) => c.animateCameraMove(cameraUpdate: _getSwitzerlandLatLngBounds(), duration: Durations.short1),
+    ),
+  );
 
-  SBBCameraUpdate _getSwitzerlandLatLngBounds() {
-    return SBBCameraUpdate.newLatLngBounds(
-      LatLngBounds(
-        southwest: const LatLng(45.7769477403, 5.93960949059),
-        northeast: const LatLng(47.8308275417, 10.6427014502),
-      ),
-    );
-  }
+  SBBCameraUpdate _getSwitzerlandLatLngBounds() => SBBCameraUpdate.newLatLngBounds(
+    LatLngBounds(
+      southwest: const LatLng(45.7769477403, 5.93960949059),
+      northeast: const LatLng(47.8308275417, 10.6427014502),
+    ),
+  );
 
   void _completeAnnotatorIfNecessary() {
     if (!_mapAnnotator.isCompleted) {
