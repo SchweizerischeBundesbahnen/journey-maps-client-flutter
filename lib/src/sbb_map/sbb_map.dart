@@ -249,7 +249,7 @@ class _SBBMapState extends State<SBBMap> {
   @override
   void didUpdateWidget(covariant SBBMap oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.mapStyler != widget.mapStyler) {
+    if (!identical(oldWidget.mapStyler, widget.mapStyler)) {
       oldWidget.mapStyler.removeListener(_setStyleLoadedFalse);
       widget.mapStyler.addListener(_setStyleLoadedFalse);
       oldWidget.mapStyler.dispose();
