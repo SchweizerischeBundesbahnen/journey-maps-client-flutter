@@ -265,6 +265,10 @@ class _SBBMapState extends State<SBBMap> {
     if (_mapAnnotator.isCompleted) {
       _mapAnnotator.future.then((a) => a.dispose());
     }
+    _mapLocator.dispose();
+    _routingController.dispose();
+    _floorController.dispose();
+    widget.mapStyler.dispose();
     super.dispose();
   }
 
