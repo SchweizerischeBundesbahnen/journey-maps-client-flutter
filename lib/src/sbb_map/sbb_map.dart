@@ -218,7 +218,7 @@ class _SBBMapState extends State<SBBMap> {
   @override
   void initState() {
     super.initState();
-    widget.mapStyler.addListener(_setStyleLoadedFalse);
+    widget.mapStyler.addListener(_reactToStyleChange);
 
     _mapLocator = SBBMapLocatorImpl(_mlController.future, GeolocatorFacade());
     _mapLocator.addListener(_setState);
@@ -240,19 +240,24 @@ class _SBBMapState extends State<SBBMap> {
     );
   }
 
-  void _setStyleLoadedFalse() {
-    setState(() {
-      _isStyleLoaded = false;
+  void _reactToStyleChange() {
+    _mlController.future.then((c) {
+      c.setStyle(widget.mapStyler.currentStyleURI);
+      setState(() => _isStyleLoaded = false);
     });
   }
 
   @override
   void didUpdateWidget(covariant SBBMap oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.mapStyler != widget.mapStyler) {
-      oldWidget.mapStyler.removeListener(_setStyleLoadedFalse);
-      widget.mapStyler.addListener(_setStyleLoadedFalse);
-      oldWidget.mapStyler.dispose();
+    if (!identical(oldWidget.mapStyler, widget.mapStyler)) {
+      final hasDifferentStyle = oldWidget.mapStyler.currentStyleURI != widget.mapStyler.currentStyleURI;
+      _disposeMapStyler(oldWidget.mapStyler);
+      widget.mapStyler.addListener(_reactToStyleChange);
+
+      if (hasDifferentStyle) {
+        _mlController.future.then((c) => c.setStyle(widget.mapStyler.currentStyleURI));
+      }
     }
   }
 
@@ -261,10 +266,15 @@ class _SBBMapState extends State<SBBMap> {
     _mapLocator.removeListener(_setState);
     _floorController.removeListener(_setState);
     _routingController.removeListener(_setState);
-    widget.mapStyler.removeListener(_setStyleLoadedFalse);
+
+    _disposeMapStyler(widget.mapStyler);
     if (_mapAnnotator.isCompleted) {
       _mapAnnotator.future.then((a) => a.dispose());
     }
+    _mapLocator.dispose();
+    _routingController.dispose();
+    _floorController.dispose();
+    _poiController.dispose();
     super.dispose();
   }
 
@@ -273,7 +283,6 @@ class _SBBMapState extends State<SBBMap> {
     return Stack(
       children: [
         MapLibreMap(
-          styleString: widget.mapStyler.currentStyleURI,
           initialCameraPosition:
               widget.initialCameraPosition?.toMaplibre() ?? SBBCameraPosition.highLevelCH.toMaplibre(),
           onMapCreated: _onMapCreated,
@@ -305,7 +314,7 @@ class _SBBMapState extends State<SBBMap> {
           zoomGesturesEnabled: widget.properties.zoomGesturesEnabled,
           dragEnabled: widget.dragEnabled,
         ),
-        _buildUserControls(),
+        _sbbMapUserControls(),
       ],
     );
   }
@@ -316,12 +325,14 @@ class _SBBMapState extends State<SBBMap> {
     _mlController.complete(controller);
     _controller.complete(sbbMapController);
 
+    controller.setStyle(widget.mapStyler.currentStyleURI);
+
     if (widget.onMapCreated != null) {
       widget.onMapCreated!(sbbMapController);
     }
   }
 
-  SBBMapStyleContainer _buildUserControls() => SBBMapStyleContainer(
+  SBBMapStyleContainer _sbbMapUserControls() => SBBMapStyleContainer(
     child: SBBMapUiContainer(
       mapStyler: widget.mapStyler,
       mapLocator: _mapLocator,
@@ -378,21 +389,22 @@ class _SBBMapState extends State<SBBMap> {
     _isFirstTimeStyleLoaded = false;
   }
 
-  Future<void> _delayedMoveToCHBounds() {
-    return Future.delayed(const Duration(milliseconds: 10)).then(
-      (_) => _controller.future.then(
-        (c) => c.animateCameraMove(cameraUpdate: _getSwitzerlandLatLngBounds(), duration: Durations.short1),
-      ),
-    );
-  }
+  Future<void> _delayedMoveToCHBounds() => Future.delayed(const Duration(milliseconds: 10)).then(
+    (_) => _controller.future.then(
+      (c) => c.animateCameraMove(cameraUpdate: _getSwitzerlandLatLngBounds(), duration: Durations.short1),
+    ),
+  );
 
-  SBBCameraUpdate _getSwitzerlandLatLngBounds() {
-    return SBBCameraUpdate.newLatLngBounds(
-      LatLngBounds(
-        southwest: const LatLng(45.7769477403, 5.93960949059),
-        northeast: const LatLng(47.8308275417, 10.6427014502),
-      ),
-    );
+  SBBCameraUpdate _getSwitzerlandLatLngBounds() => SBBCameraUpdate.newLatLngBounds(
+    LatLngBounds(
+      southwest: const LatLng(45.7769477403, 5.93960949059),
+      northeast: const LatLng(47.8308275417, 10.6427014502),
+    ),
+  );
+
+  void _disposeMapStyler(SBBMapStyler oldMapStyler) {
+    oldMapStyler.removeListener(_reactToStyleChange);
+    oldMapStyler.dispose();
   }
 
   void _completeAnnotatorIfNecessary() {
