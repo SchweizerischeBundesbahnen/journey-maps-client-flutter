@@ -218,7 +218,7 @@ class _SBBMapState extends State<SBBMap> {
   @override
   void initState() {
     super.initState();
-    widget.mapStyler.addListener(_setStyleLoadedFalse);
+    widget.mapStyler.addListener(_reactToStyleChange);
 
     _mapLocator = SBBMapLocatorImpl(_mlController.future, GeolocatorFacade());
     _mapLocator.addListener(_setState);
@@ -240,9 +240,10 @@ class _SBBMapState extends State<SBBMap> {
     );
   }
 
-  void _setStyleLoadedFalse() {
-    setState(() {
-      _isStyleLoaded = false;
+  void _reactToStyleChange() {
+    _mlController.future.then((c) {
+      c.setStyle(widget.mapStyler.currentStyleURI);
+      setState(() => _isStyleLoaded = false);
     });
   }
 
@@ -250,9 +251,14 @@ class _SBBMapState extends State<SBBMap> {
   void didUpdateWidget(covariant SBBMap oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (!identical(oldWidget.mapStyler, widget.mapStyler)) {
-      oldWidget.mapStyler.removeListener(_setStyleLoadedFalse);
-      widget.mapStyler.addListener(_setStyleLoadedFalse);
+      final hasDifferentStyle = oldWidget.mapStyler.currentStyleURI != widget.mapStyler.currentStyleURI;
+      oldWidget.mapStyler.removeListener(_reactToStyleChange);
+      widget.mapStyler.addListener(_reactToStyleChange);
       oldWidget.mapStyler.dispose();
+
+      if (hasDifferentStyle) {
+        _mlController.future.then((c) => c.setStyle(widget.mapStyler.currentStyleURI));
+      }
     }
   }
 
@@ -261,7 +267,7 @@ class _SBBMapState extends State<SBBMap> {
     _mapLocator.removeListener(_setState);
     _floorController.removeListener(_setState);
     _routingController.removeListener(_setState);
-    widget.mapStyler.removeListener(_setStyleLoadedFalse);
+    widget.mapStyler.removeListener(_reactToStyleChange);
     if (_mapAnnotator.isCompleted) {
       _mapAnnotator.future.then((a) => a.dispose());
     }
@@ -278,7 +284,6 @@ class _SBBMapState extends State<SBBMap> {
     return Stack(
       children: [
         MapLibreMap(
-          styleString: widget.mapStyler.currentStyleURI,
           initialCameraPosition:
               widget.initialCameraPosition?.toMaplibre() ?? SBBCameraPosition.highLevelCH.toMaplibre(),
           onMapCreated: _onMapCreated,
@@ -310,7 +315,7 @@ class _SBBMapState extends State<SBBMap> {
           zoomGesturesEnabled: widget.properties.zoomGesturesEnabled,
           dragEnabled: widget.dragEnabled,
         ),
-        _buildUserControls(),
+        _sbbMapUserControls(),
       ],
     );
   }
@@ -321,12 +326,14 @@ class _SBBMapState extends State<SBBMap> {
     _mlController.complete(controller);
     _controller.complete(sbbMapController);
 
+    controller.setStyle(widget.mapStyler.currentStyleURI);
+
     if (widget.onMapCreated != null) {
       widget.onMapCreated!(sbbMapController);
     }
   }
 
-  SBBMapStyleContainer _buildUserControls() => SBBMapStyleContainer(
+  SBBMapStyleContainer _sbbMapUserControls() => SBBMapStyleContainer(
     child: SBBMapUiContainer(
       mapStyler: widget.mapStyler,
       mapLocator: _mapLocator,
