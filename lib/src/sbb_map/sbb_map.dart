@@ -268,6 +268,7 @@ class _SBBMapState extends State<SBBMap> {
     _mapLocator.dispose();
     _routingController.dispose();
     _floorController.dispose();
+    _poiController.dispose();
     widget.mapStyler.dispose();
     super.dispose();
   }
