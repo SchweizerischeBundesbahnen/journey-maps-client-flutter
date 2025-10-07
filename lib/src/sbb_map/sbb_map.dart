@@ -252,9 +252,8 @@ class _SBBMapState extends State<SBBMap> {
     super.didUpdateWidget(oldWidget);
     if (!identical(oldWidget.mapStyler, widget.mapStyler)) {
       final hasDifferentStyle = oldWidget.mapStyler.currentStyleURI != widget.mapStyler.currentStyleURI;
-      oldWidget.mapStyler.removeListener(_reactToStyleChange);
+      _disposeMapStyler(oldWidget.mapStyler);
       widget.mapStyler.addListener(_reactToStyleChange);
-      oldWidget.mapStyler.dispose();
 
       if (hasDifferentStyle) {
         _mlController.future.then((c) => c.setStyle(widget.mapStyler.currentStyleURI));
@@ -267,7 +266,8 @@ class _SBBMapState extends State<SBBMap> {
     _mapLocator.removeListener(_setState);
     _floorController.removeListener(_setState);
     _routingController.removeListener(_setState);
-    widget.mapStyler.removeListener(_reactToStyleChange);
+
+    _disposeMapStyler(widget.mapStyler);
     if (_mapAnnotator.isCompleted) {
       _mapAnnotator.future.then((a) => a.dispose());
     }
@@ -275,7 +275,6 @@ class _SBBMapState extends State<SBBMap> {
     _routingController.dispose();
     _floorController.dispose();
     _poiController.dispose();
-    widget.mapStyler.dispose();
     super.dispose();
   }
 
@@ -402,6 +401,11 @@ class _SBBMapState extends State<SBBMap> {
       northeast: const LatLng(47.8308275417, 10.6427014502),
     ),
   );
+
+  void _disposeMapStyler(SBBMapStyler oldMapStyler) {
+    oldMapStyler.removeListener(_reactToStyleChange);
+    oldMapStyler.dispose();
+  }
 
   void _completeAnnotatorIfNecessary() {
     if (!_mapAnnotator.isCompleted) {
