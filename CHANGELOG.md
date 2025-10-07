@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.7.0](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/compare/2.6.2...2.7.0) (2025-10-07)
+
+
+### Features
+
+* faster runtime map style switching ([#169](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/169)) ([0a9d64e](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/0a9d64e15139b5290d2d9dd9602a5599d327c2de))
+
+
+### Bug Fixes
+
+* properly dispose SBBMapAnnotator, SBBMapLocator and SBBPoiController ([#169](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/169)) ([0a9d64e](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/0a9d64e15139b5290d2d9dd9602a5599d327c2de))
+
 ## [2.6.2](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/compare/2.6.1...2.6.2) (2025-10-07)
 
 
