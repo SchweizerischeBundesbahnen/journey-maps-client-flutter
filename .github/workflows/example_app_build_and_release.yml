@@ -15,7 +15,7 @@ jobs:
       run:
         working-directory: example
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - uses: subosito/flutter-action@v2
         with:
@@ -82,6 +82,6 @@ jobs:
       contents: write
       pull-requests: write
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - run: gh pr edit "$PR_NUMBER" --remove-label exampleAppRelease:pending
       - run: gh pr edit "$PR_NUMBER" --add-label exampleAppRelease:released
