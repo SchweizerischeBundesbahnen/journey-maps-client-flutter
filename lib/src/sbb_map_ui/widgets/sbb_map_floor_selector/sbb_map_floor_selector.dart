@@ -18,18 +18,16 @@ class SBBMapFloorSelector extends StatelessWidget {
     final style = _resolveStyleWithInherited(context);
     return ListenableBuilder(
       listenable: floorController,
-      builder:
-          (context, child) =>
-              floorController.availableFloors.isEmpty
-                  ? SizedBox.shrink()
-                  : SizedBox(
-                    width: _kFloorSelectorWidth,
-                    child: DecoratedBox(
-                      decoration: ShapeDecoration(shape: StadiumBorder(side: style.borderSide ?? BorderSide.none)),
-                      position: DecorationPosition.foreground,
-                      child: FloorSelectorTilesBuilder(style: style),
-                    ),
-                  ),
+      builder: (context, child) => floorController.availableFloors.isEmpty
+          ? SizedBox.shrink()
+          : SizedBox(
+              width: _kFloorSelectorWidth,
+              child: DecoratedBox(
+                decoration: ShapeDecoration(shape: StadiumBorder(side: style.borderSide ?? BorderSide.none)),
+                position: DecorationPosition.foreground,
+                child: FloorSelectorTilesBuilder(style: style),
+              ),
+            ),
     );
   }
 

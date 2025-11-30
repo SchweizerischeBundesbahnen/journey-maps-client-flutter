@@ -15,12 +15,11 @@ class ThemeSegmentedButton extends StatelessWidget {
         SBBIcons.smartphone_small: 'System theme',
         SBBIcons.moon_small: 'Dark theme',
       },
-      selectedStateIndex:
-          provider.useSystemTheme
-              ? 1
-              : provider.isDark
-              ? 2
-              : 0,
+      selectedStateIndex: provider.useSystemTheme
+          ? 1
+          : provider.isDark
+          ? 2
+          : 0,
       selectedIndexChanged: (value) {
         Provider.of<ThemeProvider>(context, listen: false).updateTheme(
           value == 0

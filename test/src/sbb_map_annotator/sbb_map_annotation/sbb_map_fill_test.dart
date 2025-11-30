@@ -17,8 +17,9 @@ void main() {
           "properties": {"id": sut.id, "draggable": sut.draggable, "sbbAnnotationType": "SBBMapFill"},
           "geometry": {
             "type": "Polygon",
-            "coordinates":
-                sut.coords.map((e) => e.map((LatLng latLng) => [latLng.longitude, latLng.latitude]).toList()).toList(),
+            "coordinates": sut.coords
+                .map((e) => e.map((LatLng latLng) => [latLng.longitude, latLng.latitude]).toList())
+                .toList(),
           },
         };
         // act + expect
@@ -40,8 +41,9 @@ void main() {
           },
           "geometry": {
             "type": "Polygon",
-            "coordinates":
-                sut.coords.map((e) => e.map((LatLng latLng) => [latLng.longitude, latLng.latitude]).toList()).toList(),
+            "coordinates": sut.coords
+                .map((e) => e.map((LatLng latLng) => [latLng.longitude, latLng.latitude]).toList())
+                .toList(),
           },
         };
         // act + expect

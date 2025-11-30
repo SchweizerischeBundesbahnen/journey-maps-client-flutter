@@ -24,10 +24,9 @@ class SBBMapStyleContainer extends StatelessWidget {
     final baseStyle = SBBMapBaseStyle(brightness: theme.brightness);
     final parentExtensions = theme.extensions.values.toList();
     return theme.copyWith(
-      extensions:
-          parentExtensions
-            ..add(SBBMapIconButtonStyle.$default(baseStyle: baseStyle))
-            ..add(SBBMapFloorSelectorStyle.$default(baseStyle: baseStyle)),
+      extensions: parentExtensions
+        ..add(SBBMapIconButtonStyle.$default(baseStyle: baseStyle))
+        ..add(SBBMapFloorSelectorStyle.$default(baseStyle: baseStyle)),
     );
   }
 }

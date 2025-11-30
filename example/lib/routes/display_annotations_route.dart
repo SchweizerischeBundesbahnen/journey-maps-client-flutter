@@ -115,31 +115,30 @@ class _DisplayAnnotationsRouteState extends State<DisplayAnnotationsRoute> {
         isMyLocationEnabled: false,
         isFloorSwitchingEnabled: true,
         onMapAnnotatorAvailable: (annotator) => !_annotator.isCompleted ? _annotator.complete(annotator) : null,
-        builder:
-            (context) => Align(
-              alignment: Alignment.topRight,
-              child: Padding(
-                padding: const EdgeInsets.all(sbbDefaultSpacing),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    const SBBMapStyleSwitcher(),
-                    const SizedBox(height: sbbDefaultSpacing),
-                    SBBMapIconButton(
-                      onPressed: () {
-                        showSBBModalSheet<_AnnotationVisibilitySettings>(
-                          context: context,
-                          title: 'Show Annotations',
-                          child: _AnnotationVisibilitySettingModal(settings: properties),
-                        ).then(_setStateWithProperties);
-                      },
-                      icon: SBBIcons.gears_small,
-                    ),
-                  ],
+        builder: (context) => Align(
+          alignment: Alignment.topRight,
+          child: Padding(
+            padding: const EdgeInsets.all(sbbDefaultSpacing),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                const SBBMapStyleSwitcher(),
+                const SizedBox(height: sbbDefaultSpacing),
+                SBBMapIconButton(
+                  onPressed: () {
+                    showSBBModalSheet<_AnnotationVisibilitySettings>(
+                      context: context,
+                      title: 'Show Annotations',
+                      child: _AnnotationVisibilitySettingModal(settings: properties),
+                    ).then(_setStateWithProperties);
+                  },
+                  icon: SBBIcons.gears_small,
                 ),
-              ),
+              ],
             ),
+          ),
+        ),
       ),
     );
   }
@@ -214,46 +213,41 @@ class _AnnotationVisibilitySettingModalState extends State<_AnnotationVisibility
             value: settings.isCustomSymbolVisible,
             label: 'Show Symbols',
             secondaryLabel: 'Show custom symbol annotations around Bern.',
-            onChanged:
-                (v) => setState(() {
-                  settings.isCustomSymbolVisible = !settings.isCustomSymbolVisible;
-                }),
+            onChanged: (v) => setState(() {
+              settings.isCustomSymbolVisible = !settings.isCustomSymbolVisible;
+            }),
           ),
           SBBCheckboxListItem(
             value: settings.isRokasIconVisible,
             label: 'Show SBB Rokas Symbols',
             secondaryLabel: 'Show SBB Rokas symbols around Wankdorf stadium.',
-            onChanged:
-                (v) => setState(() {
-                  settings.isRokasIconVisible = !settings.isRokasIconVisible;
-                }),
+            onChanged: (v) => setState(() {
+              settings.isRokasIconVisible = !settings.isRokasIconVisible;
+            }),
           ),
           SBBCheckboxListItem(
             value: settings.isCircleVisible,
             label: 'Show Circles',
             secondaryLabel: 'Display circle annotations between Lorrainebrücke and Kornhausbrücke.',
-            onChanged:
-                (v) => setState(() {
-                  settings.isCircleVisible = !settings.isCircleVisible;
-                }),
+            onChanged: (v) => setState(() {
+              settings.isCircleVisible = !settings.isCircleVisible;
+            }),
           ),
           SBBCheckboxListItem(
             value: settings.isLineVisible,
             label: 'Show Lines',
             secondaryLabel: 'Display line annotations between Bern Bahnhof and Bern Europaplatz.',
-            onChanged:
-                (v) => setState(() {
-                  settings.isLineVisible = !settings.isLineVisible;
-                }),
+            onChanged: (v) => setState(() {
+              settings.isLineVisible = !settings.isLineVisible;
+            }),
           ),
           SBBCheckboxListItem(
             value: settings.isFillVisible,
             label: 'Show Fills',
             secondaryLabel: 'Display fill annotation at Bern Inselspital.',
-            onChanged:
-                (v) => setState(() {
-                  settings.isFillVisible = !settings.isFillVisible;
-                }),
+            onChanged: (v) => setState(() {
+              settings.isFillVisible = !settings.isFillVisible;
+            }),
             isLastElement: true,
           ),
           const SizedBox(height: sbbDefaultSpacing),

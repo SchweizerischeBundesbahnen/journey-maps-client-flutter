@@ -5,10 +5,9 @@ class LineString {
   const LineString({required this.coordinates});
 
   factory LineString.fromGeoJSON(Map<String, dynamic> json) {
-    var coordinatesList =
-        (json['geometry']['coordinates'] as List)
-            .map((coordinate) => LatLng(coordinate[1] as double, coordinate[0] as double))
-            .toList();
+    var coordinatesList = (json['geometry']['coordinates'] as List)
+        .map((coordinate) => LatLng(coordinate[1] as double, coordinate[0] as double))
+        .toList();
 
     return LineString(coordinates: coordinatesList);
   }
