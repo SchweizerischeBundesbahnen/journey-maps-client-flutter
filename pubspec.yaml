@@ -43,11 +43,11 @@ dependencies:
     sdk: flutter
 
   # https://pub.dev/packages/maplibre_gl
-  maplibre_gl: ^0.24.0
+  maplibre_gl: ^0.24.1
   # https://pub.dev/packages/geolocator
   geolocator: ^14.0.2
   # https://pub.dev/packages/logger
-  logger: ^2.0.2+1
+  logger: ^2.6.2
   # https://pub.dev/packages/collection
   collection: ^1.17.1
 
@@ -55,8 +55,8 @@ dev_dependencies:
   # https://pub.dev/packages/flutter_lints
   flutter_lints: ^6.0.0
   # https://pub.dev/packages/test
-  test: ^1.24.0
+  test: ^1.28.0
   # https://pub.dev/packages/mockito
-  mockito: ^5.4.2
+  mockito: ^5.6.1
   # https://pub.dev/packages/build_runner
   build_runner: ^2.4.7
