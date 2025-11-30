@@ -29,23 +29,22 @@ class _MapPropertiesRouteState extends State<MapPropertiesRoute> {
         isMyLocationEnabled: false,
         isFloorSwitchingEnabled: true,
         properties: properties,
-        builder:
-            (context) => Align(
-              alignment: Alignment.topRight,
-              child: Padding(
-                padding: const EdgeInsets.all(sbbDefaultSpacing),
-                child: SBBMapIconButton(
-                  onPressed: () {
-                    showSBBModalSheet<SBBMapProperties>(
-                      context: context,
-                      title: 'Map Properties',
-                      child: _MapPropertiesModalBody(properties: properties),
-                    ).then(_setStateWithProperties);
-                  },
-                  icon: SBBIcons.gears_small,
-                ),
-              ),
+        builder: (context) => Align(
+          alignment: Alignment.topRight,
+          child: Padding(
+            padding: const EdgeInsets.all(sbbDefaultSpacing),
+            child: SBBMapIconButton(
+              onPressed: () {
+                showSBBModalSheet<SBBMapProperties>(
+                  context: context,
+                  title: 'Map Properties',
+                  child: _MapPropertiesModalBody(properties: properties),
+                ).then(_setStateWithProperties);
+              },
+              icon: SBBIcons.gears_small,
             ),
+          ),
+        ),
       ),
     );
   }

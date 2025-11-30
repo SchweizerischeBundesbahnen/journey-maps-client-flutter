@@ -53,13 +53,11 @@ class SBBMapFill implements SBBMapAnnotation {
       "properties": properties,
       "geometry": {
         "type": "Polygon",
-        "coordinates":
-            _coords
-                .map(
-                  (List<LatLng> latLngList) =>
-                      latLngList.map((LatLng latLng) => latLng.toGeoJsonCoordinates()).toList(),
-                )
-                .toList(),
+        "coordinates": _coords
+            .map(
+              (List<LatLng> latLngList) => latLngList.map((LatLng latLng) => latLng.toGeoJsonCoordinates()).toList(),
+            )
+            .toList(),
       },
     };
   }

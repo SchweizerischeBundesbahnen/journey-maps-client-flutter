@@ -42,27 +42,26 @@ class _MainAppState extends State<MainApp> {
     return ChangeNotifierProvider(
       create: (context) => themeProvider,
       child: Consumer<ThemeProvider>(
-        builder:
-            (BuildContext context, ThemeProvider themeProvider, _) => MaterialApp(
-              debugShowCheckedModeBanner: false,
-              theme: SBBTheme.light(),
-              darkTheme: SBBTheme.dark(),
-              themeMode: themeProvider.isDark ? ThemeMode.dark : ThemeMode.light,
-              initialRoute: '/features',
-              routes: {
-                '/features': (context) => const FeaturesRoute(),
-                '/plain': (context) => const PlainMapRoute(),
-                '/camera': (context) => const CameraRoute(),
-                '/standard': (context) => const StandardMapRoute(),
-                '/custom_ui': (context) => const CustomUiRoute(),
-                '/poi': (context) => const POIRoute(),
-                '/routing': (context) => const RoutingRoute(),
-                '/map_properties': (context) => const MapPropertiesRoute(),
-                '/integration_data': (context) => const IntegrationDataRoute(),
-                '/display_annotations': (context) => const DisplayAnnotationsRoute(),
-                '/track_device_location': (context) => const TrackDeviceLocationRoute(),
-              },
-            ),
+        builder: (BuildContext context, ThemeProvider themeProvider, _) => MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: SBBTheme.light(),
+          darkTheme: SBBTheme.dark(),
+          themeMode: themeProvider.isDark ? ThemeMode.dark : ThemeMode.light,
+          initialRoute: '/features',
+          routes: {
+            '/features': (context) => const FeaturesRoute(),
+            '/plain': (context) => const PlainMapRoute(),
+            '/camera': (context) => const CameraRoute(),
+            '/standard': (context) => const StandardMapRoute(),
+            '/custom_ui': (context) => const CustomUiRoute(),
+            '/poi': (context) => const POIRoute(),
+            '/routing': (context) => const RoutingRoute(),
+            '/map_properties': (context) => const MapPropertiesRoute(),
+            '/integration_data': (context) => const IntegrationDataRoute(),
+            '/display_annotations': (context) => const DisplayAnnotationsRoute(),
+            '/track_device_location': (context) => const TrackDeviceLocationRoute(),
+          },
+        ),
       ),
     );
   }

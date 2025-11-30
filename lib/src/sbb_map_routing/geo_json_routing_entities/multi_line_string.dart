@@ -6,10 +6,9 @@ class MultiLineString {
   const MultiLineString({required this.lineStrings});
 
   factory MultiLineString.fromGeoJSON(Map<String, dynamic> json) {
-    var lineStringsList =
-        (json['geometry']['coordinates'] as List)
-            .map((lineString) => LineString.fromGeoJSON(lineString as Map<String, dynamic>))
-            .toList();
+    var lineStringsList = (json['geometry']['coordinates'] as List)
+        .map((lineString) => LineString.fromGeoJSON(lineString as Map<String, dynamic>))
+        .toList();
 
     return MultiLineString(lineStrings: lineStringsList);
   }

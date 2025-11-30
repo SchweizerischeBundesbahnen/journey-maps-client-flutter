@@ -29,23 +29,22 @@ class _IntegrationDataRouteState extends State<IntegrationDataRoute> {
         mapStyler: mapStyler,
         isMyLocationEnabled: false,
         isFloorSwitchingEnabled: true,
-        builder:
-            (context) => Align(
-              alignment: Alignment.topRight,
-              child: Padding(
-                padding: const EdgeInsets.all(sbbDefaultSpacing),
-                child: SBBMapIconButton(
-                  onPressed: () {
-                    showSBBModalSheet<bool>(
-                      context: context,
-                      title: 'Integration Data',
-                      child: _IntegrationDataModalBody(useIntegration: useIntegration),
-                    ).then(_setStateWithProperties);
-                  },
-                  icon: SBBIcons.gears_small,
-                ),
-              ),
+        builder: (context) => Align(
+          alignment: Alignment.topRight,
+          child: Padding(
+            padding: const EdgeInsets.all(sbbDefaultSpacing),
+            child: SBBMapIconButton(
+              onPressed: () {
+                showSBBModalSheet<bool>(
+                  context: context,
+                  title: 'Integration Data',
+                  child: _IntegrationDataModalBody(useIntegration: useIntegration),
+                ).then(_setStateWithProperties);
+              },
+              icon: SBBIcons.gears_small,
             ),
+          ),
+        ),
       ),
     );
   }
@@ -88,10 +87,9 @@ class _IntegrationDataModalBodyState extends State<_IntegrationDataModalBody> {
             value: _useIntegration,
             label: 'Use INT Data',
             secondaryLabel: 'Accesses developer-int.sbb.ch data.',
-            onChanged:
-                (v) => setState(() {
-                  _useIntegration = v ?? false;
-                }),
+            onChanged: (v) => setState(() {
+              _useIntegration = v ?? false;
+            }),
             isLastElement: true,
           ),
           const SizedBox(height: sbbDefaultSpacing),

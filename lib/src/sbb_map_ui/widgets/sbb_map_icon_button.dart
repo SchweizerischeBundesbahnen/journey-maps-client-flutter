@@ -35,7 +35,10 @@ class SBBMapIconButton extends StatelessWidget {
           containedInkWell: true,
           customBorder: const CircleBorder(),
           onTap: onPressed,
-          child: Padding(padding: _kButtonPadding, child: Icon(icon, color: resolvedStyle.iconColor)),
+          child: Padding(
+            padding: _kButtonPadding,
+            child: Icon(icon, color: resolvedStyle.iconColor),
+          ),
         ),
       ),
     );

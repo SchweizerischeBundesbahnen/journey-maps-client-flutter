@@ -207,7 +207,8 @@ class SBBMapAnnotatorImpl implements SBBMapAnnotator {
         .then((_) => _idToAnnotation = updatedIdToAnnotations);
   }
 
-  Never Function(dynamic e) _throwAnnotatorException(String msg) => (e) => throw AnnotationException('$msg $e');
+  Never Function(dynamic e) _throwAnnotatorException(String msg) =>
+      (e) => throw AnnotationException('$msg $e');
 
   bool _isKnown(SBBMapAnnotation annotation) {
     return _idToAnnotation.containsKey(annotation.id);

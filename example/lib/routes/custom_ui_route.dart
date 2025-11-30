@@ -26,34 +26,33 @@ class _CustomUiRouteState extends State<CustomUiRoute> {
         mapStyler: mapStyler,
         isMyLocationEnabled: true,
         isFloorSwitchingEnabled: true,
-        builder:
-            (context) => const Align(
-              alignment: Alignment.topRight,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        builder: (context) => const Align(
+          alignment: Alignment.topRight,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _ShadowedThemeButton(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  _ShadowedThemeButton(),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(right: sbbDefaultSpacing, bottom: sbbDefaultSpacing * 2),
-                        child: SBBMapStyleSwitcher(),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(right: sbbDefaultSpacing, bottom: sbbDefaultSpacing * 2),
-                        child: SBBMapMyLocationButton(),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(right: sbbDefaultSpacing, bottom: sbbDefaultSpacing * 2),
-                        child: SBBMapFloorSelector(),
-                      ),
-                    ],
+                  Padding(
+                    padding: EdgeInsets.only(right: sbbDefaultSpacing, bottom: sbbDefaultSpacing * 2),
+                    child: SBBMapStyleSwitcher(),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(right: sbbDefaultSpacing, bottom: sbbDefaultSpacing * 2),
+                    child: SBBMapMyLocationButton(),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(right: sbbDefaultSpacing, bottom: sbbDefaultSpacing * 2),
+                    child: SBBMapFloorSelector(),
                   ),
                 ],
               ),
-            ),
+            ],
+          ),
+        ),
       ),
     );
   }

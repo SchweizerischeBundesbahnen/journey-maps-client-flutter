@@ -21,16 +21,14 @@ class FloorSelectorTilesBuilder extends StatelessWidget {
       tiles.add(
         SBBMapFloorSelectorTile(
           floor: tileFloor,
-          onPressed:
-              () => _toggleSelectedFloor(
-                tileFloor,
-                mapFloorController.currentFloor,
-                (int? floor) => mapFloorController.switchFloor(floor),
-              ),
-          isSelected:
-              mapFloorController.currentFloor == null
-                  ? false
-                  : mapFloorController.currentFloor == mapFloorController.availableFloors[i],
+          onPressed: () => _toggleSelectedFloor(
+            tileFloor,
+            mapFloorController.currentFloor,
+            (int? floor) => mapFloorController.switchFloor(floor),
+          ),
+          isSelected: mapFloorController.currentFloor == null
+              ? false
+              : mapFloorController.currentFloor == mapFloorController.availableFloors[i],
           isFirst: i == 0 && mapFloorController.availableFloors.length > 1,
           isLast: i == mapFloorController.availableFloors.length - 1 && mapFloorController.availableFloors.length > 1,
           style: style,
