@@ -206,6 +206,7 @@ class SBBMap extends StatefulWidget {
 
 class _SBBMapState extends State<SBBMap> {
   bool _isFirstTimeStyleLoaded = true;
+  bool _isFirstTimeStyleLoadingComplete = false;
   bool _isStyleLoaded = false;
   final Completer<SBBMapController> _controller = Completer<SBBMapControllerImpl>();
   final Completer<MapLibreMapController> _mlController = Completer<MapLibreMapController>();
@@ -325,7 +326,13 @@ class _SBBMapState extends State<SBBMap> {
     _mlController.complete(controller);
     _controller.complete(sbbMapController);
 
-    controller.setStyle(widget.mapStyler.currentStyleURI);
+    controller
+        .setStyle(widget.mapStyler.currentStyleURI)
+        .then(
+          (_) => setState(() {
+            _isFirstTimeStyleLoadingComplete = true;
+          }),
+        );
 
     if (widget.onMapCreated != null) {
       widget.onMapCreated!(sbbMapController);
@@ -349,6 +356,8 @@ class _SBBMapState extends State<SBBMap> {
   );
 
   void _onStyleLoadedCallback() async {
+    if (!_isFirstTimeStyleLoadingComplete) return;
+
     setState(() {
       _isStyleLoaded = true;
     });
