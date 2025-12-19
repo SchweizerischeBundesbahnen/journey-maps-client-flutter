@@ -1,6 +1,7 @@
 This package allows you to easily incorporate SBB styled maps into your Flutter application.
 It is built on top of MapLibre and meant as a client for the [Journey Maps API].
-You need to register your application at [developer.sbb.ch](https://developer.sbb.ch/apis/) to receive an API key
+You need to register your application at [developer.sbb.ch](https://developer.sbb.ch/apis/) to
+receive an API key
 for style and routing usage (see details below).
 
 <p align="center"><img src="https://raw.githubusercontent.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/main/example/gallery/main.webp" alt="iOS and Android example showcases" width="90%"></p>
@@ -11,41 +12,41 @@ for style and routing usage (see details below).
 <summary>Click to expand</summary>
 
 - [Journey Maps Client Flutter](#journey-maps-client-flutter)
-  - [Table Of Contents](#table-of-contents)
-  - [Introduction](#introduction)
-  - [Getting Started](#getting-started)
-    - [Supported platforms](#supported-platforms)
-    - [Precondition](#precondition)
-    - [Installation](#installation)
-    - [In code usage](#in-code-usage)
-      - [API key](#api-key)
-      - [Adding the map](#adding-the-map)
-      - [Accessing user location](#accessing-user-location)
-      - [Focusing on user location when building map](#focusing-on-user-location-when-building-map)
-    - [Tested deployment platforms](#tested-deployment-platforms)
-    - [Example App](#example-app)
-  - [Documentation](#documentation)
-    - [Features](#features)
-    - [Custom Map Properties](#custom-map-properties)
-    - [Gallery and Examples](#gallery-and-examples)
-      - [Standard Map](#standard-map)
-      - [Plain Map](#plain-map)
-      - [Camera Movement](#camera-movement)
-      - [Custom UI](#custom-ui)
-      - [ROKAS Point of Interests](#rokas-point-of-interests)
-      - [Custom UI](#custom-ui-1)
-      - [Map Properties](#map-properties)
-      - [Annotations](#annotations)
-      - [Track device location on map build](#track-device-location-on-map-build)
-    - [Read on](#read-on)
-  - [License](#license)
-  - [Contributing](#contributing)
-    - [Maintainer](#maintainer)
-    - [Contributors](#contributors)
-    - [Coding Standards](#coding-standards)
-    - [Code of Conduct](#code-of-conduct)
-  - [Caveats, limitations and known bugs\*](#caveats-limitations-and-known-bugs)
-    - [Limitations](#limitations)
+    - [Table Of Contents](#table-of-contents)
+    - [Introduction](#introduction)
+    - [Getting Started](#getting-started)
+        - [Supported platforms](#supported-platforms)
+        - [Precondition](#precondition)
+        - [Installation](#installation)
+        - [In code usage](#in-code-usage)
+            - [API key](#api-key)
+            - [Adding the map](#adding-the-map)
+            - [Accessing user location](#accessing-user-location)
+            - [Focusing on user location when building map](#focusing-on-user-location-when-building-map)
+        - [Tested deployment platforms](#tested-deployment-platforms)
+        - [Example App](#example-app)
+    - [Documentation](#documentation)
+        - [Features](#features)
+        - [Custom Map Properties](#custom-map-properties)
+        - [Gallery and Examples](#gallery-and-examples)
+            - [Standard Map](#standard-map)
+            - [Plain Map](#plain-map)
+            - [Camera Movement](#camera-movement)
+            - [Custom UI](#custom-ui)
+            - [ROKAS Point of Interests](#rokas-point-of-interests)
+            - [Custom UI](#custom-ui-1)
+            - [Map Properties](#map-properties)
+            - [Annotations](#annotations)
+            - [Track device location on map build](#track-device-location-on-map-build)
+        - [Read on](#read-on)
+    - [License](#license)
+    - [Contributing](#contributing)
+        - [Maintainer](#maintainer)
+        - [Contributors](#contributors)
+        - [Coding Standards](#coding-standards)
+        - [Code of Conduct](#code-of-conduct)
+    - [Caveats, limitations and known bugs\*](#caveats-limitations-and-known-bugs)
+        - [Limitations](#limitations)
 
 </details>
 
@@ -53,7 +54,8 @@ for style and routing usage (see details below).
 
 ## Introduction
 
-The package is meant as a client for the [Journey Maps API] and is based on the [Flutter Maplibre GL plugin] - solely
+The package is meant as a client for the [Journey Maps API] and is based on
+the [Flutter Maplibre GL plugin] - solely
 for Android and iOS.
 
 <a id="Getting-Started"></a>
@@ -69,9 +71,11 @@ for Android and iOS.
 
 #### Precondition
 
-In order to access styles and tile data, you need to register your application to the [Journey Maps Tiles API] to
+In order to access styles and tile data, you need to register your application to
+the [Journey Maps Tiles API] to
 receive an API Key.
-Create an account (e.g. using SwissPass Login) to be able to setup an application and then register this application to
+Create an account (e.g. using SwissPass Login) to be able to setup an application and then register
+this application to
 the API.
 
 #### In code usage
@@ -87,8 +91,10 @@ JOURNEY_MAPS_TILES_API_KEY='YOUR_API_KEY_HERE'
 ```
 
 2. Or use a package such as [envied](https://pub.dev/packages/envied) for clean env var handling and
-   *obfuscating* your API key, making it harder to reverse engineer (in public apps!). Pass the env key to the
-   `SBBRokasMapStyler` as constructor parameter. Use this styler to the `SBBMap` as `mapStyler` parameter.
+   *obfuscating* your API key, making it harder to reverse engineer (in public apps!). Pass the env
+   key to the
+   `SBBRokasMapStyler` as constructor parameter. Use this styler to the `SBBMap` as `mapStyler`
+   parameter.
 
 ```dart
 
@@ -110,9 +116,11 @@ final map = SBBMap(
 
 ###### Accessing user location
 
-This package uses the [geolocator](https://pub.dev/packages/geolocator) flutter plugin for accessing the device location
+This package uses the [geolocator](https://pub.dev/packages/geolocator) flutter plugin for accessing
+the device location
 and
-asking the user for permissions. See the package for detailed instructions on accessing the device location. In short:
+asking the user for permissions. See the package for detailed instructions on accessing the device
+location. In short:
 
 *iOS*
 
@@ -135,15 +143,19 @@ Add these to your `AndroidManifest.xml` file. If both are specified, the geoloca
 
 ###### Focusing on user location when building map
 
-To directly focus the map camera onto the device location when the `SBBMap` is built, use the `OnMapLocatorAvailable`
-callback and the `SBBMapLocator.trackDeviceLocation()` method. This has the nice side effect, that the user will be
+To directly focus the map camera onto the device location when the `SBBMap` is built, use the
+`OnMapLocatorAvailable`
+callback and the `SBBMapLocator.trackDeviceLocation()` method. This has the nice side effect, that
+the user will be
 prompted for permissions if not granted already.
 
 This can be seen in the *Track Device* route in the example app
 here: [track_device_location_route.dart](example/lib/routes/track_device_location_route.dart).
 
-Be aware that for Android, the `trackDeviceLocation` method will center on the device location and end up **on the same
-zoom level as at the beginning of the movement**. Therefore, you might want to set a `initialCameraPosition` with a
+Be aware that for Android, the `trackDeviceLocation` method will center on the device location and
+end up **on the same
+zoom level as at the beginning of the movement**. Therefore, you might want to set a
+`initialCameraPosition` with a
 lower zoom level to start the map "closer" to the device location.
 
 #### Tested deployment platforms
@@ -151,15 +163,16 @@ lower zoom level to start the map "closer" to the device location.
 |               | iOS  | Android SDK |
 |---------------|------|-------------|
 | Oldest Tested | 15.5 | 28          |
-| Latest Tested | 18.6 | 36          |
+| Latest Tested | 26.2 | 36.1        |
 
-All versions are tested with the latest (3.35.5) and oldest supported (3.29.0) Flutter SDK.
+All versions are tested with the latest (3.38.5) and oldest supported (3.32.0) Flutter SDK.
 
 #### Example App
 
 <p align="left"><img src="https://raw.githubusercontent.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/main/example/gallery/app_icon/icon.webp" alt="Icon of the example app" width="5%"></p>
 
-The **SBB Karten** demo application is available both in the SBB Enterprise Playstore (Android) and in the managed iOS
+The **SBB Karten** demo application is available both in the SBB Enterprise Playstore (Android) and
+in the managed iOS
 SBB Store (Ivanti MobileIron).
 
 <a id="Documentation"></a>
@@ -211,9 +224,11 @@ const properties = SBBMapProperties
 
 #### Accessing INT Tiles & POIs
 
-In order to access the INT data from [Journey Maps Tiles INT API], you need to register your application there and
+In order to access the INT data from [Journey Maps Tiles INT API], you need to register your
+application there and
 receive
-a corresponding API Key. API Keys from the PROD API will not work. After that, either set the environment variable
+a corresponding API Key. API Keys from the PROD API will not work. After that, either set the
+environment variable
 `SBB_MAPS_INT_ENABLED` to `true`:
 
 ```bash
@@ -224,7 +239,8 @@ or pass the `useIntegrationData` constructor parameter to a `SBBRokasMapStyler`:
 
 ```dart
 
-final intStyler = SBBRokasMapStyler.full(apiKey: Env.MY_INT_API_KEY_NAME, useIntegrationData = true);
+final intStyler = SBBRokasMapStyler.full(
+    apiKey: Env.MY_INT_API_KEY_NAME, useIntegrationData = true);
 ```
 
 Using INT data will log to console as an info.
@@ -233,7 +249,8 @@ Using INT data will log to console as an info.
 
 #### Standard Map
 
-The default SBB map with ROKAS styling (see [standard_map_route.dart](example/lib/routes/standard_map_route.dart)).
+The default SBB map with ROKAS styling (
+see [standard_map_route.dart](example/lib/routes/standard_map_route.dart)).
 <p align="center"><img src="https://raw.githubusercontent.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/main/example/gallery/standard_map_example.webp" width='25%'>
 
 #### Plain Map
@@ -244,12 +261,14 @@ see [plain_map_route.dart](example/lib/routes/plain_map_route.dart)).
 
 #### Camera Movement
 
-Programmatic control over camera movement (see [camera_route.dart](example/lib/routes/camera_route.dart)).
+Programmatic control over camera movement (
+see [camera_route.dart](example/lib/routes/camera_route.dart)).
 <p align="center"><img src="https://raw.githubusercontent.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/main/example/gallery/camera_example.webp" width='25%'>
 
 #### Custom UI
 
-Customizing the map UI using the builder (see [custom_ui_route.dart](example/lib/routes/custom_ui_route.dart)).
+Customizing the map UI using the builder (
+see [custom_ui_route.dart](example/lib/routes/custom_ui_route.dart)).
 <p align="center"><img src="https://raw.githubusercontent.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/main/example/gallery/custom_ui_example.webp" width='25%'>
 
 #### ROKAS Points of Interest
@@ -259,12 +278,14 @@ Displaying and interacting ROKAS POIs (see [poi_route.dart](example/lib/routes/p
 
 #### Custom UI
 
-Customizing the map UI using the builder (see [custom_ui_route.dart](example/lib/routes/custom_ui_route.dart)).
+Customizing the map UI using the builder (
+see [custom_ui_route.dart](example/lib/routes/custom_ui_route.dart)).
 <p align="center"><img src="https://raw.githubusercontent.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/main/example/gallery/custom_ui_example.webp" width='25%'>
 
 #### Map Properties
 
-Using map properties (see [map_properties_route.dart](example/lib/routes/map_properties_route.dart)).
+Using map properties (
+see [map_properties_route.dart](example/lib/routes/map_properties_route.dart)).
 
 #### Annotations
 
@@ -294,7 +315,8 @@ This project is licensed under [MIT](LICENSE.md).
 
 ## Contributing
 
-This repository includes a [CONTRIBUTING.md](CONTRIBUTING.md) file that outlines how to contribute to the project,
+This repository includes a [CONTRIBUTING.md](CONTRIBUTING.md) file that outlines how to contribute
+to the project,
 including how to submit bug reports, feature requests, and pull requests.
 
 ### Maintainer
@@ -303,7 +325,8 @@ including how to submit bug reports, feature requests, and pull requests.
 
 ### Credits
 
-In addition to the contributors on Github, we thank the following people for their work on previous versions:
+In addition to the contributors on Github, we thank the following people for their work on previous
+versions:
 
 - Loris Sorace
 - Hoang Tran
@@ -324,8 +347,10 @@ See [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
 
 ### Limitations
 
-* When selecting POIs programmatically with the `RokasPOIController`, one can only select from the POIs that are loaded
-  in the tile source, meaning that trying to select a POI at a very distant place will not be possible. The workaround
+* When selecting POIs programmatically with the `RokasPOIController`, one can only select from the
+  POIs that are loaded
+  in the tile source, meaning that trying to select a POI at a very distant place will not be
+  possible. The workaround
   would be to first move to the geo coordinate and then select the POI.
 
 [Journey Maps API]: (https://developer.sbb.ch/apis/journey-maps/information)
