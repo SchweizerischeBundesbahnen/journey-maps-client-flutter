@@ -320,19 +320,11 @@ class _SBBMapState extends State<SBBMap> {
     );
   }
 
-  void _onMapCreated(MapLibreMapController controller) {
+  void _onMapCreated(MapLibreMapController controller) async {
     SBBMapController sbbMapController = SBBMapControllerImpl(maplibreMapController: controller);
 
     _mlController.complete(controller);
     _controller.complete(sbbMapController);
-
-    controller
-        .setStyle(widget.mapStyler.currentStyleURI)
-        .then(
-          (_) => setState(() {
-            _isFirstTimeStyleLoadingComplete = true;
-          }),
-        );
 
     if (widget.onMapCreated != null) {
       widget.onMapCreated!(sbbMapController);
@@ -356,7 +348,16 @@ class _SBBMapState extends State<SBBMap> {
   );
 
   void _onStyleLoadedCallback() async {
-    if (!_isFirstTimeStyleLoadingComplete) return;
+    if (!_isFirstTimeStyleLoadingComplete) {
+      _mlController.future.then(
+        (c) => c.setStyle(widget.mapStyler.currentStyleURI).then((_) {
+          setState(() {
+            _isFirstTimeStyleLoadingComplete = true;
+          });
+        }),
+      );
+      return;
+    }
 
     setState(() {
       _isStyleLoaded = true;
