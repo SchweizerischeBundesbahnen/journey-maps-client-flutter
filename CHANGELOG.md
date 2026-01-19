@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.7.1](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/compare/2.7.0...2.7.1) (2026-01-19)
+
+
+### Bug Fixes
+
+* **deps:** update dependency maplibre_gl to v0.25.0 ([#188](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/188)) ([988d3d5](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/988d3d51beb6ba815f5afb9342809c140a5c9387))
+
 ## [2.7.0](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/compare/2.6.2...2.7.0) (2025-12-19)
 
 
