@@ -40,7 +40,7 @@ jobs:
           dart run build_runner build --delete-conflicting-outputs
           flutter test --coverage
 
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         with:
           name: gen_srcs-and-coverage
           path: |
@@ -81,7 +81,7 @@ jobs:
         run: flutter pub get
 
       - name: Download gen srcs and coverage
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: gen_srcs-and-coverage
 
