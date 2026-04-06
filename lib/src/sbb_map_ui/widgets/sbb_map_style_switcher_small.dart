@@ -24,4 +24,3 @@ class SBBMapStyleSwitcherSmall extends StatelessWidget {
     );
   }
 }
-

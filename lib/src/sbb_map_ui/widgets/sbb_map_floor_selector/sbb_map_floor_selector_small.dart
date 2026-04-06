@@ -5,7 +5,7 @@ import 'package:sbb_maps_flutter/src/sbb_map_ui/sbb_map_ui_container/sbb_map_ui_
 import 'package:sbb_maps_flutter/src/sbb_map_ui/styles/styles.dart';
 
 /// The fixed width of the small floor selector (32 logical pixels).
-const double kSmallFloorSelectorWidth = 32.0;
+const double _kSmallFloorSelectorWidth = 32.0;
 const Size _kSmallTileSize = Size(24, 24);
 const double _kElevation = 4.0;
 const double _kSelectedInnerContainerRadius = 6.0;
@@ -13,8 +13,8 @@ const EdgeInsets _kSelectedInnerContainerPadding = EdgeInsets.all(4);
 const _kAnimationDuration = Duration(milliseconds: 300);
 
 /// A smaller (32 px wide) tile used inside [SBBMapFloorSelectorSmall].
-class SBBMapFloorSelectorTileSmall extends StatelessWidget {
-  const SBBMapFloorSelectorTileSmall({
+class _SBBMapFloorSelectorTileSmall extends StatelessWidget {
+  const _SBBMapFloorSelectorTileSmall({
     super.key,
     required this.floor,
     required this.onPressed,
@@ -38,7 +38,7 @@ class SBBMapFloorSelectorTileSmall extends StatelessWidget {
     return Material(
       elevation: _kElevation,
       borderRadius: _determineFirstOrLastBorder(
-        diameter: kSmallFloorSelectorWidth,
+        diameter: _kSmallFloorSelectorWidth,
         defaultRadius: Radius.zero,
       ),
       shadowColor: resolvedStyle.shadowColor,
@@ -59,17 +59,13 @@ class SBBMapFloorSelectorTileSmall extends StatelessWidget {
                 diameter: _kSmallTileSize.width,
                 defaultRadius: const Radius.circular(_kSelectedInnerContainerRadius),
               ),
-              color: isSelected
-                  ? resolvedStyle.selectedBackgroundColor
-                  : resolvedStyle.backgroundColor,
+              color: isSelected ? resolvedStyle.selectedBackgroundColor : resolvedStyle.backgroundColor,
             ),
             child: Center(
               child: Text(
                 floor.toString(),
                 style: SBBMapTextStyles.extraSmallLight.copyWith(
-                  color: isSelected
-                      ? resolvedStyle.selectedTextColor
-                      : resolvedStyle.textColor,
+                  color: isSelected ? resolvedStyle.selectedTextColor : resolvedStyle.textColor,
                 ),
               ),
             ),
@@ -99,8 +95,7 @@ class SBBMapFloorSelectorTileSmall extends StatelessWidget {
   }
 
   SBBMapFloorSelectorStyle _resolveStyleWithInherited(BuildContext context) {
-    final inheritedStyle =
-        Theme.of(context).extension<SBBMapFloorSelectorStyle>()!;
+    final inheritedStyle = Theme.of(context).extension<SBBMapFloorSelectorStyle>()!;
     return inheritedStyle.merge(style);
   }
 }
@@ -113,14 +108,14 @@ class _SmallDivider extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDarkMode = SBBMapUiContainer.of(context).mapStyler.isDarkMode;
     return Container(
-      constraints: const BoxConstraints(maxWidth: kSmallFloorSelectorWidth),
+      constraints: const BoxConstraints(maxWidth: _kSmallFloorSelectorWidth),
       height: 1.0,
       color: isDarkMode ? SBBMapColors.metal : SBBMapColors.cement,
     );
   }
 }
 
-/// Builds the column of [SBBMapFloorSelectorTileSmall] widgets.
+/// Builds the column of [_SBBMapFloorSelectorTileSmall] widgets.
 class _SmallFloorSelectorTilesBuilder extends StatelessWidget {
   const _SmallFloorSelectorTilesBuilder({this.style});
 
@@ -128,15 +123,14 @@ class _SmallFloorSelectorTilesBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final mapFloorController =
-        SBBMapUiContainer.of(context).mapFloorController;
+    final mapFloorController = SBBMapUiContainer.of(context).mapFloorController;
 
     final tiles = <Widget>[];
     for (var i = 0; i < mapFloorController.availableFloors.length; i++) {
       final tileFloor = mapFloorController.availableFloors[i];
       if (i > 0) tiles.add(const _SmallDivider());
       tiles.add(
-        SBBMapFloorSelectorTileSmall(
+        _SBBMapFloorSelectorTileSmall(
           floor: tileFloor,
           onPressed: () => _toggleSelectedFloor(
             tileFloor,
@@ -145,8 +139,7 @@ class _SmallFloorSelectorTilesBuilder extends StatelessWidget {
           ),
           isSelected: mapFloorController.currentFloor == tileFloor,
           isFirst: i == 0 && mapFloorController.availableFloors.length > 1,
-          isLast: i == mapFloorController.availableFloors.length - 1 &&
-              mapFloorController.availableFloors.length > 1,
+          isLast: i == mapFloorController.availableFloors.length - 1 && mapFloorController.availableFloors.length > 1,
           style: style,
         ),
       );
@@ -175,8 +168,7 @@ class SBBMapFloorSelectorSmall extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final floorController =
-        SBBMapUiContainer.of(context).mapFloorController;
+    final floorController = SBBMapUiContainer.of(context).mapFloorController;
     final resolvedStyle = _resolveStyleWithInherited(context);
 
     return ListenableBuilder(
@@ -184,7 +176,7 @@ class SBBMapFloorSelectorSmall extends StatelessWidget {
       builder: (context, child) => floorController.availableFloors.isEmpty
           ? const SizedBox.shrink()
           : SizedBox(
-              width: kSmallFloorSelectorWidth,
+              width: _kSmallFloorSelectorWidth,
               child: DecoratedBox(
                 decoration: ShapeDecoration(
                   shape: StadiumBorder(
@@ -199,9 +191,7 @@ class SBBMapFloorSelectorSmall extends StatelessWidget {
   }
 
   SBBMapFloorSelectorStyle _resolveStyleWithInherited(BuildContext context) {
-    final inheritedStyle =
-        Theme.of(context).extension<SBBMapFloorSelectorStyle>()!;
+    final inheritedStyle = Theme.of(context).extension<SBBMapFloorSelectorStyle>()!;
     return inheritedStyle.merge(style);
   }
 }
-

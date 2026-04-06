@@ -34,9 +34,9 @@ class SBBMapDefaultUI extends StatelessWidget {
         child: Column(
           children: [
             if (showStyleSwitcher) smallControls ? const SBBMapStyleSwitcherSmall() : const SBBMapStyleSwitcher(),
-            if (showStyleSwitcherAndMyLocation) SizedBox(height: 12.0),
+            if (showStyleSwitcherAndMyLocation) const SizedBox(height: 12.0),
             if (locationEnabled) smallControls ? const SBBMapMyLocationButtonSmall() : const SBBMapMyLocationButton(),
-            if (showFloorSelector) SizedBox(height: smallControls ? 36.0 : 54.0),
+            if (showFloorSelector) smallControls ? const SizedBox(height: 36.0) : const SizedBox(height: 54.0),
             if (showFloorSelector) smallControls ? const SBBMapFloorSelectorSmall() : const SBBMapFloorSelector(),
           ],
         ),

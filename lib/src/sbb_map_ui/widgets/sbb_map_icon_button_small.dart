@@ -5,7 +5,7 @@ import 'package:sbb_maps_flutter/src/sbb_map_ui/styles/sbb_map_icon_button_style
 const double _kElevation = 4;
 
 /// The fixed size of the small map icon button (32 × 32 logical pixels).
-const double kSmallButtonSize = 32.0;
+const double _kSmallButtonSize = 32.0;
 
 /// A smaller (32 × 32) variant of [SBBMapIconButton] that can be placed on
 /// the [SBBMap].
@@ -37,8 +37,8 @@ class SBBMapIconButtonSmall extends StatelessWidget {
           color: resolvedStyle.backgroundColor,
           shape: CircleBorder(side: resolvedStyle.borderSide ?? BorderSide.none),
         ),
-        width: kSmallButtonSize,
-        height: kSmallButtonSize,
+        width: _kSmallButtonSize,
+        height: _kSmallButtonSize,
         child: InkResponse(
           splashColor: resolvedStyle.pressedColor,
           highlightColor: resolvedStyle.pressedColor,
