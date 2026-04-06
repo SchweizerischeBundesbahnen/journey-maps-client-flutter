@@ -25,8 +25,7 @@ class SBBMapDefaultUI extends StatelessWidget {
 
     final bool showStyleSwitcher = uiContainer.mapStyler.getStyleIds().length > 1;
     final bool showStyleSwitcherAndMyLocation = showStyleSwitcher && locationEnabled;
-    final bool showFloorSelector =
-        isFloorSwitchingEnabled && uiContainer.mapFloorController.availableFloors.isNotEmpty;
+    final bool showFloorSelector = isFloorSwitchingEnabled && uiContainer.mapFloorController.availableFloors.isNotEmpty;
 
     return Align(
       alignment: Alignment.topRight,
@@ -34,14 +33,11 @@ class SBBMapDefaultUI extends StatelessWidget {
         padding: _kActionButtonPadding,
         child: Column(
           children: [
-            if (showStyleSwitcher)
-              smallControls ? const SBBMapStyleSwitcherSmall() : const SBBMapStyleSwitcher(),
-            if (showStyleSwitcherAndMyLocation) const SizedBox(height: 12),
-            if (locationEnabled)
-              smallControls ? const SBBMapMyLocationButtonSmall() : const SBBMapMyLocationButton(),
-            if (showFloorSelector) SizedBox(height: smallControls ? 42 : 54),
-            if (showFloorSelector)
-              smallControls ? const SBBMapFloorSelectorSmall() : const SBBMapFloorSelector(),
+            if (showStyleSwitcher) smallControls ? const SBBMapStyleSwitcherSmall() : const SBBMapStyleSwitcher(),
+            if (showStyleSwitcherAndMyLocation) SizedBox(height: 12.0),
+            if (locationEnabled) smallControls ? const SBBMapMyLocationButtonSmall() : const SBBMapMyLocationButton(),
+            if (showFloorSelector) SizedBox(height: smallControls ? 36.0 : 54.0),
+            if (showFloorSelector) smallControls ? const SBBMapFloorSelectorSmall() : const SBBMapFloorSelector(),
           ],
         ),
       ),
