@@ -42,6 +42,7 @@ class SBBMap extends StatefulWidget {
     this.dragEnabled = true,
     this.poiSettings = const SBBMapPOISettings(),
     this.onMapAnnotatorAvailable,
+    this.smallControls = false,
   }) : mapStyler = mapStyler ?? SBBRokasMapStyler.full();
 
   /// The optional initial [SBBCameraPosition] of the map.
@@ -200,6 +201,23 @@ class SBBMap extends StatefulWidget {
   /// to add custom icons and symbols.
   final OnMapAnnotatorAvailable? onMapAnnotatorAvailable;
 
+  /// Whether the default UI controls should be rendered in their compact
+  /// **32 × 32 px** small variant.
+  ///
+  /// When `true` the following widgets replace their standard counterparts in
+  /// the default UI:
+  ///
+  /// * [SBBMapStyleSwitcherSmall] instead of [SBBMapStyleSwitcher]
+  /// * [SBBMapMyLocationButtonSmall] instead of [SBBMapMyLocationButton]
+  /// * [SBBMapFloorSelectorSmall] instead of [SBBMapFloorSelector] — the
+  ///   floor selector is also constrained to a maximum width of 32 px.
+  ///
+  /// This has no effect when a custom [SBBMap.builder] is provided, because
+  /// the builder takes full control of the UI layout.
+  ///
+  /// Defaults to `false`.
+  final bool smallControls;
+
   @override
   State<SBBMap> createState() => _SBBMapState();
 }
@@ -342,6 +360,7 @@ class _SBBMapState extends State<SBBMap> {
             (context) => SBBMapDefaultUI(
               locationEnabled: widget.isMyLocationEnabled,
               isFloorSwitchingEnabled: widget.isFloorSwitchingEnabled,
+              smallControls: widget.smallControls,
             ),
       ),
     ),
