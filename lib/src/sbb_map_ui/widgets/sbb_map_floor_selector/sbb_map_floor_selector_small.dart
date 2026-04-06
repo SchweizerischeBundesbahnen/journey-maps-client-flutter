@@ -15,7 +15,6 @@ const _kAnimationDuration = Duration(milliseconds: 300);
 /// A smaller (32 px wide) tile used inside [SBBMapFloorSelectorSmall].
 class _SBBMapFloorSelectorTileSmall extends StatelessWidget {
   const _SBBMapFloorSelectorTileSmall({
-    super.key,
     required this.floor,
     required this.onPressed,
     this.isSelected = false,
