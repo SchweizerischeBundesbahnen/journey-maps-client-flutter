@@ -4,7 +4,7 @@ import 'package:sbb_maps_flutter/src/sbb_map_ui/corporate_ui/sbb_map_branding.da
 import 'package:sbb_maps_flutter/src/sbb_map_ui/styles/styles.dart';
 
 const _kFloorSelectorTileSize = Size(36, 36);
-const _kFloorSelectorWidth = 48.0;
+const _kFloorSelectorWidth = 44.0;
 const _kElevation = 4.0;
 const _kSelectedInnerContainerRadius = 8.0;
 const _kSelectedInnerContainerPadding = EdgeInsets.all(6);

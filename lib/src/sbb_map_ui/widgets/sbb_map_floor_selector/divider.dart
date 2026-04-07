@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:sbb_maps_flutter/src/sbb_map_ui/corporate_ui/sbb_map_branding.dart';
 import 'package:sbb_maps_flutter/src/sbb_map_ui/sbb_map_ui_container/sbb_map_ui_container.dart';
 
-const _kFloorSelectorWidth = 48.0;
+const _kFloorSelectorWidth = 44.0;
 const _kFloorSelectorDividerHeight = 1.0;
 
 class Divider extends StatelessWidget {
