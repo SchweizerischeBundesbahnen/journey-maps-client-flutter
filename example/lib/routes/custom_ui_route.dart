@@ -38,15 +38,15 @@ class _CustomUiRouteState extends State<CustomUiRoute> {
                 children: [
                   Padding(
                     padding: EdgeInsets.only(right: sbbDefaultSpacing, bottom: sbbDefaultSpacing * 2),
-                    child: SBBMapStyleSwitcher(),
+                    child: SBBMapStyleSwitcherSmall(),
                   ),
                   Padding(
                     padding: EdgeInsets.only(right: sbbDefaultSpacing, bottom: sbbDefaultSpacing * 2),
-                    child: SBBMapMyLocationButton(),
+                    child: SBBMapMyLocationButtonSmall(),
                   ),
                   Padding(
                     padding: EdgeInsets.only(right: sbbDefaultSpacing, bottom: sbbDefaultSpacing * 2),
-                    child: SBBMapFloorSelector(),
+                    child: SBBMapFloorSelectorSmall(),
                   ),
                 ],
               ),

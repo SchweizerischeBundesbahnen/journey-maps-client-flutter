@@ -6,29 +6,38 @@ import 'package:sbb_maps_flutter/src/sbb_map_ui/sbb_map_ui_container/sbb_map_ui_
 const _kActionButtonPadding = EdgeInsets.fromLTRB(0, 16, 8, 0);
 
 class SBBMapDefaultUI extends StatelessWidget {
-  const SBBMapDefaultUI({super.key, required this.locationEnabled, required this.isFloorSwitchingEnabled});
+  const SBBMapDefaultUI({
+    super.key,
+    required this.locationEnabled,
+    required this.isFloorSwitchingEnabled,
+    this.smallControls = false,
+  });
 
   final bool locationEnabled;
   final bool isFloorSwitchingEnabled;
+
+  /// When `true`, renders the compact 32 × 32 px variants of each control.
+  final bool smallControls;
 
   @override
   Widget build(BuildContext context) {
     final uiContainer = SBBMapUiContainer.of(context);
 
-    bool showStyleSwitcher = uiContainer.mapStyler.getStyleIds().length > 1;
-    bool showStyleSwitcherAndMyLocation = showStyleSwitcher && locationEnabled;
-    bool showFloorSelector = isFloorSwitchingEnabled && uiContainer.mapFloorController.availableFloors.isNotEmpty;
+    final bool showStyleSwitcher = uiContainer.mapStyler.getStyleIds().length > 1;
+    final bool showStyleSwitcherAndMyLocation = showStyleSwitcher && locationEnabled;
+    final bool showFloorSelector = isFloorSwitchingEnabled && uiContainer.mapFloorController.availableFloors.isNotEmpty;
+
     return Align(
       alignment: Alignment.topRight,
       child: Padding(
         padding: _kActionButtonPadding,
         child: Column(
           children: [
-            if (showStyleSwitcher) const SBBMapStyleSwitcher(),
-            if (showStyleSwitcherAndMyLocation) const SizedBox(height: 12),
-            if (locationEnabled) const SBBMapMyLocationButton(),
-            if (showFloorSelector) const SizedBox(height: 54),
-            if (showFloorSelector) const SBBMapFloorSelector(),
+            if (showStyleSwitcher) smallControls ? const SBBMapStyleSwitcherSmall() : const SBBMapStyleSwitcher(),
+            if (showStyleSwitcherAndMyLocation) const SizedBox(height: 12.0),
+            if (locationEnabled) smallControls ? const SBBMapMyLocationButtonSmall() : const SBBMapMyLocationButton(),
+            if (showFloorSelector) smallControls ? const SizedBox(height: 36.0) : const SizedBox(height: 54.0),
+            if (showFloorSelector) smallControls ? const SBBMapFloorSelectorSmall() : const SBBMapFloorSelector(),
           ],
         ),
       ),
