@@ -4,7 +4,7 @@ import 'package:sbb_maps_flutter/src/sbb_map_ui/sbb_map_ui_container/sbb_map_ui_
 import 'package:sbb_maps_flutter/src/sbb_map_ui/styles/styles.dart';
 import 'package:sbb_maps_flutter/src/sbb_map_ui/widgets/sbb_map_floor_selector/sbb_map_floor_selector_tile_builder.dart';
 
-const _kFloorSelectorWidth = 48.0;
+const _kFloorSelectorWidth = 44.0;
 
 /// Only works in the [BuildContext] of the [SBBMap.uiControlsBuilder] method.
 class SBBMapFloorSelector extends StatelessWidget {
