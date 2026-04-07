@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:sbb_maps_flutter/src/sbb_map_ui/styles/sbb_map_icon_button_style.dart';
 
 const double _kElevation = 4;
-const double _kButtonSize = 48;
+const double _kButtonSize = 44;
 const EdgeInsets _kButtonPadding = EdgeInsets.all(8.0);
 
 /// A styled icon button that can be placed on the [SBBMap].
