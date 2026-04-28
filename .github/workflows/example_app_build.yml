@@ -38,7 +38,7 @@ jobs:
           cache: "gradle"
 
       - name: Make secret env file accessible for envied generation
-        uses: timheuer/base64-to-file@v1.2
+        uses: timheuer/base64-to-file@v2.0
         with:
           fileName: ".env"
           fileDir: "./example"
@@ -72,7 +72,7 @@ jobs:
           cache: true
 
       - name: Make secret env file accessible for envied generation
-        uses: timheuer/base64-to-file@v1.2
+        uses: timheuer/base64-to-file@v2.0
         with:
           fileName: ".env"
           fileDir: "./example"
