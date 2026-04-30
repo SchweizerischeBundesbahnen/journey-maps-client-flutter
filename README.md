@@ -160,12 +160,12 @@ lower zoom level to start the map "closer" to the device location.
 
 #### Tested deployment platforms
 
-|               | iOS  | Android SDK |
-|---------------|------|-------------|
-| Oldest Tested | 15.5 | 28          |
-| Latest Tested | 26.2 | 36.1        |
+|               | iOS    | Android SDK |
+|---------------|--------|-------------|
+| Oldest Tested | 15.5   | 28          |
+| Latest Tested | 26.4.2 | 36.1        |
 
-All versions are tested with the latest (3.41.x) and oldest supported (3.35.1) Flutter SDK.
+All versions are tested with the latest (3.41.x) and oldest supported (3.38.1) Flutter SDK.
 
 #### Example App
 
@@ -352,6 +352,12 @@ See [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
   in the tile source, meaning that trying to select a POI at a very distant place will not be
   possible. The workaround
   would be to first move to the geo coordinate and then select the POI.
+
+### Bugs
+
+* Location Permissions on **Android 16** is currently broken from downstream flutter plugin `flutter_geolocator`.
+  Currently, only overriding using `location` plugin is possible. Both of these plugins are in an unstable state at this
+  point. Tracked in [#215](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/215).
 
 [Journey Maps API]: (https://developer.sbb.ch/apis/journey-maps/information)
 
