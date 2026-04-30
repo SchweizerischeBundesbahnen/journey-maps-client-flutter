@@ -4,8 +4,8 @@ publish_to: "none"
 version: 2.7.1+9009 # automatically set by GH Action 
 
 environment:
-  sdk: ">=3.9.0 <4.0.0"
-  flutter: ">=3.35.1"
+  sdk: ">=3.10.1 <4.0.0"
+  flutter: ">=3.38.1"
 
 dependencies:
   flutter:
