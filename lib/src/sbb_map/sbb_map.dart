@@ -418,10 +418,8 @@ class _SBBMapState extends State<SBBMap> {
     _isFirstTimeStyleLoaded = false;
   }
 
-  Future<void> _delayedMoveToCHBounds() => Future.delayed(const Duration(milliseconds: 10)).then(
-    (_) => _controller.future.then(
-      (c) => c.animateCameraMove(cameraUpdate: _getSwitzerlandLatLngBounds(), duration: Durations.short1),
-    ),
+  Future<void> _delayedMoveToCHBounds() => _controller.future.then(
+    (c) => c.animateCameraMove(cameraUpdate: _getSwitzerlandLatLngBounds(), duration: Durations.short1),
   );
 
   SBBCameraUpdate _getSwitzerlandLatLngBounds() => SBBCameraUpdate.newLatLngBounds(
