@@ -1,5 +1,20 @@
 # Changelog
 
+## [2.8.0](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/compare/2.7.1...2.8.0) (2026-05-01)
+
+
+### Features
+
+* add small map controls ([#80](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/80)) ([#206](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/206)) ([81f3305](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/81f33055b54c128372334282c70c3cd52d86ac77))
+* drop support for Flutter SDK 3.35.x ([#196](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/196)) ([85d9d3a](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/85d9d3a41f0d7f8740592ac7fe6c107926e8fe04))
+
+
+### Bug Fixes
+
+* **deps:** update all dependencies ([#216](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/216)) ([29c86e8](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/29c86e8546b404940469a43f28fd157784fab134))
+* **deps:** update dependency maplibre_gl to ^0.26.0 ([#211](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/211)) ([d794535](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/d794535c65bc6ece17ed5a2008d9681acac9cf9e))
+* map controls have correct sizes ([#207](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/207)) ([36f77d3](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/36f77d3ddf8a4ae713808c1501f6f37fbf1e8edb))
+
 ## [2.7.1](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/compare/2.7.0...2.7.1) (2026-01-19)
 
 
