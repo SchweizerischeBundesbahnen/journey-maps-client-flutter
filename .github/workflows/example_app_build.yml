@@ -45,7 +45,7 @@ jobs:
           encodedString: ${{ secrets.example_app_env_file_base64 }}
 
       - run: flutter pub get
-      - run: dart run build_runner build --delete-conflicting-outputs
+      - run: dart run build_runner build
       - run: flutter build appbundle --profile --no-pub
 
   build-iOS:
@@ -62,7 +62,7 @@ jobs:
     steps:
       - uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: ~26.4
+          xcode-version: ~26.6
 
       - uses: actions/checkout@v7
 
@@ -79,5 +79,5 @@ jobs:
           encodedString: ${{ secrets.example_app_env_file_base64 }}
 
       - run: flutter pub get
-      - run: dart run build_runner build --delete-conflicting-outputs
+      - run: dart run build_runner build
       - run: flutter build ios --no-codesign
