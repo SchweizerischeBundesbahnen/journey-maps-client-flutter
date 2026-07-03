@@ -20,7 +20,7 @@ jobs:
 
       - run: flutter doctor -v
       - run: flutter pub get
-      - run: dart run build_runner build --delete-conflicting-outputs
+      - run: dart run build_runner build
       - run: flutter test --coverage
 
   build-examples:

@@ -19,7 +19,7 @@ jobs:
 
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: 3.41.x
+          flutter-version: 3.44.x
           cache: true
 
       - uses: actions/setup-java@v5
@@ -43,7 +43,7 @@ jobs:
           encodedString: ${{ secrets.ANDROID_KEYSTORE_64 }}
 
       - run: flutter pub get
-      - run: dart run build_runner build --delete-conflicting-outputs
+      - run: dart run build_runner build
       - run: flutter build appbundle --no-pub
         env:
           SIGNING_KEYSTORE_PASSWORD: ${{ secrets.SIGNING_KEYSTORE_PASSWORD }}
