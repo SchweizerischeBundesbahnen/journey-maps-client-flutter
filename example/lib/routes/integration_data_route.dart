@@ -86,7 +86,7 @@ class _IntegrationDataModalBodyState extends State<_IntegrationDataModalBody> {
           titleText: 'Use INT Data',
           subtitleText: 'Accesses developer-int.sbb.ch data.',
           onChanged: (v) => setState(() {
-            _useIntegration = v ?? false;
+            _useIntegration = v;
           }),
         ),
         const SizedBox(height: SBBSpacing.medium),
