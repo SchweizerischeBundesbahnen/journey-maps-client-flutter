@@ -21,7 +21,7 @@ class _CustomUiRouteState extends State<CustomUiRoute> {
       isDarkMode: Provider.of<ThemeProvider>(context).isDark,
     );
     return Scaffold(
-      appBar: const SBBHeader(title: 'Custom UI'),
+      appBar: const SBBHeader(titleText: 'Custom UI'),
       body: SBBMap(
         mapStyler: mapStyler,
         isMyLocationEnabled: true,
@@ -37,15 +37,15 @@ class _CustomUiRouteState extends State<CustomUiRoute> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Padding(
-                    padding: EdgeInsets.only(right: sbbDefaultSpacing, bottom: sbbDefaultSpacing * 2),
+                    padding: EdgeInsets.only(right: SBBSpacing.medium, bottom: SBBSpacing.xLarge),
                     child: SBBMapStyleSwitcherSmall(),
                   ),
                   Padding(
-                    padding: EdgeInsets.only(right: sbbDefaultSpacing, bottom: sbbDefaultSpacing * 2),
+                    padding: EdgeInsets.only(right: SBBSpacing.medium, bottom: SBBSpacing.xLarge),
                     child: SBBMapMyLocationButtonSmall(),
                   ),
                   Padding(
-                    padding: EdgeInsets.only(right: sbbDefaultSpacing, bottom: sbbDefaultSpacing * 2),
+                    padding: EdgeInsets.only(right: SBBSpacing.medium, bottom: SBBSpacing.xLarge),
                     child: SBBMapFloorSelectorSmall(),
                   ),
                 ],
@@ -67,10 +67,10 @@ class _ShadowedThemeButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(sbbDefaultSpacing),
+      padding: const .all(SBBSpacing.medium),
       child: DecoratedBox(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(sbbDefaultSpacing),
+          borderRadius: .circular(SBBSpacing.medium),
           boxShadow: [
             BoxShadow(blurRadius: _blurRadius, color: SBBColors.black.withValues(alpha: 0.1), offset: _shadowOffset),
           ],

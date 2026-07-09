@@ -24,7 +24,7 @@ class _POIRouteState extends State<POIRoute> {
       isDarkMode: Provider.of<ThemeProvider>(context).isDark,
     );
     return Scaffold(
-      appBar: const SBBHeader(title: 'POI'),
+      appBar: const SBBHeader(titleText: 'POI'),
       body: SBBMap(
         initialCameraPosition: const SBBCameraPosition(
           target: LatLng(46.947456, 7.451123), // Bern
@@ -37,10 +37,10 @@ class _POIRouteState extends State<POIRoute> {
             !_poiController.isCompleted ? _poiController.complete(poiController) : null;
             poiController.showPointsOfInterest();
           },
-          onPoiSelected: (poi) => showSBBModalSheet(
+          onPoiSelected: (poi) => showSBBBottomSheet(
             context: context,
-            title: poi.name,
-            child: const SizedBox(height: 64),
+            titleText: poi.name,
+            body: const SizedBox(height: 64),
           ).then((_) => _poiController.future.then((c) => c.deselectPointOfInterest())),
         ),
       ),

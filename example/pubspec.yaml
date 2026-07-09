@@ -14,7 +14,7 @@ dependencies:
   sbb_maps_flutter:
     path: ../
   # https://pub.dev/packages/sbb_design_system_mobile
-  sbb_design_system_mobile: ^4.12.0
+  sbb_design_system_mobile: ^5.0.0
   # https://pub.dev/packages/envied
   envied: ^1.3.3
   # https://pub.dev/packages/provider
