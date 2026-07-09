@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class ThemeProvider extends ChangeNotifier with WidgetsBindingObserver {
   ThemeProvider({bool? isDark, bool? useSystemTheme}) {
-    this.isDark = isDark ?? WidgetsBinding.instance.platformDispatcher.platformBrightness == Brightness.dark;
+    this.isDark = isDark ?? WidgetsBinding.instance.platformDispatcher.platformBrightness == .dark;
     this.useSystemTheme = useSystemTheme ?? true;
     WidgetsBinding.instance.addObserver(this);
   }
@@ -13,7 +13,7 @@ class ThemeProvider extends ChangeNotifier with WidgetsBindingObserver {
   @override
   void didChangePlatformBrightness() {
     if (useSystemTheme) {
-      isDark = WidgetsBinding.instance.platformDispatcher.platformBrightness == Brightness.dark;
+      isDark = WidgetsBinding.instance.platformDispatcher.platformBrightness == .dark;
       notifyListeners();
     }
   }
@@ -21,7 +21,7 @@ class ThemeProvider extends ChangeNotifier with WidgetsBindingObserver {
   void updateTheme(bool? isDarkMode) {
     if (isDarkMode == null) {
       useSystemTheme = true;
-      isDark = WidgetsBinding.instance.platformDispatcher.platformBrightness == Brightness.dark;
+      isDark = WidgetsBinding.instance.platformDispatcher.platformBrightness == .dark;
     } else {
       useSystemTheme = false;
       isDark = isDarkMode;

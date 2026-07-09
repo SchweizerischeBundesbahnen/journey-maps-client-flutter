@@ -79,7 +79,7 @@ class _IntegrationDataModalBodyState extends State<_IntegrationDataModalBody> {
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisSize: MainAxisSize.min,
+      mainAxisSize: .min,
       children: [
         SBBSwitchListItemBoxed(
           value: _useIntegration,

@@ -120,8 +120,8 @@ class _DisplayAnnotationsRouteState extends State<DisplayAnnotationsRoute> {
           child: Padding(
             padding: const .all(SBBSpacing.medium),
             child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisSize: .min,
+              crossAxisAlignment: .end,
               spacing: SBBSpacing.medium,
               children: [
                 const SBBMapStyleSwitcher(),
@@ -206,7 +206,7 @@ class _AnnotationVisibilitySettingModalState extends State<_AnnotationVisibility
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisSize: MainAxisSize.min,
+      mainAxisSize: .min,
       children: [
         SBBContentBox(
           child: Column(

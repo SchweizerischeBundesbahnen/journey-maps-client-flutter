@@ -38,8 +38,8 @@ class _TrackDeviceLocationRouteState extends State<TrackDeviceLocationRoute> {
           child: Padding(
             padding: const EdgeInsets.only(top: SBBSpacing.medium, right: SBBSpacing.xSmall),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: .end,
+              mainAxisAlignment: .start,
               spacing: SBBSpacing.medium,
               children: [
                 const SBBMapMyLocationButton(),

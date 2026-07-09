@@ -43,8 +43,8 @@ class SBBRokasPOIControllerImpl with ChangeNotifier implements SBBRokasPOIContro
       () => {for (var k in SBBRokasPoiLayer.values) k: false};
 
   Map<SBBRokasPoiLayer, Set<SBBPoiCategoryType>> _layerToCategoryFilters = {
-    SBBRokasPoiLayer.highlighted: _allPoiCategories(),
-    SBBRokasPoiLayer.baseWithFloor: _allPoiCategories(),
+    .highlighted: _allPoiCategories(),
+    .baseWithFloor: _allPoiCategories(),
   };
   Map<SBBRokasPoiLayer, bool> _layerToVisibility = _allLayersWithVisibilityToFalse();
   RokasPOI? _selectedPOI;

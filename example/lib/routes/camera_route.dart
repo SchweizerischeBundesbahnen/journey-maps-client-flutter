@@ -50,7 +50,7 @@ class _CameraRouteState extends State<CameraRoute> {
             SBBContentBox(
               padding: const .all(SBBSpacing.xSmall),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisAlignment: .spaceEvenly,
                 children: [
                   SBBTertiaryButtonSmall(
                     labelText: 'Bern',
