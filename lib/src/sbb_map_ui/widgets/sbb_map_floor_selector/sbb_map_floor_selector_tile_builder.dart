@@ -35,7 +35,7 @@ class FloorSelectorTilesBuilder extends StatelessWidget {
         ),
       );
     }
-    return Column(mainAxisSize: MainAxisSize.min, children: tiles);
+    return Column(mainAxisSize: .min, children: tiles);
   }
 
   void _toggleSelectedFloor(int tileFloor, int? selectedFloor, Future<void> Function(int? floor) onFloorSelected) {

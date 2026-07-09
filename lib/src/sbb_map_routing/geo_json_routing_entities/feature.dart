@@ -1,12 +1,12 @@
 import 'package:sbb_maps_flutter/sbb_maps_flutter.dart';
 
 import 'geometry_type.dart';
-import 'point.dart';
-import 'multi_point.dart';
 import 'line_string.dart';
 import 'multi_line_string.dart';
-import 'polygon.dart';
+import 'multi_point.dart';
 import 'multi_polygon.dart';
+import 'point.dart';
+import 'polygon.dart';
 
 /// Represents a geographic feature.
 ///
@@ -32,31 +32,31 @@ class Feature {
 
     switch (type) {
       case 'Point':
-        geometryType = GeometryType.point;
+        geometryType = .point;
         geometry = Point.fromGeoJSON(json);
         break;
       case 'MultiPoint':
-        geometryType = GeometryType.multiPoint;
+        geometryType = .multiPoint;
         geometry = MultiPoint.fromGeoJSON(json);
         break;
       case 'LineString':
-        geometryType = GeometryType.lineString;
+        geometryType = .lineString;
         geometry = LineString.fromGeoJSON(json);
         break;
       case 'MultiLineString':
-        geometryType = GeometryType.multiLineString;
+        geometryType = .multiLineString;
         geometry = MultiLineString.fromGeoJSON(json);
         break;
       case 'Polygon':
-        geometryType = GeometryType.polygon;
+        geometryType = .polygon;
         geometry = Polygon.fromGeoJSON(json);
         break;
       case 'MultiPolygon':
-        geometryType = GeometryType.multiPolygon;
+        geometryType = .multiPolygon;
         geometry = MultiPolygon.fromGeoJSON(json);
         break;
       default:
-        geometryType = GeometryType.unknown;
+        geometryType = .unknown;
         geometry = null;
     }
 
@@ -78,13 +78,13 @@ class Feature {
   /// map annotation. Throws an [UnimplementedError] for unsupported geometry types.
   SBBMapAnnotation toAnnotation() {
     return switch (geometryType) {
-      GeometryType.point => SBBMapCircle(center: (geometry as Point).coordinates),
-      GeometryType.multiPoint => throw UnimplementedError(),
-      GeometryType.lineString => SBBMapLine(vertices: (geometry as LineString).coordinates),
-      GeometryType.multiLineString => throw UnimplementedError(),
-      GeometryType.polygon => SBBMapFill(coords: (geometry as Polygon).coordinates),
-      GeometryType.multiPolygon => throw UnimplementedError(),
-      GeometryType.unknown => throw UnimplementedError(),
+      .point => SBBMapCircle(center: (geometry as Point).coordinates),
+      .multiPoint => throw UnimplementedError(),
+      .lineString => SBBMapLine(vertices: (geometry as LineString).coordinates),
+      .multiLineString => throw UnimplementedError(),
+      .polygon => SBBMapFill(coords: (geometry as Polygon).coordinates),
+      .multiPolygon => throw UnimplementedError(),
+      .unknown => throw UnimplementedError(),
     };
   }
 

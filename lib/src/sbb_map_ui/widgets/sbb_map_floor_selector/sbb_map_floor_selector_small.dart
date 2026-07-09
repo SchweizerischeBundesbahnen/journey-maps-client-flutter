@@ -143,7 +143,7 @@ class _SmallFloorSelectorTilesBuilder extends StatelessWidget {
         ),
       );
     }
-    return Column(mainAxisSize: MainAxisSize.min, children: tiles);
+    return Column(mainAxisSize: .min, children: tiles);
   }
 
   void _toggleSelectedFloor(
@@ -182,7 +182,7 @@ class SBBMapFloorSelectorSmall extends StatelessWidget {
                     side: resolvedStyle.borderSide ?? BorderSide.none,
                   ),
                 ),
-                position: DecorationPosition.foreground,
+                position: .foreground,
                 child: _SmallFloorSelectorTilesBuilder(style: resolvedStyle),
               ),
             ),
