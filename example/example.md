@@ -6,7 +6,7 @@ class StandardMapRoute extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const SBBHeader(title: 'Standard'),
+      appBar: const SBBHeader(titleText: 'Standard'),
       body: SBBMap(
         isMyLocationEnabled: true,
         mapStyler: SBBRokasMapStyler.full(), // API key in ENV var 'JOURNEY_MAPS_TILES_API_KEY'
@@ -29,7 +29,7 @@ class StandardMapRoute extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const SBBHeader(title: 'Standard'),
+      appBar: const SBBHeader(titleText: 'Standard'),
       body: SBBMap(
         isMyLocationEnabled: true,
         mapStyler: SBBRokasMapStyler.full(), // API key in ENV var 'JOURNEY_MAPS_TILES_API_KEY'

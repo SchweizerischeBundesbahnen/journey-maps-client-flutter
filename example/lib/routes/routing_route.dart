@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:sbb_design_system_mobile/sbb_design_system_mobile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sbb_design_system_mobile/sbb_design_system_mobile.dart';
 import 'package:sbb_maps_example/env.dart';
 import 'package:sbb_maps_example/theme_provider.dart';
 import 'package:sbb_maps_flutter/sbb_maps_flutter.dart';
@@ -24,7 +24,7 @@ class _RoutingRouteState extends State<RoutingRoute> {
       isDarkMode: Provider.of<ThemeProvider>(context).isDark,
     );
     return Scaffold(
-      appBar: const SBBHeader(title: 'Routing'),
+      appBar: const SBBHeader(titleText: 'Routing'),
       body: SBBMap(
         initialCameraPosition: const SBBCameraPosition(
           target: LatLng(47.2040547, 7.541883), // Solothurn Bahnhof

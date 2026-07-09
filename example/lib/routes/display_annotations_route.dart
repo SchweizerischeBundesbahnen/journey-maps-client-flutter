@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import 'package:sbb_design_system_mobile/sbb_design_system_mobile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:sbb_design_system_mobile/sbb_design_system_mobile.dart';
 import 'package:sbb_maps_example/env.dart';
 import 'package:sbb_maps_example/theme_provider.dart';
 import 'package:sbb_maps_flutter/sbb_maps_flutter.dart';
@@ -105,7 +105,7 @@ class _DisplayAnnotationsRouteState extends State<DisplayAnnotationsRoute> {
   Widget build(BuildContext context) {
     Provider.of<ThemeProvider>(context).isDark ? _styler.toggleDarkMode() : null;
     return Scaffold(
-      appBar: const SBBHeader(title: 'Display annotations'),
+      appBar: const SBBHeader(titleText: 'Display annotations'),
       body: SBBMap(
         initialCameraPosition: const SBBCameraPosition(
           target: LatLng(46.947456, 7.451123), // Bern
@@ -118,19 +118,20 @@ class _DisplayAnnotationsRouteState extends State<DisplayAnnotationsRoute> {
         builder: (context) => Align(
           alignment: Alignment.topRight,
           child: Padding(
-            padding: const EdgeInsets.all(sbbDefaultSpacing),
+            padding: const .all(SBBSpacing.medium),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.end,
+              spacing: SBBSpacing.medium,
               children: [
                 const SBBMapStyleSwitcher(),
-                const SizedBox(height: sbbDefaultSpacing),
                 SBBMapIconButton(
                   onPressed: () {
-                    showSBBModalSheet<_AnnotationVisibilitySettings>(
+                    showSBBBottomSheet<_AnnotationVisibilitySettings>(
                       context: context,
-                      title: 'Show Annotations',
-                      child: _AnnotationVisibilitySettingModal(settings: properties),
+                      isScrollControlled: true,
+                      titleText: 'Show Annotations',
+                      body: _AnnotationVisibilitySettingModal(settings: properties),
                     ).then(_setStateWithProperties);
                   },
                   icon: SBBIcons.gears_small,
@@ -204,57 +205,64 @@ class _AnnotationVisibilitySettingModalState extends State<_AnnotationVisibility
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: sbbDefaultSpacing, horizontal: sbbDefaultSpacing),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          SBBCheckboxListItem(
-            value: settings.isCustomSymbolVisible,
-            label: 'Show Symbols',
-            secondaryLabel: 'Show custom symbol annotations around Bern.',
-            onChanged: (v) => setState(() {
-              settings.isCustomSymbolVisible = !settings.isCustomSymbolVisible;
-            }),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        SBBContentBox(
+          child: Column(
+            mainAxisSize: .min,
+            children: [
+              ...SBBDivider.divideItems(
+                context: context,
+                items: [
+                  SBBCheckboxListItem(
+                    value: settings.isCustomSymbolVisible,
+                    titleText: 'Show Symbols',
+                    subtitleText: 'Show custom symbol annotations around Bern.',
+                    onChanged: (v) => setState(() {
+                      settings.isCustomSymbolVisible = !settings.isCustomSymbolVisible;
+                    }),
+                  ),
+                  SBBCheckboxListItem(
+                    value: settings.isRokasIconVisible,
+                    titleText: 'Show SBB Rokas Symbols',
+                    subtitleText: 'Show SBB Rokas symbols around Wankdorf stadium.',
+                    onChanged: (v) => setState(() {
+                      settings.isRokasIconVisible = !settings.isRokasIconVisible;
+                    }),
+                  ),
+                  SBBCheckboxListItem(
+                    value: settings.isCircleVisible,
+                    titleText: 'Show Circles',
+                    subtitleText: 'Display circle annotations between Lorrainebrücke and Kornhausbrücke.',
+                    onChanged: (v) => setState(() {
+                      settings.isCircleVisible = !settings.isCircleVisible;
+                    }),
+                  ),
+                  SBBCheckboxListItem(
+                    value: settings.isLineVisible,
+                    titleText: 'Show Lines',
+                    subtitleText: 'Display line annotations between Bern Bahnhof and Bern Europaplatz.',
+                    onChanged: (v) => setState(() {
+                      settings.isLineVisible = !settings.isLineVisible;
+                    }),
+                  ),
+                  SBBCheckboxListItem(
+                    value: settings.isFillVisible,
+                    titleText: 'Show Fills',
+                    subtitleText: 'Display fill annotation at Bern Inselspital.',
+                    onChanged: (v) => setState(() {
+                      settings.isFillVisible = !settings.isFillVisible;
+                    }),
+                  ),
+                ],
+              ),
+            ],
           ),
-          SBBCheckboxListItem(
-            value: settings.isRokasIconVisible,
-            label: 'Show SBB Rokas Symbols',
-            secondaryLabel: 'Show SBB Rokas symbols around Wankdorf stadium.',
-            onChanged: (v) => setState(() {
-              settings.isRokasIconVisible = !settings.isRokasIconVisible;
-            }),
-          ),
-          SBBCheckboxListItem(
-            value: settings.isCircleVisible,
-            label: 'Show Circles',
-            secondaryLabel: 'Display circle annotations between Lorrainebrücke and Kornhausbrücke.',
-            onChanged: (v) => setState(() {
-              settings.isCircleVisible = !settings.isCircleVisible;
-            }),
-          ),
-          SBBCheckboxListItem(
-            value: settings.isLineVisible,
-            label: 'Show Lines',
-            secondaryLabel: 'Display line annotations between Bern Bahnhof and Bern Europaplatz.',
-            onChanged: (v) => setState(() {
-              settings.isLineVisible = !settings.isLineVisible;
-            }),
-          ),
-          SBBCheckboxListItem(
-            value: settings.isFillVisible,
-            label: 'Show Fills',
-            secondaryLabel: 'Display fill annotation at Bern Inselspital.',
-            onChanged: (v) => setState(() {
-              settings.isFillVisible = !settings.isFillVisible;
-            }),
-            isLastElement: true,
-          ),
-          const SizedBox(height: sbbDefaultSpacing),
-          SBBPrimaryButton(label: 'Apply Changes', onPressed: () => Navigator.pop(context, settings)),
-          const SizedBox(height: sbbDefaultSpacing),
-        ],
-      ),
+        ),
+        const SizedBox(height: SBBSpacing.medium),
+        SBBPrimaryButton(labelText: 'Apply Changes', onPressed: () => Navigator.pop(context, settings)),
+      ],
     );
   }
 }

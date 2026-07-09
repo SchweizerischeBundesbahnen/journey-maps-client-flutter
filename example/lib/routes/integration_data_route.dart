@@ -1,6 +1,6 @@
-import 'package:sbb_design_system_mobile/sbb_design_system_mobile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sbb_design_system_mobile/sbb_design_system_mobile.dart';
 import 'package:sbb_maps_example/env.dart';
 import 'package:sbb_maps_example/theme_provider.dart';
 import 'package:sbb_maps_flutter/sbb_maps_flutter.dart';
@@ -24,7 +24,7 @@ class _IntegrationDataRouteState extends State<IntegrationDataRoute> {
     );
 
     return Scaffold(
-      appBar: const SBBHeader(title: 'Integration Data'),
+      appBar: const SBBHeader(titleText: 'Integration Data'),
       body: SBBMap(
         mapStyler: mapStyler,
         isMyLocationEnabled: false,
@@ -32,13 +32,13 @@ class _IntegrationDataRouteState extends State<IntegrationDataRoute> {
         builder: (context) => Align(
           alignment: Alignment.topRight,
           child: Padding(
-            padding: const EdgeInsets.all(sbbDefaultSpacing),
+            padding: const .all(SBBSpacing.medium),
             child: SBBMapIconButton(
               onPressed: () {
-                showSBBModalSheet<bool>(
+                showSBBBottomSheet<bool>(
                   context: context,
-                  title: 'Integration Data',
-                  child: _IntegrationDataModalBody(useIntegration: useIntegration),
+                  titleText: 'Integration Data',
+                  body: _IntegrationDataModalBody(useIntegration: useIntegration),
                 ).then(_setStateWithProperties);
               },
               icon: SBBIcons.gears_small,
@@ -78,25 +78,20 @@ class _IntegrationDataModalBodyState extends State<_IntegrationDataModalBody> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: sbbDefaultSpacing, horizontal: sbbDefaultSpacing),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          SBBCheckboxListItem(
-            value: _useIntegration,
-            label: 'Use INT Data',
-            secondaryLabel: 'Accesses developer-int.sbb.ch data.',
-            onChanged: (v) => setState(() {
-              _useIntegration = v ?? false;
-            }),
-            isLastElement: true,
-          ),
-          const SizedBox(height: sbbDefaultSpacing),
-          SBBPrimaryButton(label: 'Apply Changes', onPressed: () => Navigator.pop(context, _useIntegration)),
-          const SizedBox(height: sbbDefaultSpacing),
-        ],
-      ),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        SBBSwitchListItemBoxed(
+          value: _useIntegration,
+          titleText: 'Use INT Data',
+          subtitleText: 'Accesses developer-int.sbb.ch data.',
+          onChanged: (v) => setState(() {
+            _useIntegration = v ?? false;
+          }),
+        ),
+        const SizedBox(height: SBBSpacing.medium),
+        SBBPrimaryButton(labelText: 'Apply Changes', onPressed: () => Navigator.pop(context, _useIntegration)),
+      ],
     );
   }
 }

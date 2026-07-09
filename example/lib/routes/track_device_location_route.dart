@@ -1,6 +1,6 @@
-import 'package:sbb_design_system_mobile/sbb_design_system_mobile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sbb_design_system_mobile/sbb_design_system_mobile.dart';
 import 'package:sbb_maps_example/env.dart';
 import 'package:sbb_maps_example/theme_provider.dart';
 import 'package:sbb_maps_flutter/sbb_maps_flutter.dart';
@@ -26,7 +26,7 @@ class _TrackDeviceLocationRouteState extends State<TrackDeviceLocationRoute> {
       isDarkMode: Provider.of<ThemeProvider>(context).isDark,
     );
     return Scaffold(
-      appBar: const SBBHeader(title: 'Track Device'),
+      appBar: const SBBHeader(titleText: 'Track Device'),
       body: SBBMap(
         isMyLocationEnabled: true,
         initialCameraPosition: _oltenOnLowZoom,
@@ -36,13 +36,13 @@ class _TrackDeviceLocationRouteState extends State<TrackDeviceLocationRoute> {
         builder: (context) => Align(
           alignment: Alignment.topRight,
           child: Padding(
-            padding: const EdgeInsets.only(top: sbbDefaultSpacing, right: sbbDefaultSpacing / 2),
+            padding: const EdgeInsets.only(top: SBBSpacing.medium, right: SBBSpacing.xSmall),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               mainAxisAlignment: MainAxisAlignment.start,
+              spacing: SBBSpacing.medium,
               children: [
                 const SBBMapMyLocationButton(),
-                const SizedBox(height: sbbDefaultSpacing),
                 SBBMapIconButton(
                   onPressed: () => controller.animateCameraMove(cameraUpdate: _kCameraZurich),
                   icon: SBBIcons.station_small,

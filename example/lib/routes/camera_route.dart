@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:sbb_design_system_mobile/sbb_design_system_mobile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sbb_design_system_mobile/sbb_design_system_mobile.dart';
 import 'package:sbb_maps_example/env.dart';
 import 'package:sbb_maps_example/theme_provider.dart';
 import 'package:sbb_maps_flutter/sbb_maps_flutter.dart';
@@ -32,7 +32,7 @@ class _CameraRouteState extends State<CameraRoute> {
       isDarkMode: Provider.of<ThemeProvider>(context).isDark,
     );
     return Scaffold(
-      appBar: const SBBHeader(title: 'Camera'),
+      appBar: const SBBHeader(titleText: 'Camera'),
       body: SafeArea(
         child: Column(
           children: [
@@ -47,19 +47,19 @@ class _CameraRouteState extends State<CameraRoute> {
                 onMapCreated: (controller) => mapController.complete(controller),
               ),
             ),
-            SBBGroup(
-              padding: const EdgeInsets.symmetric(horizontal: sbbDefaultSpacing / 2, vertical: sbbDefaultSpacing / 2),
+            SBBContentBox(
+              padding: const .all(SBBSpacing.xSmall),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   SBBTertiaryButtonSmall(
-                    label: 'Bern',
-                    icon: SBBIcons.house_small,
+                    labelText: 'Bern',
+                    iconData: SBBIcons.house_small,
                     onPressed: () => mapController.future.then((c) => c.animateCameraMove(cameraUpdate: _kCameraBern)),
                   ),
                   SBBTertiaryButtonSmall(
-                    label: 'Zurich',
-                    icon: SBBIcons.station_small,
+                    labelText: 'Zurich',
+                    iconData: SBBIcons.station_small,
                     onPressed: () =>
                         mapController.future.then((c) => c.animateCameraMove(cameraUpdate: _kCameraZurich)),
                   ),
