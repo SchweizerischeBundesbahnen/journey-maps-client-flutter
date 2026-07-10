@@ -17,72 +17,72 @@ class SBBMapTextStyles {
   static const TextStyle extraLargeLight = TextStyle(
     fontSize: 30.0,
     height: 32.0 / 30.0,
-    fontStyle: FontStyle.normal,
-    fontWeight: FontWeight.w300,
+    fontStyle: .normal,
+    fontWeight: .w300,
     fontFamily: sbbWebFont,
   );
 
   static const TextStyle largeLight = TextStyle(
     fontSize: largeFontSize,
     height: largeFontHeight,
-    fontStyle: FontStyle.normal,
-    fontWeight: FontWeight.w300,
+    fontStyle: .normal,
+    fontWeight: .w300,
     fontFamily: sbbWebFont,
   );
 
   static const TextStyle largeBold = TextStyle(
     fontSize: largeFontSize,
     height: largeFontHeight,
-    fontStyle: FontStyle.normal,
-    fontWeight: FontWeight.w700,
+    fontStyle: .normal,
+    fontWeight: .w700,
     fontFamily: sbbWebFont,
   );
 
   static const TextStyle mediumLight = TextStyle(
     fontSize: mediumFontSize,
     height: mediumFontHeight,
-    fontStyle: FontStyle.normal,
-    fontWeight: FontWeight.w300,
+    fontStyle: .normal,
+    fontWeight: .w300,
     fontFamily: sbbWebFont,
   );
 
   static const TextStyle mediumBold = TextStyle(
     fontSize: mediumFontSize,
     height: mediumFontHeight,
-    fontStyle: FontStyle.normal,
-    fontWeight: FontWeight.w700,
+    fontStyle: .normal,
+    fontWeight: .w700,
     fontFamily: sbbWebFont,
   );
 
   static const TextStyle smallLight = TextStyle(
     fontSize: smallFontSize,
     height: smallFontHeight,
-    fontStyle: FontStyle.normal,
-    fontWeight: FontWeight.w300,
+    fontStyle: .normal,
+    fontWeight: .w300,
     fontFamily: sbbWebFont,
   );
 
   static const TextStyle smallBold = TextStyle(
     fontSize: smallFontSize,
     height: smallFontHeight,
-    fontStyle: FontStyle.normal,
-    fontWeight: FontWeight.w700,
+    fontStyle: .normal,
+    fontWeight: .w700,
     fontFamily: sbbWebFont,
   );
 
   static const TextStyle extraSmallLight = TextStyle(
     fontSize: 12.0,
     height: 16.0 / 12.0,
-    fontStyle: FontStyle.normal,
-    fontWeight: FontWeight.w300,
+    fontStyle: .normal,
+    fontWeight: .w300,
     fontFamily: sbbWebFont,
   );
 
   static const TextStyle helpersLabel = TextStyle(
     fontSize: 10.0,
     height: 12.0 / 10.0,
-    fontStyle: FontStyle.normal,
-    fontWeight: FontWeight.w300,
+    fontStyle: .normal,
+    fontWeight: .w300,
     fontFamily: sbbWebFont,
   );
 }

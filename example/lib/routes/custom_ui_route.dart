@@ -29,12 +29,12 @@ class _CustomUiRouteState extends State<CustomUiRoute> {
         builder: (context) => const Align(
           alignment: Alignment.topRight,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: .end,
+            mainAxisAlignment: .spaceBetween,
             children: [
               _ShadowedThemeButton(),
               Row(
-                mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisAlignment: .end,
                 children: [
                   Padding(
                     padding: EdgeInsets.only(right: SBBSpacing.medium, bottom: SBBSpacing.xLarge),

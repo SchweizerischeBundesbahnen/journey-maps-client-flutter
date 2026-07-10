@@ -79,14 +79,14 @@ class _IntegrationDataModalBodyState extends State<_IntegrationDataModalBody> {
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisSize: MainAxisSize.min,
+      mainAxisSize: .min,
       children: [
         SBBSwitchListItemBoxed(
           value: _useIntegration,
           titleText: 'Use INT Data',
           subtitleText: 'Accesses developer-int.sbb.ch data.',
           onChanged: (v) => setState(() {
-            _useIntegration = v ?? false;
+            _useIntegration = v;
           }),
         ),
         const SizedBox(height: SBBSpacing.medium),

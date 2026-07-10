@@ -24,7 +24,7 @@ class SBBMapFloorSelector extends StatelessWidget {
               width: _kFloorSelectorWidth,
               child: DecoratedBox(
                 decoration: ShapeDecoration(shape: StadiumBorder(side: style.borderSide ?? BorderSide.none)),
-                position: DecorationPosition.foreground,
+                position: .foreground,
                 child: FloorSelectorTilesBuilder(style: style),
               ),
             ),
