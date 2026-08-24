@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:sbb_maps_flutter/sbb_maps_flutter.dart';
-import 'package:sbb_maps_flutter/src/sbb_map_locator/geolocator_facade.dart';
+import 'package:sbb_maps_flutter/src/sbb_map_locator/permission_handler_facade.dart';
 
 class SBBMapLocatorImpl with ChangeNotifier implements SBBMapLocator {
-  SBBMapLocatorImpl(this._mapController, this._geolocator);
+  SBBMapLocatorImpl(this._mapController, this._permissionHandler);
 
   final Future<MapLibreMapController> _mapController;
-  final GeolocatorFacade _geolocator;
+  final PermissionHandlerFacade _permissionHandler;
 
   bool _isTracking = false;
   bool _isLocationEnabled = false;
@@ -25,8 +26,8 @@ class SBBMapLocatorImpl with ChangeNotifier implements SBBMapLocator {
 
   @override
   Future<void> trackDeviceLocation() async {
-    LocationPermission locationPermission = await _requestLocationPermission();
-    if (_canEnableTracking(locationPermission)) return _enableTrackingMode();
+    PermissionStatus permissionStatus = await _requestLocationPermission();
+    if (_canEnableTracking(permissionStatus)) return _enableTrackingMode();
   }
 
   @override
@@ -47,21 +48,21 @@ class SBBMapLocatorImpl with ChangeNotifier implements SBBMapLocator {
     if (_isLocationEnabled) _notifyListeners(lastKnownLocation: location);
   }
 
-  Future<LocationPermission> _requestLocationPermission() async {
-    if (!await _geolocator.isLocationServiceEnabled()) {
+  Future<PermissionStatus> _requestLocationPermission() async {
+    if (!await _permissionHandler.isLocationServiceEnabled()) {
       final logger = Logger();
       logger.w('SBBMap: Location Service not enabled.');
-      return LocationPermission.denied;
+      return PermissionStatus.denied;
     }
-    LocationPermission status = await _geolocator.checkPermission();
-    if (status == LocationPermission.denied) {
-      return await _geolocator.requestPermission();
+    PermissionStatus status = await _permissionHandler.checkLocationPermission();
+    if (status.isDenied) {
+      return await _permissionHandler.requestLocationPermission();
     }
     return status;
   }
 
-  bool _canEnableTracking(LocationPermission permission) {
-    return permission == LocationPermission.always || permission == LocationPermission.whileInUse;
+  bool _canEnableTracking(PermissionStatus status) {
+    return status.isGranted || status.isLimited;
   }
 
   Future<void> _enableTrackingMode() async {

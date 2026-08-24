@@ -8,7 +8,7 @@ import 'package:sbb_maps_flutter/sbb_maps_flutter.dart';
 import 'package:sbb_maps_flutter/src/sbb_map_annotator/annotator/annotator_impl.dart';
 import 'package:sbb_maps_flutter/src/sbb_map_controller/sbb_map_controller_impl.dart';
 import 'package:sbb_maps_flutter/src/sbb_map_floor_controller/sbb_map_floor_controller_impl.dart';
-import 'package:sbb_maps_flutter/src/sbb_map_locator/geolocator_facade.dart';
+import 'package:sbb_maps_flutter/src/sbb_map_locator/permission_handler_facade.dart';
 import 'package:sbb_maps_flutter/src/sbb_map_locator/sbb_map_locator_impl.dart';
 import 'package:sbb_maps_flutter/src/sbb_map_poi/controller/sbb_rokas_poi_controller_impl.dart';
 import 'package:sbb_maps_flutter/src/sbb_map_routing/controller/sbb_routing_controller_impl.dart';
@@ -94,7 +94,7 @@ class SBBMap extends StatefulWidget {
   /// to your `AndroidManifest.xml` file. Please see details here
   /// https://developer.android.com/develop/sensors-and-location/location/permissions
   /// * On **iOS** add at minimum a `NSLocationWhenInUseUsageDescription` key to your
-  /// `Info.plist` file. Please refer here https://pub.dev/packages/geolocator#usage.
+  /// `Info.plist` file. Please refer here https://pub.dev/packages/permission_handler#setup.
   final bool isMyLocationEnabled;
 
   /// Callback for once the map locator is available.
@@ -239,7 +239,7 @@ class _SBBMapState extends State<SBBMap> {
     super.initState();
     widget.mapStyler.addListener(_reactToStyleChange);
 
-    _mapLocator = SBBMapLocatorImpl(_mlController.future, GeolocatorFacade());
+    _mapLocator = SBBMapLocatorImpl(_mlController.future, PermissionHandlerFacade());
     _mapLocator.addListener(_setState);
 
     _floorController = SBBMapFloorControllerImpl(_mlController.future);

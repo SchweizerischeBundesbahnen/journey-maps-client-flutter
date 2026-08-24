@@ -3,13 +3,13 @@ import 'dart:ui';
 import 'package:maplibre_gl/maplibre_gl.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:sbb_maps_flutter/sbb_maps_flutter.dart';
-import 'package:sbb_maps_flutter/src/sbb_map_locator/geolocator_facade.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:sbb_maps_flutter/src/sbb_map_locator/permission_handler_facade.dart';
 import 'package:sbb_maps_flutter/src/sbb_map_locator/sbb_map_locator_impl.dart';
 import 'package:test/test.dart';
 
 import '../../util/mock_callback_function.dart';
-@GenerateNiceMocks([MockSpec<MapLibreMapController>(), MockSpec<GeolocatorFacade>()])
+@GenerateNiceMocks([MockSpec<MapLibreMapController>(), MockSpec<PermissionHandlerFacade>()])
 import 'sbb_map_locator_test.mocks.dart';
 
 void main() {
@@ -18,13 +18,13 @@ void main() {
 
     late SBBMapLocatorImpl sut;
     late ListenableMockMapLibreMapController mockController;
-    late MockGeolocatorFacade mockGeolocator;
+    late MockPermissionHandlerFacade mockPermissionHandler;
     MockCallbackFunction listener = MockCallbackFunction();
 
     setUp(() {
       mockController = ListenableMockMapLibreMapController();
-      mockGeolocator = MockGeolocatorFacade();
-      sut = SBBMapLocatorImpl(Future.value(mockController), mockGeolocator);
+      mockPermissionHandler = MockPermissionHandlerFacade();
+      sut = SBBMapLocatorImpl(Future.value(mockController), mockPermissionHandler);
       sut.addListener(listener.call);
     });
 
@@ -92,8 +92,10 @@ void main() {
 
         test('should enable myLocation if permission already granted', () async {
           // arrange mocks
-          when(mockGeolocator.checkPermission()).thenAnswer((_) => Future.value(LocationPermission.always));
-          when(mockGeolocator.isLocationServiceEnabled()).thenAnswer((_) => Future.value(true));
+          when(
+            mockPermissionHandler.checkLocationPermission(),
+          ).thenAnswer((_) => Future.value(PermissionStatus.granted));
+          when(mockPermissionHandler.isLocationServiceEnabled()).thenAnswer((_) => Future.value(true));
           when(mockController.updateMyLocationTrackingMode(any)).thenAnswer((_) => Future.value());
 
           expectSutNotTrackingAndNeverCalled();
@@ -109,9 +111,13 @@ void main() {
 
         test('should enable myLocation if permission is granted by the user', () async {
           // arrange mocks
-          when(mockGeolocator.checkPermission()).thenAnswer((_) => Future.value(LocationPermission.denied));
-          when(mockGeolocator.requestPermission()).thenAnswer((_) => Future.value(LocationPermission.always));
-          when(mockGeolocator.isLocationServiceEnabled()).thenAnswer((_) => Future.value(true));
+          when(
+            mockPermissionHandler.checkLocationPermission(),
+          ).thenAnswer((_) => Future.value(PermissionStatus.denied));
+          when(
+            mockPermissionHandler.requestLocationPermission(),
+          ).thenAnswer((_) => Future.value(PermissionStatus.granted));
+          when(mockPermissionHandler.isLocationServiceEnabled()).thenAnswer((_) => Future.value(true));
           when(mockController.updateMyLocationTrackingMode(any)).thenAnswer((_) => Future.value());
 
           expectSutNotTrackingAndNeverCalled();
@@ -126,9 +132,13 @@ void main() {
         });
         test('should not notify listeners twice if already tracking', () async {
           // arrange mocks
-          when(mockGeolocator.checkPermission()).thenAnswer((_) => Future.value(LocationPermission.denied));
-          when(mockGeolocator.requestPermission()).thenAnswer((_) => Future.value(LocationPermission.always));
-          when(mockGeolocator.isLocationServiceEnabled()).thenAnswer((_) => Future.value(true));
+          when(
+            mockPermissionHandler.checkLocationPermission(),
+          ).thenAnswer((_) => Future.value(PermissionStatus.denied));
+          when(
+            mockPermissionHandler.requestLocationPermission(),
+          ).thenAnswer((_) => Future.value(PermissionStatus.granted));
+          when(mockPermissionHandler.isLocationServiceEnabled()).thenAnswer((_) => Future.value(true));
           when(mockController.updateMyLocationTrackingMode(any)).thenAnswer((_) => Future.value());
 
           expectSutNotTrackingAndNeverCalled();
@@ -146,9 +156,13 @@ void main() {
       group('Bad weather tests', () {
         test('should not enable myLocation if permission is denied', () async {
           // arrange mocks
-          when(mockGeolocator.checkPermission()).thenAnswer((_) => Future.value(LocationPermission.denied));
-          when(mockGeolocator.requestPermission()).thenAnswer((_) => Future.value(LocationPermission.denied));
-          when(mockGeolocator.isLocationServiceEnabled()).thenAnswer((_) => Future.value(true));
+          when(
+            mockPermissionHandler.checkLocationPermission(),
+          ).thenAnswer((_) => Future.value(PermissionStatus.denied));
+          when(
+            mockPermissionHandler.requestLocationPermission(),
+          ).thenAnswer((_) => Future.value(PermissionStatus.denied));
+          when(mockPermissionHandler.isLocationServiceEnabled()).thenAnswer((_) => Future.value(true));
           when(mockController.updateMyLocationTrackingMode(any)).thenAnswer((_) => Future.value());
 
           // act
@@ -160,11 +174,12 @@ void main() {
           verifyNever(listener());
           verifyNever(mockController.updateMyLocationTrackingMode(any));
         });
-        test('should not enable myLocation if permission is deniedForever', () async {
+        test('should not enable myLocation if permission is permanentlyDenied', () async {
           // arrange mocks
-          when(mockGeolocator.checkPermission()).thenAnswer((_) => Future.value(LocationPermission.deniedForever));
-          when(mockGeolocator.requestPermission()).thenAnswer((_) => Future.value(LocationPermission.denied));
-          when(mockGeolocator.isLocationServiceEnabled()).thenAnswer((_) => Future.value(true));
+          when(
+            mockPermissionHandler.checkLocationPermission(),
+          ).thenAnswer((_) => Future.value(PermissionStatus.permanentlyDenied));
+          when(mockPermissionHandler.isLocationServiceEnabled()).thenAnswer((_) => Future.value(true));
           when(mockController.updateMyLocationTrackingMode(any)).thenAnswer((_) => Future.value());
 
           // act
@@ -175,10 +190,11 @@ void main() {
           expect(sut.isTracking, false);
           verifyNever(listener());
           verifyNever(mockController.updateMyLocationTrackingMode(any));
+          verifyNever(mockPermissionHandler.requestLocationPermission());
         });
         test('should not enable myLocation if location Service not available', () async {
           // arrange mocks
-          when(mockGeolocator.isLocationServiceEnabled()).thenAnswer((_) => Future.value(false));
+          when(mockPermissionHandler.isLocationServiceEnabled()).thenAnswer((_) => Future.value(false));
           when(mockController.updateMyLocationTrackingMode(any)).thenAnswer((_) => Future.value());
 
           // act
@@ -189,16 +205,16 @@ void main() {
           expect(sut.isTracking, false);
           verifyNever(listener());
           verifyNever(mockController.updateMyLocationTrackingMode(any));
-          verifyNever(mockGeolocator.checkPermission());
-          verifyNever(mockGeolocator.requestPermission());
+          verifyNever(mockPermissionHandler.checkLocationPermission());
+          verifyNever(mockPermissionHandler.requestLocationPermission());
         });
       });
     });
     group('myLocation already enabled', () {
       setUp(() async {
         when(mockController.updateMyLocationTrackingMode(any)).thenAnswer((_) => Future.value());
-        when(mockGeolocator.checkPermission()).thenAnswer((_) => Future.value(LocationPermission.always));
-        when(mockGeolocator.isLocationServiceEnabled()).thenAnswer((_) => Future.value(true));
+        when(mockPermissionHandler.checkLocationPermission()).thenAnswer((_) => Future.value(PermissionStatus.granted));
+        when(mockPermissionHandler.isLocationServiceEnabled()).thenAnswer((_) => Future.value(true));
         await sut.trackDeviceLocation();
         verify(listener()).called(1);
       });

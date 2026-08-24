@@ -116,11 +116,9 @@ final map = SBBMap(
 
 ###### Accessing user location
 
-This package uses the [geolocator](https://pub.dev/packages/geolocator) flutter plugin for accessing
-the device location
-and
-asking the user for permissions. See the package for detailed instructions on accessing the device
-location. In short:
+This package uses the [permission_handler](https://pub.dev/packages/permission_handler) flutter
+plugin for checking and requesting the location permission. See the package for detailed setup
+instructions. In short:
 
 *iOS*
 
@@ -131,10 +129,28 @@ Add this to your `Info.plist` file.
 <string>YOUR DESCRIPTION WHY YOU NEED ACCESS TO THE MAP<string>
 ```
 
+If your app uses CocoaPods, additionally enable the location permission macro in the
+`post_install` block of your `Podfile` (with Swift Package Manager, permissions are enabled
+automatically based on the `Info.plist` keys):
+
+```ruby
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    flutter_additional_ios_build_settings(target)
+    target.build_configurations.each do |config|
+      config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= [
+        '$(inherited)',
+        'PERMISSION_LOCATION=1',
+      ]
+    end
+  end
+end
+```
+
 *Android*
 
-Add both of these to your `AndroidManifest.xml` file. If both are specified, the geolocator plugin uses the
-`ACCESS_FINE_LOCATION` setting.
+Add both of these to your `AndroidManifest.xml` file. If both are specified, precise location is
+requested and the user may still choose to only grant approximate location.
 
 ```
 <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -352,12 +368,6 @@ See [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
   in the tile source, meaning that trying to select a POI at a very distant place will not be
   possible. The workaround
   would be to first move to the geo coordinate and then select the POI.
-
-### Bugs
-
-* Location Permissions on **Android 16** is currently broken from downstream flutter plugin `flutter_geolocator`.
-  Currently, only overriding using `location` plugin is possible. Both of these plugins are in an unstable state at this
-  point. Tracked in [#215](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/215).
 
 [Journey Maps API]: (https://developer.sbb.ch/apis/journey-maps/information)
 
