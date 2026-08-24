@@ -133,7 +133,7 @@ Add this to your `Info.plist` file.
 
 *Android*
 
-Add these to your `AndroidManifest.xml` file. If both are specified, the geolocator plugin uses the
+Add both of these to your `AndroidManifest.xml` file. If both are specified, the geolocator plugin uses the
 `ACCESS_FINE_LOCATION` setting.
 
 ```
