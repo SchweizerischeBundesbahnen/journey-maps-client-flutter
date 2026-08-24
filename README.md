@@ -149,16 +149,15 @@ only grant approximate location.
 ###### Focusing on user location when building map
 
 To directly focus the map camera onto the device location when the `SBBMap` is built, use the
-`OnMapLocatorAvailable`
-callback and the `SBBMapLocator.trackDeviceLocation()` method. This has the nice side effect, that the user will be prompted for permissions
-if not granted already.
+`OnMapLocatorAvailable` callback and the `SBBMapLocator.trackDeviceLocation()` method. This has the nice side effect, that the user will be
+prompted for permissions if not granted already.
 
 This can be seen in the *Track Device* route in the example app
 here: [track_device_location_route.dart](example/lib/routes/track_device_location_route.dart).
 
 Be aware that for Android, the `trackDeviceLocation` method will center on the device location and end up **on the same zoom level as at the
-beginning of the movement**. Therefore, you might want to set a
-`initialCameraPosition` with a lower zoom level to start the map "closer" to the device location.
+beginning of the movement**. Therefore, you might want to set a `initialCameraPosition` with a lower zoom level to start the map
+"closer" to the device location.
 
 #### Tested deployment platforms
 
@@ -226,8 +225,7 @@ const properties = SBBMapProperties
 #### Accessing INT Tiles & POIs
 
 In order to access the INT data from [Journey Maps Tiles INT API], you need to register your application there and receive a corresponding
-API Key. API Keys from the PROD API will not work. After that, either set the environment variable
-`SBB_MAPS_INT_ENABLED` to `true`:
+API Key. API Keys from the PROD API will not work. After that, either set the environment variable `SBB_MAPS_INT_ENABLED` to `true`:
 
 ```bash
 SBB_MAPS_INT_ENABLED=true
@@ -319,13 +317,6 @@ bug reports, feature requests, and pull requests.
 ### Maintainer
 
 - [Nicolas Vidoni](https://github.com/smallTrogdor)
-
-### Credits
-
-In addition to the contributors on Github, we thank the following people for their work on previous versions:
-
-- Loris Sorace
-- Hoang Tran
 
 <a id="coding-standards"></a>
 
