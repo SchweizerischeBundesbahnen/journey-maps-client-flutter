@@ -20,7 +20,7 @@ if (keystorePropertiesFile.exists()) {
 android {
     namespace = "ch.sbb.maps.flutter"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = "28.1.13356709" // required by geolocator_android & maplibre_gl
+    ndkVersion = "28.1.13356709" // required by maplibre_gl
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
