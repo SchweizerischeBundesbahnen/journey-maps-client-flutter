@@ -43,7 +43,7 @@ dependencies:
     sdk: flutter
 
   # https://pub.dev/packages/maplibre_gl
-  maplibre_gl: ^0.26.0
+  maplibre_gl: ^0.27.0
   # https://pub.dev/packages/permission_handler
   # v13 pulls permission_handler_android v14, which requires AGP 9
   permission_handler: ^12.0.3
