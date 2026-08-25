@@ -3,13 +3,15 @@ import 'package:maplibre_gl/maplibre_gl.dart';
 import 'package:sbb_maps_flutter/sbb_maps_flutter.dart';
 
 class SBBMapControllerImpl with ChangeNotifier implements SBBMapController {
-  SBBMapControllerImpl({required MapLibreMapController maplibreMapController})
+  SBBMapControllerImpl({required MapLibreMapController maplibreMapController, required SBBMapLocator mapLocator})
     : _maplibreMapController = maplibreMapController,
-      _isCameraMoving = maplibreMapController.isCameraMoving {
+      _isCameraMoving = maplibreMapController.isCameraMoving,
+      _mapLocator = mapLocator {
     _maplibreMapController.addListener(_notifyListenersIfStateChanged);
   }
 
   final MapLibreMapController _maplibreMapController;
+  final SBBMapLocator _mapLocator;
   bool _isCameraMoving;
   SBBCameraPosition? _cameraPosition;
 
@@ -48,6 +50,7 @@ class SBBMapControllerImpl with ChangeNotifier implements SBBMapController {
 
   @override
   Future<bool?> animateCameraMove({required SBBCameraUpdate cameraUpdate, Duration? duration}) {
+    _mapLocator.dismissTracking();
     return _maplibreMapController.animateCamera(cameraUpdate.toMaplibre(), duration: duration);
   }
 
