@@ -8,18 +8,20 @@ import 'package:sbb_maps_flutter/src/sbb_map_controller/sbb_map_controller_impl.
 import 'package:test/test.dart';
 
 import '../../util/mock_callback_function.dart';
-@GenerateNiceMocks([MockSpec<MapLibreMapController>()])
+@GenerateNiceMocks([MockSpec<MapLibreMapController>(), MockSpec<SBBMapLocator>()])
 import 'sbb_map_controller_test.mocks.dart';
 
 void main() {
   group('Unit Test SBBMapController', () {
     late SBBMapController sut;
     late ListenableMockMapLibreMapController mockMLController;
+    late MockSBBMapLocator mockMapLocator;
     MockCallbackFunction listener = MockCallbackFunction();
 
     setUp(() {
       mockMLController = ListenableMockMapLibreMapController();
-      sut = SBBMapControllerImpl(maplibreMapController: mockMLController);
+      mockMapLocator = MockSBBMapLocator();
+      sut = SBBMapControllerImpl(maplibreMapController: mockMLController, mapLocator: mockMapLocator);
       sut.addListener(listener.call);
     });
 
@@ -122,6 +124,19 @@ void main() {
 
       // expect
       verify(mockMLController.animateCamera(mlCameraUpdate)).called(1);
+    });
+
+    test('animateCameraMove should call dismissTracking', () {
+      // arrange
+      final cameraUpdate = SBBCameraUpdate.bearingTo(0.0);
+      final mlCameraUpdate = cameraUpdate.toMaplibre();
+      when(mockMLController.animateCamera(mlCameraUpdate)).thenAnswer((_) => Future.value());
+
+      // act
+      sut.animateCameraMove(cameraUpdate: cameraUpdate);
+
+      // expect
+      verify(mockMapLocator.dismissTracking()).called(1);
     });
 
     test('querySourceFeatures should call mapLibre controller one to one', () {

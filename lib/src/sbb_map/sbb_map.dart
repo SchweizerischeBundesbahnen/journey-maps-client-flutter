@@ -339,7 +339,10 @@ class _SBBMapState extends State<SBBMap> {
   }
 
   void _onMapCreated(MapLibreMapController controller) async {
-    SBBMapController sbbMapController = SBBMapControllerImpl(maplibreMapController: controller);
+    SBBMapController sbbMapController = SBBMapControllerImpl(
+      maplibreMapController: controller,
+      mapLocator: _mapLocator,
+    );
 
     _mlController.complete(controller);
     _controller.complete(sbbMapController);
