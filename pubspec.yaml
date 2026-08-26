@@ -46,7 +46,7 @@ dependencies:
   maplibre_gl: ^0.27.0
   # https://pub.dev/packages/permission_handler
   # v13 pulls permission_handler_android v14, which requires AGP 9
-  permission_handler: ^12.0.3
+  permission_handler: ^13.0.0
   # https://pub.dev/packages/logger
   logger: ^2.7.0
   # https://pub.dev/packages/collection
