@@ -228,7 +228,7 @@ class _SBBMapState extends State<SBBMap> {
   bool _isFirstTimeStyleLoaded = true;
   bool _isFirstTimeStyleLoadingComplete = false;
   bool _isStyleLoaded = false;
-  final Completer<SBBMapController> _controller = Completer<SBBMapControllerImpl>();
+  final Completer<SBBMapController> _controller = Completer<SBBMapController>();
   final Completer<MapLibreMapController> _mlController = Completer<MapLibreMapController>();
   late SBBMapFloorControllerImpl _floorController;
   late SBBRoutingControllerImpl _routingController;
