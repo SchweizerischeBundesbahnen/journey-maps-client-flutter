@@ -319,15 +319,19 @@ class _SBBMapState extends State<SBBMap> {
               widget.initialCameraPosition?.toMaplibre() ?? SBBCameraPosition.highLevelCH.toMaplibre(),
           onMapCreated: _onMapCreated,
           onStyleLoadedCallback: _onStyleLoadedCallback,
-          onMapClick: (point, coords) {
+          onMapClick: (point, coordinates) {
             if (_isStyleLoaded && widget.poiSettings.onPoiSelected != null) {
               _poiController.toggleSelectedPointOfInterest(point);
             }
             if (_isStyleLoaded && widget.onMapClick != null) {
-              widget.onMapClick!.call(point, coords);
+              widget.onMapClick!.call(point, coordinates);
             }
           },
-          onMapLongClick: widget.onMapLongClick,
+          onMapLongClick: (point, coordinates) {
+            if (_isStyleLoaded && widget.onMapClick != null) {
+              widget.onMapLongClick!.call(point, coordinates);
+            }
+          },
           myLocationEnabled: _mapLocator.isLocationEnabled,
           onUserLocationUpdated: (location) => _mapLocator.updateDeviceLocation(location.position),
           trackCameraPosition: widget.trackCameraPosition,
