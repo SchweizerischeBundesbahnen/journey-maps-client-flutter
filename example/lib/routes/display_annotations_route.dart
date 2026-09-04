@@ -102,6 +102,12 @@ class _DisplayAnnotationsRouteState extends State<DisplayAnnotationsRoute> {
   }
 
   @override
+  void dispose() {
+    _styler.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     Provider.of<ThemeProvider>(context).isDark ? _styler.toggleDarkMode() : null;
     return Scaffold(

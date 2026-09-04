@@ -23,10 +23,10 @@ typedef OnFloorControllerAvailable = void Function(SBBMapFloorController floorCo
 typedef OnRoutingControllerAvailable = void Function(SBBRoutingController routingController);
 
 class SBBMap extends StatefulWidget {
-  SBBMap({
+  const SBBMap({
     super.key,
     this.initialCameraPosition,
-    SBBMapStyler? mapStyler,
+    this.mapStyler,
     this.onMapCreated,
     this.onStyleLoaded,
     this.onMapClick,
@@ -43,7 +43,7 @@ class SBBMap extends StatefulWidget {
     this.poiSettings = const SBBMapPOISettings(),
     this.onMapAnnotatorAvailable,
     this.smallControls = false,
-  }) : mapStyler = mapStyler ?? SBBRokasMapStyler.full();
+  });
 
   /// The optional initial [SBBCameraPosition] of the map.
   ///
@@ -62,7 +62,7 @@ class SBBMap extends StatefulWidget {
   /// The style switcher button will only be shown if the given [SBBMapStyler] has more
   /// than one style. Use the [SBBRokasMapStyler.noAerial] to hide the style switcher
   /// when using the default ROKAS styles.
-  final SBBMapStyler mapStyler;
+  final SBBMapStyler? mapStyler;
 
   /// Callback method for when the map is created.
   ///
@@ -223,6 +223,8 @@ class SBBMap extends StatefulWidget {
 }
 
 class _SBBMapState extends State<SBBMap> {
+  SBBMapStyler? _internalMapStyler;
+
   bool _isFirstTimeStyleLoaded = true;
   bool _isFirstTimeStyleLoadingComplete = false;
   bool _isStyleLoaded = false;
@@ -234,10 +236,12 @@ class _SBBMapState extends State<SBBMap> {
   late SBBRokasPOIControllerImpl _poiController;
   final Completer<SBBMapAnnotatorImpl> _mapAnnotator = Completer();
 
+  SBBMapStyler get _mapStyler => widget.mapStyler ?? (_internalMapStyler ??= SBBRokasMapStyler.full());
+
   @override
   void initState() {
     super.initState();
-    widget.mapStyler.addListener(_reactToStyleChange);
+    _mapStyler.addListener(_reactToStyleChange);
 
     _mapLocator = SBBMapLocatorImpl(_mlController.future, PermissionHandlerFacade());
     _mapLocator.addListener(_setState);
@@ -261,7 +265,7 @@ class _SBBMapState extends State<SBBMap> {
 
   void _reactToStyleChange() {
     _mlController.future.then((c) {
-      c.setStyle(widget.mapStyler.currentStyleURI);
+      c.setStyle(_mapStyler.currentStyleURI);
       setState(() => _isStyleLoaded = false);
     });
   }
@@ -269,14 +273,22 @@ class _SBBMapState extends State<SBBMap> {
   @override
   void didUpdateWidget(covariant SBBMap oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (!identical(oldWidget.mapStyler, widget.mapStyler)) {
-      final hasDifferentStyle = oldWidget.mapStyler.currentStyleURI != widget.mapStyler.currentStyleURI;
-      _disposeMapStyler(oldWidget.mapStyler);
-      widget.mapStyler.addListener(_reactToStyleChange);
+    if (identical(oldWidget.mapStyler, widget.mapStyler)) return;
 
-      if (hasDifferentStyle) {
-        _mlController.future.then((c) => c.setStyle(widget.mapStyler.currentStyleURI));
-      }
+    final previousStyler = oldWidget.mapStyler ?? _internalMapStyler!;
+    final previousStyleURI = previousStyler.currentStyleURI;
+    previousStyler.removeListener(_reactToStyleChange);
+
+    if (widget.mapStyler != null && _internalMapStyler != null) {
+      _internalMapStyler!.dispose();
+      _internalMapStyler = null;
+    }
+
+    final currentStyler = _mapStyler;
+    currentStyler.addListener(_reactToStyleChange);
+
+    if (previousStyleURI != currentStyler.currentStyleURI) {
+      _mlController.future.then((c) => c.setStyle(currentStyler.currentStyleURI));
     }
   }
 
@@ -286,7 +298,8 @@ class _SBBMapState extends State<SBBMap> {
     _floorController.removeListener(_setState);
     _routingController.removeListener(_setState);
 
-    _disposeMapStyler(widget.mapStyler);
+    _mapStyler.removeListener(_reactToStyleChange);
+    _internalMapStyler?.dispose();
     if (_mapAnnotator.isCompleted) {
       _mapAnnotator.future.then((a) => a.dispose());
     }
@@ -354,7 +367,7 @@ class _SBBMapState extends State<SBBMap> {
 
   SBBMapStyleContainer _sbbMapUserControls() => SBBMapStyleContainer(
     child: SBBMapUiContainer(
-      mapStyler: widget.mapStyler,
+      mapStyler: _mapStyler,
       mapLocator: _mapLocator,
       mapFloorController: _floorController,
       child: Builder(
@@ -372,7 +385,7 @@ class _SBBMapState extends State<SBBMap> {
   void _onStyleLoadedCallback() async {
     if (!_isFirstTimeStyleLoadingComplete) {
       _mlController.future.then(
-        (c) => c.setStyle(widget.mapStyler.currentStyleURI).then((_) {
+        (c) => c.setStyle(_mapStyler.currentStyleURI).then((_) {
           setState(() {
             _isFirstTimeStyleLoadingComplete = true;
           });
@@ -431,11 +444,6 @@ class _SBBMapState extends State<SBBMap> {
       northeast: const LatLng(47.8308275417, 10.6427014502),
     ),
   );
-
-  void _disposeMapStyler(SBBMapStyler oldMapStyler) {
-    oldMapStyler.removeListener(_reactToStyleChange);
-    oldMapStyler.dispose();
-  }
 
   void _completeAnnotatorIfNecessary() {
     if (!_mapAnnotator.isCompleted) {
