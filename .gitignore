@@ -27,10 +27,8 @@ build/
 # No generated files
 **/*.mocks.dart
 
-!./fvm/fvm_config.json
 # for example
 example/.fvm/*
-!example/.fvm/fvm_config.json
 
 # FVM Version Cache
 .fvm/
