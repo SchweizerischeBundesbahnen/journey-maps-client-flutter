@@ -51,6 +51,7 @@ class SBBMapPOISettings {
         other.onPoiControllerAvailable == onPoiControllerAvailable &&
         other.onPoiSelected == onPoiSelected &&
         other.onPoiDeselected == onPoiDeselected &&
+        // ignore: deprecated_member_use_from_same_package
         other.isPointOfInterestVisible == isPointOfInterestVisible;
   }
 
@@ -59,6 +60,7 @@ class SBBMapPOISettings {
     return onPoiControllerAvailable.hashCode ^
         onPoiSelected.hashCode ^
         onPoiDeselected.hashCode ^
+        // ignore: deprecated_member_use_from_same_package
         isPointOfInterestVisible.hashCode;
   }
 }
