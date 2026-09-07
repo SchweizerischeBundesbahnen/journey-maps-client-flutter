@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.8.2](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/compare/2.8.1...2.8.2) (2026-09-07)
+
+
+### Bug Fixes
+
+* animateCamera call dismisses tracking ([#238](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/238)) ([8bf5e54](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/8bf5e543d15e217671b3f8eb409c49872f7feb41))
+* dispose only internal map styler ([#242](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/242)) ([6c5451a](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/6c5451a7564ca90152882e8e2e1e6fecf9814cdd))
+* onMapLongClick is guarded by isStyleLoaded ([#245](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/245)) ([f37a31b](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/f37a31b5672f462f9b4be7d1b6570d15d58e0c92))
+
 ## [2.8.1](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/compare/2.8.0...2.8.1) (2026-08-25)
 
 
