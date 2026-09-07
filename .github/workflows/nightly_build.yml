@@ -83,8 +83,8 @@ jobs:
             exit 0
           fi
 
-          title="Support window has grown to $count versions — schedule a drop"
-          body="ci/supported-sdks.json declares a floor of $floor_mm, but $count Flutter stable versions are now at or above that floor. Drop the oldest supported version (Flutter $floor_mm) in a dedicated \`feat: drop support for Flutter SDK $floor_mm\` PR, per the support window policy in CONTEXT.md."
+          title="[CI]: Flutter support window has grown to $count versions — schedule a drop"
+          body="ci/supported-sdks.json declares a floor of $floor_mm, but $count Flutter stable versions are now at or above that floor. Drop the oldest supported version (Flutter $floor_mm) in a dedicated \`fix: drop support for Flutter SDK $floor_mm\` PR, per the support window policy."
 
           search_key="Support window has grown"
           existing=$(gh issue list --search "\"$search_key\" in:title" --state open --json number,title --jq '.[0] // empty')
