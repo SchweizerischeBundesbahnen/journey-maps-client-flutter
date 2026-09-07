@@ -1,4 +1,10 @@
 # Runs flutter unit tests, formatting test and CHANGELOG.md validation on every PR to main.
+#
+# The Flutter SDK support window and canonical toolchain version come from
+# ci/supported-sdks.json via the setup job, see CONTEXT.md and ADR 0001.
+# The analyzer and unit tests fan out across the whole window; format,
+# --fatal-infos linting, and publish-dry-run only run on the canonical
+# (floor) version, since those checks can only ever have one opinion.
 
 name: test
 
@@ -16,31 +22,75 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  test:
+  setup:
+    uses: ./.github/workflows/setup_flutter_toolchain.yml
+
+  format:
     runs-on: ubuntu-latest
+    needs: [ setup ]
 
     steps:
       - uses: actions/checkout@v7
 
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: 3.47.x
+          flutter-version: ${{ needs.setup.outputs.canonical }}
           cache: true
 
-      - name: Flutter setup
-        run: |
-          flutter doctor -v
-          flutter pub get
+      - run: flutter pub get
 
       - name: Format check
         run: dart format --page-width=120 --trailing-commas=preserve -o none --set-exit-if-changed .
 
-      - name: Flutter test # takes ~ 60s, hence we store the artifact for sonar
-        run: |
-          dart run build_runner build
-          flutter test --coverage
+  analyze:
+    runs-on: ubuntu-latest
+    needs: [ setup ]
+    strategy:
+      fail-fast: false
+      matrix:
+        flutter_sdk: ${{ fromJSON(needs.setup.outputs.window) }}
 
-      - uses: actions/upload-artifact@v7
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ matrix.flutter_sdk }}
+          cache: true
+
+      - run: flutter pub get
+      - run: dart run build_runner build
+
+      - name: Analyze (fatal-infos only on the canonical version)
+        run: |
+          if [ "${{ matrix.flutter_sdk }}" = "${{ needs.setup.outputs.floor }}" ]; then
+            flutter analyze lib test
+          else
+            flutter analyze --no-fatal-infos lib test
+          fi
+
+  test:
+    runs-on: ubuntu-latest
+    needs: [ setup ]
+    strategy:
+      fail-fast: false
+      matrix:
+        flutter_sdk: ${{ fromJSON(needs.setup.outputs.window) }}
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ matrix.flutter_sdk }}
+          cache: true
+
+      - run: flutter pub get
+      - run: dart run build_runner build
+      - run: flutter test --coverage # takes ~ 60s, hence we store the artifact for sonar (canonical leg only)
+
+      - if: matrix.flutter_sdk == needs.setup.outputs.floor
+        uses: actions/upload-artifact@v7
         with:
           name: gen_srcs-and-coverage
           path: |
@@ -48,8 +98,47 @@ jobs:
             **/*.g.dart
             **/*.mocks.dart
 
+  publish_check:
+    runs-on: ubuntu-latest
+    needs: [ setup ]
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ needs.setup.outputs.canonical }}
+          cache: true
+
+      - run: flutter pub get
       - name: Check publishable to pub.dev
         run: flutter pub publish --dry-run
+
+  example_analyze:
+    runs-on: ubuntu-latest
+    needs: [ setup ]
+    defaults:
+      run:
+        working-directory: example
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ needs.setup.outputs.canonical }}
+          cache: true
+
+      - name: Make secret env file accessible for envied generation
+        uses: timheuer/base64-to-file@v2.0
+        with:
+          fileName: ".env"
+          fileDir: "./example"
+          encodedString: ${{ secrets.EXAMPLE_APP_ENV_FILE_PROD_BASE64 }}
+
+      - run: flutter pub get
+      - run: dart run build_runner build
+      - run: flutter analyze lib
 
   package_scorer:
     runs-on: ubuntu-latest
@@ -67,14 +156,14 @@ jobs:
   sonar_analysis:
     name: SonarScanning on SonarCloud
     runs-on: ubuntu-latest
-    needs: [ test ]
+    needs: [ setup, test ]
 
     steps:
       - uses: actions/checkout@v7
 
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: 3.47.x
+          flutter-version: ${{ needs.setup.outputs.canonical }}
           cache: true
 
       - name: Get dependencies
@@ -91,9 +180,9 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   build-examples:
-    needs: [ test ]
+    needs: [ setup, test, analyze, format, example_analyze ]
     uses: ./.github/workflows/example_app_build.yml
     with:
-      flutter_sdks: '["3.38.x","3.47.x"]'
+      flutter_sdks: ${{ format('["{0}","{1}"]', needs.setup.outputs.floor, needs.setup.outputs.ceiling) }}
     secrets:
       example_app_env_file_base64: ${{ secrets.EXAMPLE_APP_ENV_FILE_PROD_BASE64 }}

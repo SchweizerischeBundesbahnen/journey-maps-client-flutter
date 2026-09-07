@@ -8,8 +8,12 @@ on:
       - main
 
 jobs:
-  release-android-example-app:
+  setup:
     if: github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'exampleAppRelease:pending')
+    uses: ./.github/workflows/setup_flutter_toolchain.yml
+
+  release-android-example-app:
+    needs: [ setup ]
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -19,7 +23,7 @@ jobs:
 
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: 3.47.x
+          flutter-version: ${{ needs.setup.outputs.ceiling }}
           cache: true
 
       - uses: actions/setup-java@v6

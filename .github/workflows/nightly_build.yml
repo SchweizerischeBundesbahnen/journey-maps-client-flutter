@@ -1,4 +1,6 @@
-# Runs every night to check problems with stable flutter SDK & builds cache
+# Runs every night to check problems with stable flutter SDK & builds cache,
+# and reports (without blocking) when upstream Flutter releases have widened
+# the support window declared in ci/supported-sdks.json past three versions.
 
 name: nightly_build
 
@@ -8,6 +10,9 @@ on:
     - cron: "20 3 * * *" # 03:20 am every day
 
 jobs:
+  setup:
+    uses: ./.github/workflows/setup_flutter_toolchain.yml
+
   test:
     runs-on: ubuntu-latest
     steps:
@@ -24,9 +29,74 @@ jobs:
       - run: flutter test --coverage
 
   build-examples:
-    needs: [ test ]
+    needs: [ setup, test ]
     uses: ./.github/workflows/example_app_build.yml
     with:
-      flutter_sdks: '["3.38.x",""]'  # the empty one will use the latest stable channel sdk
+      flutter_sdks: ${{ format('["{0}",""]', needs.setup.outputs.floor) }}
     secrets:
       example_app_env_file_base64: ${{ secrets.EXAMPLE_APP_ENV_FILE_PROD_BASE64 }}
+
+  check-support-window-drift:
+    needs: [ setup ]
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      FLOOR_WILDCARD: ${{ needs.setup.outputs.floor }}
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Compare declared floor against Flutter's stable releases
+        continue-on-error: true # this step only ever reports; it must never fail the nightly build
+        run: |
+          floor_mm="${FLOOR_WILDCARD%.x}"
+          floor_major="${floor_mm%%.*}"
+          floor_minor="${floor_mm#*.}"
+
+          all_stable=$(curl -sf https://storage.googleapis.com/flutter_infra_release/releases/releases_linux.json \
+            | jq -r '[.releases[] | select(.channel == "stable")] | length')
+
+          if [ -z "$all_stable" ] || [ "$all_stable" -eq 0 ]; then
+            echo "::warning::Got zero stable releases from Flutter's release feed; treating this as a fetch/schema problem, not a narrow window, and skipping the drift check."
+            exit 1
+          fi
+
+          stable_mm=$(curl -sf https://storage.googleapis.com/flutter_infra_release/releases/releases_linux.json \
+            | jq -r '[.releases[] | select(.channel == "stable") | (.version | ltrimstr("v") | capture("^(?<mm>[0-9]+\\.[0-9]+)").mm)] | unique[]')
+
+          count=0
+          while IFS= read -r mm; do
+            [ -z "$mm" ] && continue
+            major="${mm%%.*}"
+            minor="${mm#*.}"
+            if [ "$major" -gt "$floor_major" ] || { [ "$major" -eq "$floor_major" ] && [ "$minor" -ge "$floor_minor" ]; }; then
+              count=$((count + 1))
+            fi
+          done <<< "$stable_mm"
+
+          echo "Stable Flutter versions at or above the declared floor ($floor_mm): $count"
+
+          if [ "$count" -le 3 ]; then
+            echo "Support window is within its expected width; nothing to report."
+            exit 0
+          fi
+
+          title="Support window has grown to $count versions — schedule a drop"
+          body="ci/supported-sdks.json declares a floor of $floor_mm, but $count Flutter stable versions are now at or above that floor. Drop the oldest supported version (Flutter $floor_mm) in a dedicated \`feat: drop support for Flutter SDK $floor_mm\` PR, per the support window policy in CONTEXT.md."
+
+          search_key="Support window has grown"
+          existing=$(gh issue list --search "\"$search_key\" in:title" --state open --json number,title --jq '.[0] // empty')
+          existing_number=$(echo "$existing" | jq -r '.number // empty')
+          existing_title=$(echo "$existing" | jq -r '.title // empty')
+
+          if [ -z "$existing_number" ]; then
+            echo "Opening a new tracking issue"
+            gh issue create --title "$title" --body "$body" --label "ci/cd"
+          elif [ "$existing_title" = "$title" ]; then
+            echo "Tracking issue #$existing_number already reflects $count versions; nothing to update."
+          else
+            echo "Updating existing tracking issue #$existing_number"
+            gh issue edit "$existing_number" --title "$title" --body "$body"
+          fi
