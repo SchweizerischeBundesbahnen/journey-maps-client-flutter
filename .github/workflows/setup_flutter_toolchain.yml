@@ -1,0 +1,52 @@
+# Single source of truth for the Flutter SDK support window and canonical
+# toolchain version.
+name: setup_flutter_toolchain
+
+on:
+  workflow_call:
+    outputs:
+      window:
+        description: 'JSON array of supported Flutter SDK version wildcards, e.g. ["3.38.x","3.47.x"].'
+        value: ${{ jobs.read-config.outputs.window }}
+      canonical:
+        description: 'The exact canonical Flutter SDK version, e.g. "3.38.10".'
+        value: ${{ jobs.read-config.outputs.canonical }}
+      floor:
+        description: 'The oldest supported Flutter SDK version wildcard, e.g. "3.38.x".'
+        value: ${{ jobs.read-config.outputs.floor }}
+      ceiling:
+        description: 'The newest supported Flutter SDK version wildcard, e.g. "3.47.x".'
+        value: ${{ jobs.read-config.outputs.ceiling }}
+
+jobs:
+  read-config:
+    runs-on: ubuntu-latest
+    outputs:
+      window: ${{ steps.read.outputs.window }}
+      canonical: ${{ steps.read.outputs.canonical }}
+      floor: ${{ steps.read.outputs.floor }}
+      ceiling: ${{ steps.read.outputs.ceiling }}
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: lts/krypton
+
+      - name: Validate ci/supported-sdks.json
+        run: node tool/ci/verify-supported-sdks.mjs
+
+      - name: Read ci/supported-sdks.json
+        id: read
+        run: |
+          window=$(jq -c '.window' ci/supported-sdks.json)
+          canonical=$(jq -r '.canonical' ci/supported-sdks.json)
+          floor=$(jq -r '.window[0]' ci/supported-sdks.json)
+          ceiling=$(jq -r '.window[-1]' ci/supported-sdks.json)
+          {
+            echo "window=$window"
+            echo "canonical=$canonical"
+            echo "floor=$floor"
+            echo "ceiling=$ceiling"
+          } >> "$GITHUB_OUTPUT"

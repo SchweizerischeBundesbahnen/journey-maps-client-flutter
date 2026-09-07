@@ -30,9 +30,9 @@ build/
 # for example
 example/.fvm/*
 
-# FVM Version Cache
+# FVM Version Cache. .fvmrc is tracked: it is the canonical toolchain version
+# pin and must be shared with contributors, see CONTEXT.md.
 .fvm/
-.fvmrc
 
 # Testing
 coverage/
