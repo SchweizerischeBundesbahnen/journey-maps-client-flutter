@@ -235,6 +235,7 @@ class _SBBMapState extends State<SBBMap> {
   late SBBMapLocatorImpl _mapLocator;
   late SBBRokasPOIControllerImpl _poiController;
   final Completer<SBBMapAnnotatorImpl> _mapAnnotator = Completer();
+  SBBMapAnnotatorImpl? _annotator;
 
   SBBMapStyler get _mapStyler => widget.mapStyler ?? (_internalMapStyler ??= SBBRokasMapStyler.full());
 
@@ -300,9 +301,7 @@ class _SBBMapState extends State<SBBMap> {
 
     _mapStyler.removeListener(_reactToStyleChange);
     _internalMapStyler?.dispose();
-    if (_mapAnnotator.isCompleted) {
-      _mapAnnotator.future.then((a) => a.dispose());
-    }
+    _annotator?.dispose();
     _mapLocator.dispose();
     _routingController.dispose();
     _floorController.dispose();
@@ -452,7 +451,8 @@ class _SBBMapState extends State<SBBMap> {
   void _completeAnnotatorIfNecessary() {
     if (!_mapAnnotator.isCompleted) {
       _mlController.future.then((c) {
-        _mapAnnotator.complete(SBBMapAnnotatorImpl(controller: c));
+        if (!mounted) return;
+        _mapAnnotator.complete(_annotator = SBBMapAnnotatorImpl(controller: c));
       });
     }
   }
