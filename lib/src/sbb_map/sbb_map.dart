@@ -301,7 +301,7 @@ class _SBBMapState extends State<SBBMap> {
 
     _mapStyler.removeListener(_reactToStyleChange);
     _internalMapStyler?.dispose();
-    unawaited(_annotator?.dispose() ?? Future.value());
+    _annotator?.dispose();
     _mapLocator.dispose();
     _routingController.dispose();
     _floorController.dispose();

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:maplibre_gl/maplibre_gl.dart';
@@ -108,26 +107,20 @@ class SBBMapAnnotatorImpl implements SBBMapAnnotator {
   }
 
   /// Called by [SBBMap] when disposed.
-  Future<void> dispose() async {
+  ///
+  /// The geoJson source and the layers are deliberately left alone. They live in
+  /// the style of the underlying map, which the platform view owns, so they are
+  /// freed with it - there is nothing here to hand back. Removing them is also
+  /// not possible from here: [MapLibreMap] is a child of [SBBMap], and Flutter
+  /// unmounts children before their parent, so the platform view is already gone
+  /// by the time [SBBMap] disposes us. Calling into it raised a
+  /// MissingPluginException on iOS and threw on Android.
+  /// See https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/235
+  void dispose() {
     // Workaround, since function equality
     // only works for static and top-level functions.
     // See https://dart.dev/language/functions#testing-functions-for-equality
     _controller.onFeatureTapped.clear();
-
-    if (_controller.isDisposed) return;
-
-    // the below methods ends in exceptions on Android
-    // https://github.com/maplibre/flutter-maplibre-gl/issues/526
-    if (Platform.isAndroid) return;
-
-    if (_addedLayers.isNotEmpty) {
-      for (final layerId in _addedLayers.keys) {
-        await _controller.removeLayer(layerId);
-      }
-    }
-    if (_isGeoJsonSourceAdded) {
-      await _controller.removeSource(_kSourceId);
-    }
   }
 
   // Called by [SBBMap] when style changes.

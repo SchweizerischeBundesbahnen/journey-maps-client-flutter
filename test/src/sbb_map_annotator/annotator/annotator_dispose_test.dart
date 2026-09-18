@@ -23,7 +23,7 @@ void main() {
         when(mockController.onFeatureTapped).thenReturn(mockCallbackList);
 
         // act
-        await sut.dispose();
+        sut.dispose();
 
         // verify
         verify(mockController.onFeatureTapped).called(1);
@@ -38,71 +38,43 @@ void main() {
         reset(mockController);
       });
 
-      test('should remove geoJsonSource if symbol added', () async {
+      // The source and the layers belong to the style of the platform view, which
+      // is already torn down when SBBMap disposes the annotator. Reaching into it
+      // raised a MissingPluginException on iOS and threw on Android.
+      // See https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/235
+      test('should not remove the geoJsonSource if symbol added', () async {
         // setup
         await sut.addAnnotation(AnnotatorFixture.simpleRokasIcon());
 
         // act
-        await sut.dispose();
+        sut.dispose();
 
         // verify
-        verify(mockController.removeSource(AnnotatorFixture.kSourceId)).called(1);
-      });
-
-      test('should remove single layer if single symbol added', () async {
-        // setup
-        await sut.addAnnotation(AnnotatorFixture.simpleRokasIcon());
-
-        // act
-        await sut.dispose();
-
-        // verify
-        verify(mockController.removeLayer(AnnotatorFixture.kRokasIconIdentifier)).called(1);
-      });
-
-      test('should remove first layer, then source if symbol', () async {
-        // setup
-        await sut.addAnnotation(AnnotatorFixture.simpleRokasIcon());
-
-        // act
-        await sut.dispose();
-
-        // verify
-        verifyInOrder([
-          mockController.removeLayer(AnnotatorFixture.kRokasIconIdentifier),
-          mockController.removeSource(AnnotatorFixture.kSourceId),
-        ]);
-      });
-
-      test('should not touch the style if the controller is already disposed', () async {
-        // setup
-        await sut.addAnnotation(AnnotatorFixture.simpleRokasIcon());
-        // the platform view - and with it the style - is gone once the
-        // MapLibreMap child of SBBMap has disposed its controller.
-        when(mockController.isDisposed).thenReturn(true);
-
-        // act
-        await sut.dispose();
-
-        // verify
-        verifyNever(mockController.removeLayer(any));
         verifyNever(mockController.removeSource(any));
       });
 
-      test('should remove all layers if multiple annotation types', () async {
+      test('should not remove the layer if single symbol added', () async {
+        // setup
+        await sut.addAnnotation(AnnotatorFixture.simpleRokasIcon());
+
+        // act
+        sut.dispose();
+
+        // verify
+        verifyNever(mockController.removeLayer(any));
+      });
+
+      test('should not remove any layer if multiple annotation types', () async {
         // setup
         await sut.addAnnotation(AnnotatorFixture.simpleRokasIcon());
         await sut.addAnnotation(AnnotatorFixture.simpleSymbol());
 
         // act
-        await sut.dispose();
+        sut.dispose();
 
         // verify
-        verify(
-          mockController.removeLayer(
-            argThat(anyOf([AnnotatorFixture.kRokasIconIdentifier, AnnotatorFixture.kSymbolIdentifier])),
-          ),
-        ).called(2);
+        verifyNever(mockController.removeLayer(any));
+        verifyNever(mockController.removeSource(any));
       });
     });
   });
