@@ -90,7 +90,7 @@ class SBBMapSymbol implements SBBMapAnnotation {
     String? text,
     SBBMapSymbolStyle? style,
     bool? draggable,
-    Map<String, String>? data,
+    Map<String, dynamic>? data,
   }) {
     return SBBMapSymbol._(
       id: _id,
