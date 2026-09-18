@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.8.2](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/compare/2.8.1...2.8.2) (2026-09-18)
+
+
+### Bug Fixes
+
+* animateCamera call dismisses tracking ([#238](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/238)) ([8bf5e54](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/8bf5e543d15e217671b3f8eb409c49872f7feb41))
+* dispose only internal map styler ([#242](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/242)) ([6c5451a](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/6c5451a7564ca90152882e8e2e1e6fecf9814cdd))
+* do not remove layers on disposed platform view ([#235](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/235)) ([#255](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/255)) ([b2959bd](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/b2959bd76fb7fda678e47d9beea96c4a07f01886))
+* onMapLongClick is guarded by isStyleLoaded ([#245](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/245)) ([f37a31b](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/f37a31b5672f462f9b4be7d1b6570d15d58e0c92))
+* poi selection correctly displays selected layer ([#256](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/256)) ([4d06a6a](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/4d06a6a60a06937cfe31e4deb56d31444fc86c48))
+* SBBMapSymbol.copyWith has same type as constructor ([#254](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/254)) ([ed4ffd2](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/ed4ffd2b8f81c6ec7ede1cb7bcc409a278a067cb))
+* sets all properties - since maplibre_gl 0.25.0 propagates the non null fields as actual nulls. ([4d06a6a](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/4d06a6a60a06937cfe31e4deb56d31444fc86c48))
+
 ## [2.8.1](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/compare/2.8.0...2.8.1) (2026-08-25)
 
 
