@@ -74,6 +74,21 @@ void main() {
         ]);
       });
 
+      test('should not touch the style if the controller is already disposed', () async {
+        // setup
+        await sut.addAnnotation(AnnotatorFixture.simpleRokasIcon());
+        // the platform view - and with it the style - is gone once the
+        // MapLibreMap child of SBBMap has disposed its controller.
+        when(mockController.isDisposed).thenReturn(true);
+
+        // act
+        await sut.dispose();
+
+        // verify
+        verifyNever(mockController.removeLayer(any));
+        verifyNever(mockController.removeSource(any));
+      });
+
       test('should remove all layers if multiple annotation types', () async {
         // setup
         await sut.addAnnotation(AnnotatorFixture.simpleRokasIcon());

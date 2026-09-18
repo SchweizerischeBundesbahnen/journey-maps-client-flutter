@@ -114,6 +114,8 @@ class SBBMapAnnotatorImpl implements SBBMapAnnotator {
     // See https://dart.dev/language/functions#testing-functions-for-equality
     _controller.onFeatureTapped.clear();
 
+    if (_controller.isDisposed) return;
+
     // the below methods ends in exceptions on Android
     // https://github.com/maplibre/flutter-maplibre-gl/issues/526
     if (Platform.isAndroid) return;
