@@ -252,3 +252,7 @@ const allPOICategoriesFiltureFixture = [
   'water_park',
   'zoo',
 ];
+
+// selected POI layer icons of the ROKAS sprites
+const selectedPoiBrightIcon = 'sbb_marker_poi_bright_selected';
+const selectedPoiDarkIcon = 'sbb_marker_poi_dark_selected';

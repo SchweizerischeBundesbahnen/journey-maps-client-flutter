@@ -13,6 +13,10 @@ const _rokasPoiSourceLayerId = 'journey_pois';
 
 const _rokasSelectedPoiLayerId = 'journey-pois-selected';
 
+const _rokasSelectedPoiBrightIcon = 'sbb_marker_poi_bright_selected';
+const _rokasSelectedPoiDarkIcon = 'sbb_marker_poi_dark_selected';
+const _rokasSelectedPoiIconAnchor = 'bottom';
+
 const _rokasHighlightedPoiLayerId = 'journey-pois-first';
 const _rokasBaseLvlPoiClickableLayerId = 'journey-pois-second-lvl';
 const _rokasBaseLvlPoiNonClickableLayerId = 'journey-pois-third-lvl';
@@ -30,11 +34,17 @@ class SBBRokasPOIControllerImpl with ChangeNotifier implements SBBRokasPOIContro
     required Future<MapLibreMapController> controller,
     this.onPoiSelected,
     this.onPoiDeselected,
-  }) : _controller = controller;
+    bool Function()? isDarkMode,
+  }) : _controller = controller,
+       _isDarkMode = isDarkMode ?? _notDarkMode;
+
+  static bool _notDarkMode() => false;
 
   final Future<MapLibreMapController> _controller;
   final OnPoiSelected? onPoiSelected;
   final VoidCallback? onPoiDeselected;
+
+  final bool Function() _isDarkMode;
 
   static Set<SBBPoiCategoryType> Function() get _allPoiCategories =>
       () => Set<SBBPoiCategoryType>.from(SBBPoiCategoryType.values);
@@ -201,20 +211,30 @@ class SBBRokasPOIControllerImpl with ChangeNotifier implements SBBRokasPOIContro
   Future<void> _selectPointOfInterest(RokasPOI poi) async {
     await _controller.then((c) async {
       c.setFilter(_rokasSelectedPoiLayerId, _buildSbbIdFilter(poi.sbbId));
-      c.setLayerProperties(
-        _rokasSelectedPoiLayerId,
-        const SymbolLayerProperties(iconOpacity: 1.0, visibility: 'visible'),
-      );
+      c.setLayerProperties(_rokasSelectedPoiLayerId, _selectedPoiLayerProperties(isSelectionVisible: true));
       onPoiSelected?.call(poi);
     });
   }
 
   Future<void> _deselectPointOfInterest() {
     return _controller.then((c) async {
-      c.setLayerProperties(_rokasSelectedPoiLayerId, const SymbolLayerProperties(iconOpacity: 0.0, visibility: 'none'));
+      c.setLayerProperties(_rokasSelectedPoiLayerId, _selectedPoiLayerProperties(isSelectionVisible: false));
       onPoiDeselected?.call();
     });
   }
+
+  /// [MapLibreMapController.setLayerProperties] serializes **all** symbol
+  /// properties and sends `null` for every one that is omitted, which resets it
+  /// to its default. Every property the layer relies on therefore has to be
+  /// repeated on each write - otherwise the icon would be cleared along with
+  /// the opacity and nothing would be drawn.
+  SymbolLayerProperties _selectedPoiLayerProperties({required bool isSelectionVisible}) => SymbolLayerProperties(
+    iconImage: _isDarkMode() ? _rokasSelectedPoiDarkIcon : _rokasSelectedPoiBrightIcon,
+    iconAnchor: _rokasSelectedPoiIconAnchor,
+    iconIgnorePlacement: true,
+    iconOpacity: isSelectionVisible ? 1.0 : 0.0,
+    visibility: isSelectionVisible ? 'visible' : 'none',
+  );
 
   Future<void> _setFilterToLayerIfDifferent(
     MapLibreMapController c,

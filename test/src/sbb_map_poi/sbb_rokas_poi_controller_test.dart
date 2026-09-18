@@ -737,4 +737,74 @@ void main() {
       verifyNever(listener()); // never called except for POI dropped
     });
   });
+
+  group('Unit Test SBBRokasPoiController selected layer properties', () {
+    late MockMapLibreMapController mockController;
+
+    setUp(() {
+      mockController = MockMapLibreMapController();
+    });
+
+    Future<Map<String, dynamic>> capturePropertiesOnSelect({bool isDarkMode = false}) async {
+      final sut = SBBRokasPOIControllerImpl(
+        controller: Future.value(mockController),
+        isDarkMode: () => isDarkMode,
+      );
+      await sut.showPointsOfInterest();
+      when(
+        mockController.queryRenderedFeatures(any, any, any),
+      ).thenAnswer((_) async => Future.value([mobilityBikesharingPoiGeoJSONFixture]));
+
+      await sut.toggleSelectedPointOfInterest(const Point(0, 0));
+
+      final properties =
+          verify(mockController.setLayerProperties(selectedPoiLayerId, captureAny)).captured.last
+              as SymbolLayerProperties;
+      return properties.toJson(skipNulls: false);
+    }
+
+    test('selectPointOfInterest_shouldKeepIconImageOfSelectedLayer', () async {
+      // act
+      final json = await capturePropertiesOnSelect();
+
+      // expect
+      // setLayerProperties sends null for every omitted property, which resets
+      // it on the native side. The icon has to survive the opacity override.
+      expect(json['icon-image'], selectedPoiBrightIcon);
+      expect(json['icon-anchor'], 'bottom');
+      expect(json['icon-ignore-placement'], isTrue);
+      expect(json['icon-opacity'], 1.0);
+      expect(json['visibility'], 'visible');
+    });
+
+    test('selectPointOfInterest_whenDarkMode_shouldUseDarkIcon', () async {
+      // act
+      final json = await capturePropertiesOnSelect(isDarkMode: true);
+
+      // expect
+      expect(json['icon-image'], selectedPoiDarkIcon);
+    });
+
+    test('deselectPointOfInterest_shouldKeepIconImageOfSelectedLayer', () async {
+      // arrange
+      final sut = SBBRokasPOIControllerImpl(controller: Future.value(mockController));
+      await sut.showPointsOfInterest();
+      when(
+        mockController.queryRenderedFeatures(any, any, any),
+      ).thenAnswer((_) async => Future.value([mobilityBikesharingPoiGeoJSONFixture]));
+      await sut.toggleSelectedPointOfInterest(const Point(0, 0));
+
+      // act
+      await sut.deselectPointOfInterest();
+
+      // expect
+      final properties =
+          verify(mockController.setLayerProperties(selectedPoiLayerId, captureAny)).captured.last
+              as SymbolLayerProperties;
+      final json = properties.toJson(skipNulls: false);
+      expect(json['icon-image'], selectedPoiBrightIcon);
+      expect(json['icon-opacity'], 0.0);
+      expect(json['visibility'], 'none');
+    });
+  });
 }

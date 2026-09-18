@@ -261,6 +261,7 @@ class _SBBMapState extends State<SBBMap> {
       controller: _mlController.future,
       onPoiSelected: widget.poiSettings.onPoiSelected,
       onPoiDeselected: widget.poiSettings.onPoiDeselected,
+      isDarkMode: () => _mapStyler.isDarkMode,
     );
   }
 
