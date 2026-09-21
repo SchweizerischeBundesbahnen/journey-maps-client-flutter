@@ -1,8 +1,9 @@
 import 'package:logger/logger.dart';
 import 'package:sbb_maps_flutter/sbb_maps_flutter.dart';
 import 'package:sbb_maps_flutter/src/sbb_map_style/api_key_missing_exception.dart';
+import 'package:sbb_maps_flutter/src/sbb_map_style/styler_config.dart';
 
-/// Holds the ROKAS styles and is responsible for creating a default [SBBMapStyler] for [SBBMap].
+/// Holds the Legacy Journey Maps styles and is responsible for creating a default [SBBMapStyler] for [SBBMap].
 ///
 /// The base styles are:
 ///
@@ -11,19 +12,17 @@ import 'package:sbb_maps_flutter/src/sbb_map_style/api_key_missing_exception.dar
 /// * `journey_maps_aerial_v1`
 ///
 /// The [initialStyleId] is `journey_maps_bright_v1`.
+///
+/// These styles are no longer served after 31.12.2026. Use [SBBMapsMapStyler],
+/// which holds the styles replacing them.
+@Deprecated(
+  'The Journey Maps styles held by this styler are no longer served after 31.12.2026. '
+  'Use SBBMapsMapStyler instead. Will be removed in the next major version.',
+)
 class SBBRokasMapStyler {
-  static String _rokasProdStyleUrl(String styleId) =>
-      'https://journey-maps-tiles.geocdn.sbb.ch/styles/$styleId/style.json';
-
-  static String _rokasIntStyleUrl(String styleId) =>
-      'https://journey-maps-tiles.geocdn-int.sbb.ch/styles/$styleId/style.json';
-
-  static dynamic _rokasStyleUrl(String style, {isInt = false}) =>
-      isInt ? _rokasIntStyleUrl(style) : _rokasProdStyleUrl(style);
-
-  static const _brightV1 = 'journey_maps_bright_v1';
-  static const _darkV1 = 'journey_maps_dark_v1';
-  static const _aerialV1 = 'journey_maps_aerial_v1';
+  static const _bright = 'journey_maps_bright_v1';
+  static const _dark = 'journey_maps_dark_v1';
+  static const _aerial = 'journey_maps_aerial_v1';
 
   const SBBRokasMapStyler._();
 
@@ -48,28 +47,27 @@ class SBBRokasMapStyler {
   ///
   /// The [initialStyleId] is `journey_maps_bright_v1`.
   static SBBMapStyler full({String? apiKey, bool isDarkMode = false, bool useIntegrationData = false}) {
-    final key = _apiKeyElseThrow(apiKey);
-
-    final isInt = useIntegrationData || _intEnvVarSet();
-    _logIfIsInt(isInt);
+    final key = StylerConfig.apiKeyElseThrow(apiKey);
+    final isInt = StylerConfig.resolveUseIntegrationData(useIntegrationData);
+    _logDeprecation();
 
     final rokasDefaultStyle = SBBMapStyle.fromURL(
-      id: _brightV1,
-      brightStyleURL: _rokasStyleUrl(_brightV1, isInt: isInt),
+      id: _bright,
+      brightStyleURL: StylerConfig.styleUrl(_bright, isInt: isInt),
       apiKey: key,
-      darkStyleURL: _rokasStyleUrl(_darkV1, isInt: isInt),
+      darkStyleURL: StylerConfig.styleUrl(_dark, isInt: isInt),
     );
 
     final aerialStyle = SBBMapStyle.fromURL(
-      id: _aerialV1,
-      brightStyleURL: _rokasStyleUrl(_aerialV1, isInt: isInt),
+      id: _aerial,
+      brightStyleURL: StylerConfig.styleUrl(_aerial, isInt: isInt),
       apiKey: key,
     );
 
     return SBBCustomMapStyler(
       styles: [rokasDefaultStyle],
       aerialStyle: aerialStyle,
-      initialStyleId: _brightV1,
+      initialStyleId: _bright,
       isDarkMode: isDarkMode,
     );
   }
@@ -94,54 +92,33 @@ class SBBRokasMapStyler {
   ///
   /// The [initialStyleId] is `journey_maps_bright_v1`.
   static SBBMapStyler noAerial({String? apiKey, bool isDarkMode = false, bool useIntegrationData = false}) {
-    String key = _apiKeyElseThrow(apiKey);
-
-    final isInt = useIntegrationData || _intEnvVarSet();
-    _logIfIsInt(isInt);
+    final key = StylerConfig.apiKeyElseThrow(apiKey);
+    final isInt = StylerConfig.resolveUseIntegrationData(useIntegrationData);
+    _logDeprecation();
 
     final rokasDefaultStyle = SBBMapStyle.fromURL(
-      id: _brightV1,
-      brightStyleURL: _rokasStyleUrl(_brightV1, isInt: isInt),
+      id: _bright,
+      brightStyleURL: StylerConfig.styleUrl(_bright, isInt: isInt),
       apiKey: key,
-      darkStyleURL: _rokasStyleUrl(_darkV1, isInt: isInt),
+      darkStyleURL: StylerConfig.styleUrl(_dark, isInt: isInt),
     );
 
-    return SBBCustomMapStyler(styles: [rokasDefaultStyle], initialStyleId: _brightV1, isDarkMode: isDarkMode);
+    return SBBCustomMapStyler(styles: [rokasDefaultStyle], initialStyleId: _bright, isDarkMode: isDarkMode);
   }
 
-  static String _apiKeyElseThrow(String? apiKey) {
-    String result = apiKey ?? const String.fromEnvironment('JOURNEY_MAPS_TILES_API_KEY');
-    // @Deprecated(Remove in next major (3.x.x))
-    if (result.isEmpty) result = _fetchLegacyApiKeyFromEnv();
+  static bool _deprecationLogged = false;
 
-    if (result.isEmpty) {
-      throw ApiKeyMissing('Set JOURNEY_MAPS_TILES_API_KEY as env var or as a constructor parameter.');
-    }
-    return result;
-  }
+  static void _logDeprecation() {
+    if (_deprecationLogged) return;
+    _deprecationLogged = true;
 
-  static String _fetchLegacyApiKeyFromEnv() {
-    const legacyKey = String.fromEnvironment('JOURNEY_MAPS_API_KEY');
-    if (legacyKey.isNotEmpty) {
-      final logger = Logger();
-      logger.w(
-        'sbb_maps_flutter: You are currently loading the API Key from the env var JOURNEY_MAPS_API_KEY.\n'
-        'This is deprecated and will be removed in the next major version of the sbb_maps_flutter.',
-      );
-    }
-    return legacyKey;
-  }
-
-  static bool _intEnvVarSet() {
-    const intFlag = String.fromEnvironment('SBB_MAPS_INT_ENABLED');
-    if (intFlag.isNotEmpty) return intFlag == 'true';
-
-    return false;
-  }
-
-  static void _logIfIsInt(bool isInt) {
-    if (!isInt) return;
     final logger = Logger();
-    logger.i('sbb_maps_flutter: You are currently opted in to use integration data.');
+    logger.w(
+      'sbb_maps_flutter: You are currently using the deprecated SBBRokasMapStyler.\n'
+      'Its styles are no longer served after 31.12.2026. Switch to SBBMapsMapStyler.\n'
+      'If you did not construct this styler yourself, SBBMap created it as its default: '
+      'pass a SBBMapsMapStyler as mapStyler to opt out. This styler will become the '
+      'default in the next major version.',
+    );
   }
 }
