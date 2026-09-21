@@ -17,7 +17,7 @@ class _IntegrationDataRouteState extends State<IntegrationDataRoute> {
 
   @override
   Widget build(BuildContext context) {
-    final mapStyler = SBBRokasMapStyler.full(
+    final mapStyler = SBBMapsMapStyler.full(
       apiKey: useIntegration ? Env.journeyMapsTilesIntApiKey : Env.journeyMapsTilesApiKey,
       isDarkMode: Provider.of<ThemeProvider>(context).isDark,
       useIntegrationData: useIntegration,
