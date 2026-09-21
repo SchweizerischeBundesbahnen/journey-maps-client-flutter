@@ -3,10 +3,11 @@ import 'package:flutter/foundation.dart';
 import '../../../sbb_maps_flutter.dart';
 
 /// Controls visibility and selection of the ROKAS POIs
-/// embedded in the [SBBRokasPoiLayer] layers of the ROKAS map styles.
+/// embedded in the [SBBRokasPoiLayer] layers of the SBB map styles.
 ///
-/// Using this class will only work,
-/// when the according [SBBMap] is used with a [SBBRokasMapStyler] style.
+/// Using this class will only work when the according [SBBMap] is used with a
+/// style carrying those layers. Both [SBBMapsMapStyler] and the deprecated
+/// [SBBRokasMapStyler] do.
 ///
 /// There are two types of ROKAS Points Of Interest in varying layers, see [SBBRokasPoiLayer]:
 /// 1. Base points of interest (small rounded squares / circles icons)
