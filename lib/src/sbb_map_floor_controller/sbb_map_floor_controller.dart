@@ -2,7 +2,12 @@ import 'package:flutter/foundation.dart';
 
 /// Control the floor selection and available floors of a [SBBMap].
 ///
-/// This will only work well, when used with a [SBBRRokasMapStyler] style.
+/// This works with any map style following the SBB layer conventions: the
+/// available floors are read from the `service_points` source, and the floor is
+/// applied by rewriting the filters of the layers whose id ends in `-lvl`.
+///
+/// Both the SBB Maps styles held by [SBBMapsMapStyler] and the Legacy Journey
+/// Maps styles held by [SBBRokasMapStyler] satisfy this.
 abstract class SBBMapFloorController with ChangeNotifier {
   /// Get the available floors in DESC order.
   ///

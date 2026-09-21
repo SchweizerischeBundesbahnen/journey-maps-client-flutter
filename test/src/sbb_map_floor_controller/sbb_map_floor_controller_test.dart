@@ -150,6 +150,90 @@ void main() {
         verify(listener()).called(1); // first call checked in setUp
       });
 
+      test('switchFloor_whenNewLevelIdiomInFilter_shouldApplyFilter', () async {
+        // arrange mock controller for non iOS platform (we do not check iOS platform here)
+        when(mockController.getLayerIds()).thenAnswer((_) async => oneLevelLayers);
+        when(mockController.getFilter('layer2-lvl')).thenAnswer((_) async => newIdiomLevel0Filter);
+        when(mockController.setFilter(any, any)).thenAnswer((_) async => {});
+
+        // act
+        await sut.switchFloor(1);
+
+        // expect
+        expect(sut.currentFloor, 1);
+        verify(mockController.setFilter('layer2-lvl', newIdiomLevel1Filter)).called(1);
+      });
+
+      test('switchFloor_whenBothLevelIdiomsInFilter_shouldApplyBothSubstitutions', () async {
+        // arrange mock controller for non iOS platform (we do not check iOS platform here)
+        when(mockController.getLayerIds()).thenAnswer((_) async => oneLevelLayers);
+        when(mockController.getFilter('layer2-lvl')).thenAnswer((_) async => bothIdiomsLevel0Filter);
+        when(mockController.setFilter(any, any)).thenAnswer((_) async => {});
+
+        // act
+        await sut.switchFloor(1);
+
+        // expect
+        expect(sut.currentFloor, 1);
+        verify(mockController.setFilter('layer2-lvl', bothIdiomsLevel1Filter)).called(1);
+      });
+
+      test('switchFloor_whenFilterReadsOtherProperties_shouldOnlySubstituteTheLevel', () async {
+        // arrange mock controller for non iOS platform (we do not check iOS platform here)
+        when(mockController.getLayerIds()).thenAnswer((_) async => oneLevelLayers);
+        when(mockController.getFilter('layer2-lvl')).thenAnswer((_) async => otherPropertyReadsLevel0Filter);
+        when(mockController.setFilter(any, any)).thenAnswer((_) async => {});
+
+        // act
+        await sut.switchFloor(1);
+
+        // expect
+        expect(sut.currentFloor, 1);
+        verify(mockController.setFilter('layer2-lvl', otherPropertyReadsLevel1Filter)).called(1);
+      });
+
+      test('switchFloor_whenLevelReadIsNotAnEqualityOperand_shouldNotChangeFilters', () async {
+        // arrange mock controller for non iOS platform (we do not check iOS platform here)
+        when(mockController.getLayerIds()).thenAnswer((_) async => oneLevelLayers);
+        when(mockController.getFilter('layer2-lvl')).thenAnswer((_) async => levelUnderOtherOperatorFilter);
+        when(mockController.setFilter(any, any)).thenAnswer((_) async => {});
+
+        // act
+        await sut.switchFloor(1);
+
+        // expect
+        expect(sut.currentFloor, 1);
+        verifyNever(mockController.setFilter(any, any));
+      });
+
+      test('switchFloor_whenLevelClauseIsNestedInBooleanGroup_shouldApplyFilter', () async {
+        // arrange mock controller for non iOS platform (we do not check iOS platform here)
+        when(mockController.getLayerIds()).thenAnswer((_) async => oneLevelLayers);
+        when(mockController.getFilter('layer2-lvl')).thenAnswer((_) async => nestedGroupLevel0Filter);
+        when(mockController.setFilter(any, any)).thenAnswer((_) async => {});
+
+        // act
+        await sut.switchFloor(1);
+
+        // expect
+        expect(sut.currentFloor, 1);
+        verify(mockController.setFilter('layer2-lvl', nestedGroupLevel1Filter)).called(1);
+      });
+
+      test('switchFloor_whenNestedGroupsHoldNoLevelClause_shouldLeaveThemUntouched', () async {
+        // arrange mock controller for non iOS platform (we do not check iOS platform here)
+        when(mockController.getLayerIds()).thenAnswer((_) async => oneLevelLayers);
+        when(mockController.getFilter('layer2-lvl')).thenAnswer((_) async => nestedZoomGroupsLevel0Filter);
+        when(mockController.setFilter(any, any)).thenAnswer((_) async => {});
+
+        // act
+        await sut.switchFloor(1);
+
+        // expect
+        expect(sut.currentFloor, 1);
+        verify(mockController.setFilter('layer2-lvl', nestedZoomGroupsLevel1Filter)).called(1);
+      });
+
       test('switchFloor_whenLayerFilterInResponse_shouldApplyFilter', () async {
         // arrange mock controller for non iOS platform (we do not check iOS platform here)
         when(mockController.getLayerIds()).thenAnswer((_) async => oneLevelLayers);
