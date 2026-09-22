@@ -140,16 +140,17 @@ jobs:
       - run: dart run build_runner build
       - run: flutter analyze lib
 
-  package_scorer:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v7
-
-      - uses: axel-op/dart-package-analyzer@v3
-        id: analysis
-        with:
-          githubToken: ${{ secrets.GITHUB_TOKEN }}
+  # disabled until https://github.com/axel-op/dart-package-analyzer/issues/31 has landed
+  #  package_scorer:
+  #    runs-on: ubuntu-latest
+  #
+  #    steps:
+  #      - uses: actions/checkout@v7
+  #
+  #      - uses: axel-op/dart-package-analyzer@v3
+  #        id: analysis
+  #        with:
+  #          githubToken: ${{ secrets.GITHUB_TOKEN }}
 
   ### FROM HERE: ALL DONE AFTER VALIDATION SUCCEEDS
 
