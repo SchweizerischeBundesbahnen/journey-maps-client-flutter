@@ -1,6 +1,6 @@
+import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:sbb_maps_flutter/src/sbb_map_annotator/annotator/annotator_impl.dart';
-import 'package:test/test.dart';
 
 import 'annotator.fixture.dart';
 

@@ -1,9 +1,9 @@
+import 'package:flutter_test/flutter_test.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 import 'package:mockito/mockito.dart';
 import 'package:sbb_maps_flutter/sbb_maps_flutter.dart';
 import 'package:sbb_maps_flutter/src/sbb_map_annotator/annotations/sbb_map_annotation.dart';
 import 'package:sbb_maps_flutter/src/sbb_map_annotator/annotator/annotator_impl.dart';
-import 'package:test/test.dart';
 
 import '../../../util/mock_callback_function.dart';
 import 'annotator.fixture.dart';
