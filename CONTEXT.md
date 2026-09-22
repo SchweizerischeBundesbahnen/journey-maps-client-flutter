@@ -67,8 +67,11 @@ Recorded so they are not mistaken for intent:
 - `SBBMapTextStyles.sbbWebFont` resolves to `packages/design_system_flutter/SBBWeb`,
   naming a package that is not a dependency (`design_system_flutter` is the former name
   of `sbb_design_system_mobile`, which exposes `SBBWebLight`/`SBBWebRoman`, never a bare
-  `SBBWeb`). This package ships the family itself as `packages/sbb_maps_flutter/SBBWeb`.
-  All SBB map text therefore renders in the fallback font. Tracked separately.
+  `SBBWeb`). All SBB map text therefore renders in the fallback font. Being resolved by
+  **removing** the typeface rather than repairing the string — it is proprietary and this
+  package is MIT — after which map text inherits the host app's typography. See #261.
+  Only two widgets in the package render text; both are floor switcher tiles.
+  The SBB icon font is correctly namespaced, is kept, and is unaffected.
 - `.github/workflows/test.yml` points at "CONTEXT.md and ADR 0001" for the Flutter SDK
   support window. ADR 0001 has never been written; the number is reserved for it.
 - `sbb_map_floor_selector/divider.dart` declares a class named `Divider`, shadowing

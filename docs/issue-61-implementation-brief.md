@@ -6,16 +6,26 @@ Outcome of a grilling session on 2026-09-22. Decisions are recorded in
 
 ## Blocked by
 
-The SBB Web font does not currently render. `SBBMapTextStyles.sbbWebFont` is
-`'packages/design_system_flutter/SBBWeb'`, naming a package that is not a dependency —
-`design_system_flutter` is the former name of `sbb_design_system_mobile`, which exposes
-`SBBWebLight`/`SBBWebRoman` and never a bare `SBBWeb`. This package ships the family
-itself as `packages/sbb_maps_flutter/SBBWeb` (see `pubspec.yaml`), which is how
-`sbb_map_icons.dart` correctly references `SBBIconsSmall`. Every `SBBMapTextStyles` style
-therefore falls back to the platform default font.
+The SBB Web typeface is **being removed from the package**, not repaired — see #261, with
+tickets #262 (migrate the test suite to `flutter_test`) and #263 (remove the typeface).
+Land both first.
 
-Tracked as a separate issue because the fix changes the rendering of every SBB map UI
-control, not just the floor switcher. Land it first.
+Background: `SBBMapTextStyles.sbbWebFont` is `'packages/design_system_flutter/SBBWeb'`,
+naming a package that is not a dependency — `design_system_flutter` is the former name of
+`sbb_design_system_mobile`, which exposes `SBBWebLight`/`SBBWebRoman` and never a bare
+`SBBWeb`. So the typeface has never rendered. Rather than correct the string, the package
+stops shipping the typeface altogether: it is proprietary, and this package is MIT, which
+grants consumers the right to sublicense and sell everything in it. Map text will instead
+inherit the host application's typography.
+
+Consequences for #61:
+
+- The horizontal switcher's labels must be written against inherited typography — the
+  package's text styles will still carry size, weight, height and style, but no family.
+- #262 also delivers this issue's `flutter_test` dev-dependency and import migration, so
+  the "Tests" section below no longer needs to do it.
+- The blast radius of the typeface change is exactly the two floor tiles; every other
+  control renders icons from the SBB icon font, which is kept and is unaffected.
 
 ## Scope
 
@@ -126,9 +136,9 @@ Flips to `.horizontal` in 3.0.0.
 
 ### 6. Tests
 
-Add `flutter_test` (sdk) to `dev_dependencies` and drop the bare `test: ^1.31.0` to avoid
-a version-solve conflict. Remove `// coverage:ignore-file` from the new horizontal files
-only; leave the vertical files as they are.
+The `flutter_test` dev dependency and the suite-wide import migration arrive with #262, so
+this issue inherits a widget-test-capable suite. Remove `// coverage:ignore-file` from the
+new horizontal files only; leave the vertical files as they are.
 
 Widget tests:
 
