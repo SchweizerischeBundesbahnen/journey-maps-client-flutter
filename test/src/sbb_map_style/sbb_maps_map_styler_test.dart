@@ -3,22 +3,20 @@ import 'package:sbb_maps_flutter/src/sbb_map_style/api_key_missing_exception.dar
 import 'package:test/test.dart';
 
 void main() {
-  group('Unit Test SBBRokasMapStyler', () {
+  group('Unit Test SBBMapsMapStyler', () {
     test('whenFull_shouldReturnCustomMapStylerWithAllStyleIds', () {
       // act
-      // ignore: deprecated_member_use_from_same_package
-      final actual = SBBRokasMapStyler.full(apiKey: 'key');
+      final actual = SBBMapsMapStyler.full(apiKey: 'key');
 
       // expect
       expect(actual, isA<SBBCustomMapStyler>());
-      expect(actual.getStyleIds().contains('journey_maps_aerial_v1'), equals(true));
-      expect(actual.getStyleIds().contains('journey_maps_bright_v1'), equals(true));
+      expect(actual.getStyleIds().contains('sbbmaps_aerial'), equals(true));
+      expect(actual.getStyleIds().contains('sbbmaps_bright'), equals(true));
     });
 
     test('whenFull_shouldReturnInBrightMode', () {
       // act
-      // ignore: deprecated_member_use_from_same_package
-      final actual = SBBRokasMapStyler.full(apiKey: 'key');
+      final actual = SBBMapsMapStyler.full(apiKey: 'key');
 
       // expect
       expect(actual, isA<SBBCustomMapStyler>());
@@ -29,11 +27,24 @@ void main() {
       // arrange
       const expectedUri =
           'https://journey-maps-tiles.geocdn.sbb.ch'
-          '/styles/journey_maps_bright_v1/style.json?api_key=key';
+          '/styles/sbbmaps_bright/style.json?api_key=key';
 
       // act
-      // ignore: deprecated_member_use_from_same_package
-      final actual = SBBRokasMapStyler.full(apiKey: 'key');
+      final actual = SBBMapsMapStyler.full(apiKey: 'key');
+
+      // expect
+      expect(actual, isA<SBBCustomMapStyler>());
+      expect(actual.currentStyleURI, equals(expectedUri));
+    });
+
+    test('whenFullAndIsDarkMode_shouldReturnStyleUriInDarkMode', () {
+      // arrange
+      const expectedUri =
+          'https://journey-maps-tiles.geocdn.sbb.ch'
+          '/styles/sbbmaps_dark/style.json?api_key=key';
+
+      // act
+      final actual = SBBMapsMapStyler.full(apiKey: 'key', isDarkMode: true);
 
       // expect
       expect(actual, isA<SBBCustomMapStyler>());
@@ -42,29 +53,26 @@ void main() {
 
     test('whenNoAerial_shouldNotHaveAerial', () {
       // act
-      // ignore: deprecated_member_use_from_same_package
-      final actual = SBBRokasMapStyler.noAerial(apiKey: 'key');
+      final actual = SBBMapsMapStyler.noAerial(apiKey: 'key');
 
       // expect
       expect(actual, isA<SBBCustomMapStyler>());
-      expect(actual.getStyleIds().contains('journey_maps_aerial_v1'), equals(false));
+      expect(actual.getStyleIds().contains('sbbmaps_aerial'), equals(false));
     });
 
     test('whenNoApiKey_shouldThrowApiKeyMissingException', () {
       // act + expect
-      // ignore: deprecated_member_use_from_same_package
-      expect(() => SBBRokasMapStyler.full(), throwsA(const TypeMatcher<ApiKeyMissing>()));
+      expect(() => SBBMapsMapStyler.full(), throwsA(const TypeMatcher<ApiKeyMissing>()));
     });
 
     test('whenUseIntegrationDataIsTrue_uriShouldBeIntPointing', () {
       // arrange
       const expectedUri =
           'https://journey-maps-tiles.geocdn-int.sbb.ch'
-          '/styles/journey_maps_bright_v1/style.json?api_key=key';
+          '/styles/sbbmaps_bright/style.json?api_key=key';
 
       // act
-      // ignore: deprecated_member_use_from_same_package
-      final actual = SBBRokasMapStyler.full(apiKey: 'key', useIntegrationData: true);
+      final actual = SBBMapsMapStyler.full(apiKey: 'key', useIntegrationData: true);
 
       // expect
       expect(actual, isA<SBBCustomMapStyler>());

@@ -141,12 +141,21 @@ class SBBMapFloorControllerImpl with ChangeNotifier implements SBBMapFloorContro
         // "floor" in "rokas_indoor" and "geojson_walk" layers
         floorFound = true;
         newFilter.add(item);
+      } else if (item is List && _isBooleanGroup(item.firstOrNull)) {
+        // a nested all/any/none group holds clauses, not operands:
+        // the level clause sits one level deeper than usual
+        newFilter.add(_calculateLayerFilter(item, level));
       } else if (item is List) {
         bool levelFound = false;
-        final newInnerPart = [item[0]];
+        final filterOperator = item[0];
+        final newInnerPart = [filterOperator];
         item.slice(1).forEach((innerPart) {
           final innerPartString = jsonEncode(innerPart);
           if (_isCaseLvlFilter(innerPartString)) {
+            levelFound = true;
+            newInnerPart.add(innerPart);
+          } else if (_isGetLevelFilter(filterOperator, innerPartString)) {
+            // "level" in the level_* layers of the SBB Maps styles
             levelFound = true;
             newInnerPart.add(innerPart);
           } else if (_isFloorFilter(innerPartString)) {
@@ -173,12 +182,26 @@ class SBBMapFloorControllerImpl with ChangeNotifier implements SBBMapFloorContro
     return newFilter;
   }
 
+  /// Whether [filterOperator] combines sub-filters rather than comparing
+  /// operands, in which case its children are clauses to walk rather than
+  /// operands to substitute.
+  ///
+  /// `rokas-walk-platform-lvl` nests its floor clause inside `any` of `all`,
+  /// two levels below the filter root.
+  bool _isBooleanGroup(dynamic filterOperator) => const {'all', 'any', 'none'}.contains(filterOperator);
+
   bool _isCaseLvlFilter(String innerPartString) {
     if (Platform.isIOS) {
       return innerPartString.startsWith('["case",["==",["has","level"],true],["get","level"]');
     } else {
       return innerPartString.startsWith('["case",["has","level"],["get","level"]');
     }
+  }
+
+  /// Level Filter Idiom of the SBB Maps styles: a bare `['get', 'level']` read
+  /// compared to the floor with `==`, as in `['==', ['get', 'level'], 0]`.
+  bool _isGetLevelFilter(dynamic filterOperator, String innerPartString) {
+    return filterOperator == '==' && innerPartString == '["get","level"]';
   }
 
   bool _isFloorFilter(String innerPartString) {

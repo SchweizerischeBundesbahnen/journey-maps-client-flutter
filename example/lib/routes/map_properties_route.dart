@@ -17,7 +17,7 @@ class _MapPropertiesRouteState extends State<MapPropertiesRoute> {
 
   @override
   Widget build(BuildContext context) {
-    final mapStyler = SBBRokasMapStyler.full(
+    final mapStyler = SBBMapsMapStyler.full(
       apiKey: Env.journeyMapsTilesApiKey,
       isDarkMode: Provider.of<ThemeProvider>(context).isDark,
     );

@@ -54,14 +54,17 @@ class SBBMap extends StatefulWidget {
 
   /// The [SBBMapStyler] that will control the styling of the map.
   ///
-  /// If not given, the [SBBRokasMapStyler] `full` will be used. This styler will
-  /// try to read the [JOURNEY_MAPS_TILES_API_KEY], for legacy reasons the
-  /// [JOURNEY_MAPS_API_KEY] from the environment variables.
+  /// ignore: deprecated_member_use_from_same_package
+  /// If not given, the deprecated [SBBRokasMapStyler] `full` will be used. Its
+  /// styles are no longer served after 31.12.2026, so pass a [SBBMapsMapStyler]
+  /// instead. The default changes in the next major version.
+  ///
+  /// Either styler will try to read the [JOURNEY_MAPS_TILES_API_KEY], for legacy
+  /// reasons the [JOURNEY_MAPS_API_KEY] from the environment variables.
   /// If both are not set, an [APIKeyMissing] exception will be thrown during Runtime.
   ///
   /// The style switcher button will only be shown if the given [SBBMapStyler] has more
-  /// than one style. Use the [SBBRokasMapStyler.noAerial] to hide the style switcher
-  /// when using the default ROKAS styles.
+  /// than one style. Use [SBBMapsMapStyler.noAerial] to hide the style switcher.
   final SBBMapStyler? mapStyler;
 
   /// Callback method for when the map is created.
@@ -186,8 +189,8 @@ class SBBMap extends StatefulWidget {
 
   /// Allows setting the POI configuration of the map.
   ///
-  /// POIs will only work if the map style supports them.
-  /// The [SBBRokasMapStyler] supports POIs.
+  /// POIs will only work if the map style supports them
+  /// (e.g. [SBBMapsMapStyler]).
   ///
   /// If not given, the default properties of [SBBMapPOISettings] are used.
   /// This will hide POIs and not watch the POI feature layer.
@@ -237,6 +240,7 @@ class _SBBMapState extends State<SBBMap> {
   final Completer<SBBMapAnnotatorImpl> _mapAnnotator = Completer();
   SBBMapAnnotatorImpl? _annotator;
 
+  // ignore: deprecated_member_use_from_same_package
   SBBMapStyler get _mapStyler => widget.mapStyler ?? (_internalMapStyler ??= SBBRokasMapStyler.full());
 
   @override

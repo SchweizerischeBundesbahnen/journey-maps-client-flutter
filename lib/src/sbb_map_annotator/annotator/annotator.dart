@@ -4,7 +4,7 @@ import 'package:sbb_maps_flutter/sbb_maps_flutter.dart';
 
 /// Annotate the [SBBMap] with [SBBMapAnnotation].
 ///
-/// Be aware that the usage of [SBBRokasIcon] is restricted to being used while using a [SBBRokasMapStyler] style.
+/// Be aware that the usage of [SBBRokasIcon] is restricted to being used while using a [SBBMapsMapStyler] style.
 ///
 /// The annotations are added to different layers and are automatically re-added
 /// if the style of the [SBBMap] changes.<br>Note that some annotations may not be available in a different style

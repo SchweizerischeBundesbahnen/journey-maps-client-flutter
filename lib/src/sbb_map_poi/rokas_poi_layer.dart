@@ -1,6 +1,4 @@
-import 'package:sbb_maps_flutter/sbb_maps_flutter.dart';
-
-/// The POI layers defined in the [SBBRokasMapStyler] styles.
+/// The POI layers defined in the SBB map styles.
 ///
 /// * [baseWithFloor] are circles / rounded squares icons shown in the 'background' on the map.
 ///   They are dependent on the currently selected floor.

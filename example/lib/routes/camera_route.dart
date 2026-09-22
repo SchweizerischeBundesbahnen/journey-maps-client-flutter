@@ -27,7 +27,7 @@ class _CameraRouteState extends State<CameraRoute> {
 
   @override
   Widget build(BuildContext context) {
-    final mapStyler = SBBRokasMapStyler.full(
+    final mapStyler = SBBMapsMapStyler.full(
       apiKey: Env.journeyMapsTilesApiKey,
       isDarkMode: Provider.of<ThemeProvider>(context).isDark,
     );

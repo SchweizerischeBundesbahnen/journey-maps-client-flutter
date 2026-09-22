@@ -97,7 +97,7 @@ class _DisplayAnnotationsRouteState extends State<DisplayAnnotationsRoute> {
     _addIconToAnnotator(_kRokasId, 'assets/custom_icons/rokasLogo.png');
     _addIconToAnnotator(_kAbaId, 'assets/custom_icons/appBakeryLogo.png');
     _loadAnnotationsFrom(properties);
-    _styler = SBBRokasMapStyler.full(apiKey: Env.journeyMapsTilesApiKey);
+    _styler = SBBMapsMapStyler.full(apiKey: Env.journeyMapsTilesApiKey);
     super.initState();
   }
 
