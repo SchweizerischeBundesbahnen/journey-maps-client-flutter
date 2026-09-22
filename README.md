@@ -281,7 +281,7 @@ final intStyler = SBBMapsMapStyler.full(
     apiKey: Env.MY_INT_API_KEY_NAME, useIntegrationData = true);
 ```
 
-Using INT data will log to console as an info.
+Using INT data will log to console.
 
 ### Gallery and Examples
 
