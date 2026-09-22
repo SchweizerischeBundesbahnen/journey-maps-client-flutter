@@ -1,5 +1,3 @@
-
-
 /// The POI layers defined in the SBB map styles.
 ///
 /// * [baseWithFloor] are circles / rounded squares icons shown in the 'background' on the map.
