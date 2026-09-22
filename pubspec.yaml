@@ -22,21 +22,6 @@ flutter:
     - family: SBBIconsSmall
       fonts:
         - asset: packages/sbb_maps_flutter/fonts/font-sbb-icons-small.ttf
-    - family: SBBWeb
-      fonts:
-        - asset: packages/sbb_maps_flutter/fonts/SBBWeb-Bold.ttf
-          weight: 700
-        - asset: packages/sbb_maps_flutter/fonts/SBBWeb-Roman.ttf
-          weight: 400
-        - asset: packages/sbb_maps_flutter/fonts/SBBWeb-Italic.ttf
-          weight: 400
-          style: italic
-        - asset: packages/sbb_maps_flutter/fonts/SBBWeb-Light.ttf
-          weight: 300
-        - asset: packages/sbb_maps_flutter/fonts/SBBWeb-Thin.ttf
-          weight: 200
-        - asset: packages/sbb_maps_flutter/fonts/SBBWeb-Ultra-Light.ttf
-          weight: 100
 
 dependencies:
   flutter:

@@ -1,8 +1,6 @@
 // coverage:ignore-file
 import 'package:flutter/material.dart';
 
-const String sbbWebFont = 'packages/design_system_flutter/SBBWeb';
-
 class SBBMapTextStyles {
   SBBMapTextStyles._();
 
@@ -19,7 +17,6 @@ class SBBMapTextStyles {
     height: 32.0 / 30.0,
     fontStyle: .normal,
     fontWeight: .w300,
-    fontFamily: sbbWebFont,
   );
 
   static const TextStyle largeLight = TextStyle(
@@ -27,7 +24,6 @@ class SBBMapTextStyles {
     height: largeFontHeight,
     fontStyle: .normal,
     fontWeight: .w300,
-    fontFamily: sbbWebFont,
   );
 
   static const TextStyle largeBold = TextStyle(
@@ -35,7 +31,6 @@ class SBBMapTextStyles {
     height: largeFontHeight,
     fontStyle: .normal,
     fontWeight: .w700,
-    fontFamily: sbbWebFont,
   );
 
   static const TextStyle mediumLight = TextStyle(
@@ -43,7 +38,6 @@ class SBBMapTextStyles {
     height: mediumFontHeight,
     fontStyle: .normal,
     fontWeight: .w300,
-    fontFamily: sbbWebFont,
   );
 
   static const TextStyle mediumBold = TextStyle(
@@ -51,7 +45,6 @@ class SBBMapTextStyles {
     height: mediumFontHeight,
     fontStyle: .normal,
     fontWeight: .w700,
-    fontFamily: sbbWebFont,
   );
 
   static const TextStyle smallLight = TextStyle(
@@ -59,7 +52,6 @@ class SBBMapTextStyles {
     height: smallFontHeight,
     fontStyle: .normal,
     fontWeight: .w300,
-    fontFamily: sbbWebFont,
   );
 
   static const TextStyle smallBold = TextStyle(
@@ -67,7 +59,6 @@ class SBBMapTextStyles {
     height: smallFontHeight,
     fontStyle: .normal,
     fontWeight: .w700,
-    fontFamily: sbbWebFont,
   );
 
   static const TextStyle extraSmallLight = TextStyle(
@@ -75,7 +66,6 @@ class SBBMapTextStyles {
     height: 16.0 / 12.0,
     fontStyle: .normal,
     fontWeight: .w300,
-    fontFamily: sbbWebFont,
   );
 
   static const TextStyle helpersLabel = TextStyle(
@@ -83,6 +73,5 @@ class SBBMapTextStyles {
     height: 12.0 / 10.0,
     fontStyle: .normal,
     fontWeight: .w300,
-    fontFamily: sbbWebFont,
   );
 }
