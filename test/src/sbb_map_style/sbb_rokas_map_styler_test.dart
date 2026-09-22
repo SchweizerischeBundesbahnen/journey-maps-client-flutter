@@ -6,6 +6,7 @@ void main() {
   group('Unit Test SBBRokasMapStyler', () {
     test('whenFull_shouldReturnCustomMapStylerWithAllStyleIds', () {
       // act
+      // ignore: deprecated_member_use_from_same_package
       final actual = SBBRokasMapStyler.full(apiKey: 'key');
 
       // expect
@@ -16,6 +17,7 @@ void main() {
 
     test('whenFull_shouldReturnInBrightMode', () {
       // act
+      // ignore: deprecated_member_use_from_same_package
       final actual = SBBRokasMapStyler.full(apiKey: 'key');
 
       // expect
@@ -30,6 +32,7 @@ void main() {
           '/styles/journey_maps_bright_v1/style.json?api_key=key';
 
       // act
+      // ignore: deprecated_member_use_from_same_package
       final actual = SBBRokasMapStyler.full(apiKey: 'key');
 
       // expect
@@ -39,6 +42,7 @@ void main() {
 
     test('whenNoAerial_shouldNotHaveAerial', () {
       // act
+      // ignore: deprecated_member_use_from_same_package
       final actual = SBBRokasMapStyler.noAerial(apiKey: 'key');
 
       // expect
@@ -48,6 +52,7 @@ void main() {
 
     test('whenNoApiKey_shouldThrowApiKeyMissingException', () {
       // act + expect
+      // ignore: deprecated_member_use_from_same_package
       expect(() => SBBRokasMapStyler.full(), throwsA(const TypeMatcher<ApiKeyMissing>()));
     });
 
@@ -58,6 +63,7 @@ void main() {
           '/styles/journey_maps_bright_v1/style.json?api_key=key';
 
       // act
+      // ignore: deprecated_member_use_from_same_package
       final actual = SBBRokasMapStyler.full(apiKey: 'key', useIntegrationData: true);
 
       // expect

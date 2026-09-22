@@ -6,8 +6,7 @@ import '../../../sbb_maps_flutter.dart';
 /// embedded in the [SBBRokasPoiLayer] layers of the SBB map styles.
 ///
 /// Using this class will only work when the according [SBBMap] is used with a
-/// style carrying those layers. Both [SBBMapsMapStyler] and the deprecated
-/// [SBBRokasMapStyler] do.
+/// style carrying those layers (e.g. [SBBMapsMapStyler]).
 ///
 /// There are two types of ROKAS Points Of Interest in varying layers, see [SBBRokasPoiLayer]:
 /// 1. Base points of interest (small rounded squares / circles icons)

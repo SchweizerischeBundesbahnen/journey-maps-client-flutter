@@ -54,6 +54,7 @@ class SBBMap extends StatefulWidget {
 
   /// The [SBBMapStyler] that will control the styling of the map.
   ///
+  /// ignore: deprecated_member_use_from_same_package
   /// If not given, the deprecated [SBBRokasMapStyler] `full` will be used. Its
   /// styles are no longer served after 31.12.2026, so pass a [SBBMapsMapStyler]
   /// instead. The default changes in the next major version.
@@ -188,8 +189,8 @@ class SBBMap extends StatefulWidget {
 
   /// Allows setting the POI configuration of the map.
   ///
-  /// POIs will only work if the map style supports them.
-  /// Both [SBBMapsMapStyler] and [SBBRokasMapStyler] support POIs.
+  /// POIs will only work if the map style supports them
+  /// (e.g. [SBBMapsMapStyler]).
   ///
   /// If not given, the default properties of [SBBMapPOISettings] are used.
   /// This will hide POIs and not watch the POI feature layer.
@@ -239,6 +240,7 @@ class _SBBMapState extends State<SBBMap> {
   final Completer<SBBMapAnnotatorImpl> _mapAnnotator = Completer();
   SBBMapAnnotatorImpl? _annotator;
 
+  // ignore: deprecated_member_use_from_same_package
   SBBMapStyler get _mapStyler => widget.mapStyler ?? (_internalMapStyler ??= SBBRokasMapStyler.full());
 
   @override
