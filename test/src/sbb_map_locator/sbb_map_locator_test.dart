@@ -1,12 +1,12 @@
 import 'dart:ui';
 
+import 'package:flutter_test/flutter_test.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sbb_maps_flutter/src/sbb_map_locator/permission_handler_facade.dart';
 import 'package:sbb_maps_flutter/src/sbb_map_locator/sbb_map_locator_impl.dart';
-import 'package:test/test.dart';
 
 import '../../util/mock_callback_function.dart';
 @GenerateNiceMocks([MockSpec<MapLibreMapController>(), MockSpec<PermissionHandlerFacade>()])

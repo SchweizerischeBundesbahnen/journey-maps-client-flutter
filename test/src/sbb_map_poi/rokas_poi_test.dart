@@ -1,5 +1,5 @@
+import 'package:flutter_test/flutter_test.dart';
 import 'package:sbb_maps_flutter/src/sbb_map_poi/sbb_map_poi.dart';
-import 'package:test/test.dart';
 import 'sbb_rokas_poi_controller.fixture.dart';
 
 void main() {

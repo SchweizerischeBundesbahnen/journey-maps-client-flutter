@@ -1,7 +1,7 @@
 import 'dart:math';
 
+import 'package:flutter_test/flutter_test.dart';
 import 'package:sbb_maps_flutter/src/utils/random_string.dart';
-import 'package:test/test.dart';
 
 void main() {
   group('Unit Test Random String', () {

@@ -1,12 +1,11 @@
-import 'dart:async';
 import 'dart:math';
 
+import 'package:flutter_test/flutter_test.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:sbb_maps_flutter/sbb_maps_flutter.dart';
 import 'package:sbb_maps_flutter/src/sbb_map_poi/controller/sbb_rokas_poi_controller_impl.dart';
-import 'package:test/test.dart';
 
 import '../../util/mock_callback_function.dart';
 import 'sbb_rokas_poi_controller.fixture.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:sbb_maps_flutter/sbb_maps_flutter.dart';
-import 'package:test/test.dart';
 
 import 'sbb_map_annotation_fixture.dart';
 
