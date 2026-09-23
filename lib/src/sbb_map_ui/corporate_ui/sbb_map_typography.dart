@@ -68,6 +68,13 @@ class SBBMapTextStyles {
     fontWeight: .w300,
   );
 
+  static const TextStyle extraSmallBold = TextStyle(
+    fontSize: 12.0,
+    height: 16.0 / 12.0,
+    fontStyle: .normal,
+    fontWeight: .w700,
+  );
+
   static const TextStyle helpersLabel = TextStyle(
     fontSize: 10.0,
     height: 12.0 / 10.0,

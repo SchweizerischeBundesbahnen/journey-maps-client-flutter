@@ -29,6 +29,9 @@ API key for style and routing usage (see details below).
     - [Documentation](#documentation)
         - [Features](#features)
         - [Custom Map Properties](#custom-map-properties)
+        - [Floor Switcher](#floor-switcher)
+            - [Floor labels](#floor-labels)
+            - [Theming](#theming)
         - [Gallery and Examples](#gallery-and-examples)
             - [Standard Map](#standard-map)
             - [Plain Map](#plain-map)
@@ -261,6 +264,61 @@ const properties = SBBMapProperties
       this.dragEnabled = true,
     });
 ```
+
+#### Floor Switcher
+
+At a station with indoor data the map offers a floor switcher. Two variants exist, chosen
+with the `floorSwitcherOrientation` parameter of `SBBMap`:
+
+* `SBBMapFloorSwitcherOrientation.vertical` — a column of floor tiles, always expanded.
+  The default throughout 2.x.
+* `SBBMapFloorSwitcherOrientation.horizontal` — a collapsible pill. Collapsed it is a
+  single circular control showing the current floor, or a floors icon when none is
+  selected; tapping it expands the floors leftwards with a close icon where the circle
+  was. Picking a floor switches to it and collapses again; picking the floor that is
+  already current deselects it. Becomes the default in 3.0.0.
+
+Both cross with `smallControls` to give the compact 32 px size, and both are also
+available as widgets for a custom `SBBMap.builder`: `SBBMapVerticalFloorSwitcher`,
+`SBBMapVerticalFloorSwitcherSmall`, `SBBMapHorizontalFloorSwitcher` and
+`SBBMapHorizontalFloorSwitcherSmall`.
+
+```dart
+SBBMap(
+  mapStyler: mapStyler,
+  floorSwitcherOrientation: SBBMapFloorSwitcherOrientation.horizontal,
+);
+```
+
+##### Floor labels
+
+Floors are labelled with their integer by default. This package ships no localization and
+holds no opinion about floor naming, so pass a `floorLabelBuilder` to a floor switcher
+widget to label them yourself — including negative floors:
+
+```dart
+SBBMapHorizontalFloorSwitcher(
+  floorLabelBuilder: (floor) => switch (floor) {
+    0 => 'EG',
+    < 0 => 'UG${-floor}',
+    _ => '$floor',
+  },
+);
+```
+
+Both variants take the builder the same way, so changing orientation costs no
+localization work.
+
+##### Theming
+
+Both variants read the same `SBBMapFloorSwitcherStyle` theme extension, so a floor
+switcher you have already themed is themed in either orientation. Its `iconColor` token
+colors the affordance glyphs — the floors icon and the close icon — independently of the
+floor labels; left unset they take `textColor`.
+
+> The widget names were `SBBMapFloorSelector`, `SBBMapFloorSelectorSmall` and
+> `SBBMapFloorSelectorStyle` up to 2.8.2. Those names still work as deprecated aliases and
+> are removed in 3.0.0; the migration is a mechanical rename.
 
 #### Accessing INT Tiles & POIs
 

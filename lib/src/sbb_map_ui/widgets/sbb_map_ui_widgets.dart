@@ -1,6 +1,10 @@
 // coverage:ignore-file
-export 'sbb_map_floor_selector/sbb_map_floor_selector.dart';
-export 'sbb_map_floor_selector/sbb_map_floor_selector_small.dart';
+export 'sbb_map_floor_switcher/sbb_map_floor_label_builder.dart';
+export 'sbb_map_floor_switcher/sbb_map_floor_switcher_orientation.dart';
+export 'sbb_map_floor_switcher/sbb_map_horizontal_floor_switcher.dart';
+export 'sbb_map_floor_switcher/sbb_map_horizontal_floor_switcher_small.dart';
+export 'sbb_map_floor_switcher/sbb_map_vertical_floor_switcher.dart';
+export 'sbb_map_floor_switcher/sbb_map_vertical_floor_switcher_small.dart';
 export 'sbb_map_style_switcher.dart';
 export 'sbb_map_style_switcher_small.dart';
 export 'sbb_map_my_location_button.dart';

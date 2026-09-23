@@ -2,18 +2,20 @@
 import 'package:flutter/material.dart';
 import 'package:sbb_maps_flutter/src/sbb_map_ui/corporate_ui/sbb_map_branding.dart';
 import 'package:sbb_maps_flutter/src/sbb_map_ui/styles/styles.dart';
+import 'package:sbb_maps_flutter/src/sbb_map_ui/widgets/sbb_map_floor_switcher/sbb_map_floor_label_builder.dart';
 
-const _kFloorSelectorTileSize = Size(36, 36);
-const _kFloorSelectorWidth = 44.0;
+const _kFloorSwitcherTileSize = Size(36, 36);
+const _kFloorSwitcherWidth = 44.0;
 const _kElevation = 4.0;
 const _kSelectedInnerContainerRadius = 8.0;
 const _kSelectedInnerContainerPadding = EdgeInsets.all(6);
 const _kAnimationDuration = Duration(milliseconds: 300);
 
-class SBBMapFloorSelectorTile extends StatelessWidget {
-  const SBBMapFloorSelectorTile({
+class SBBMapVerticalFloorSwitcherTile extends StatelessWidget {
+  const SBBMapVerticalFloorSwitcherTile({
     super.key,
     required this.floor,
+    required this.floorLabelBuilder,
     required this.onPressed,
     this.isSelected = false,
     this.isLast = false,
@@ -22,19 +24,20 @@ class SBBMapFloorSelectorTile extends StatelessWidget {
   });
 
   final int floor;
+  final SBBMapFloorLabelBuilder floorLabelBuilder;
   final void Function() onPressed;
   final bool isSelected;
   final bool isLast;
   final bool isFirst;
-  final SBBMapFloorSelectorStyle? style;
+  final SBBMapFloorSwitcherStyle? style;
 
   @override
   Widget build(BuildContext context) {
-    SBBMapFloorSelectorStyle resolvedStyle = _resolveStyleWithInherited(context);
+    SBBMapFloorSwitcherStyle resolvedStyle = _resolveStyleWithInherited(context);
 
     return Material(
       elevation: _kElevation,
-      borderRadius: _determineFirstOrLastBorder(diameter: _kFloorSelectorWidth, defaultRadius: Radius.zero),
+      borderRadius: _determineFirstOrLastBorder(diameter: _kFloorSwitcherWidth, defaultRadius: Radius.zero),
       shadowColor: resolvedStyle.shadowColor,
       color: resolvedStyle.backgroundColor,
       child: InkResponse(
@@ -46,18 +49,18 @@ class SBBMapFloorSelectorTile extends StatelessWidget {
           padding: _kSelectedInnerContainerPadding,
           child: AnimatedContainer(
             duration: _kAnimationDuration,
-            height: _kFloorSelectorTileSize.height,
-            width: _kFloorSelectorTileSize.width,
+            height: _kFloorSwitcherTileSize.height,
+            width: _kFloorSwitcherTileSize.width,
             decoration: BoxDecoration(
               borderRadius: _determineFirstOrLastBorder(
-                diameter: _kFloorSelectorTileSize.width,
+                diameter: _kFloorSwitcherTileSize.width,
                 defaultRadius: const Radius.circular(_kSelectedInnerContainerRadius),
               ),
               color: isSelected ? resolvedStyle.selectedBackgroundColor : resolvedStyle.backgroundColor,
             ),
             child: Center(
               child: Text(
-                floor.toString(),
+                floorLabelBuilder(floor),
                 style: SBBMapTextStyles.mediumLight.copyWith(
                   color: isSelected ? resolvedStyle.selectedTextColor : resolvedStyle.textColor,
                 ),
@@ -80,8 +83,8 @@ class SBBMapFloorSelectorTile extends StatelessWidget {
     }
   }
 
-  SBBMapFloorSelectorStyle _resolveStyleWithInherited(BuildContext context) {
-    final inheritedStyle = Theme.of(context).extension<SBBMapFloorSelectorStyle>()!;
+  SBBMapFloorSwitcherStyle _resolveStyleWithInherited(BuildContext context) {
+    final inheritedStyle = Theme.of(context).extension<SBBMapFloorSwitcherStyle>()!;
     return inheritedStyle.merge(style);
   }
 }

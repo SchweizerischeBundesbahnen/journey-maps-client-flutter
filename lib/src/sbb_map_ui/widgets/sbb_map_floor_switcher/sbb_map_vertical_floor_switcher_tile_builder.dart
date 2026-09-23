@@ -2,12 +2,14 @@
 import 'package:flutter/material.dart';
 import 'package:sbb_maps_flutter/src/sbb_map_ui/sbb_map_ui_container/sbb_map_ui_container.dart';
 import 'package:sbb_maps_flutter/src/sbb_map_ui/styles/styles.dart';
-import 'package:sbb_maps_flutter/src/sbb_map_ui/widgets/sbb_map_floor_selector/sbb_map_floor_selector_tile.dart';
+import 'package:sbb_maps_flutter/src/sbb_map_ui/widgets/sbb_map_floor_switcher/sbb_map_floor_label_builder.dart';
+import 'package:sbb_maps_flutter/src/sbb_map_ui/widgets/sbb_map_floor_switcher/sbb_map_vertical_floor_switcher_tile.dart';
 
-class FloorSelectorTilesBuilder extends StatelessWidget {
-  const FloorSelectorTilesBuilder({super.key, this.style});
+class VerticalFloorSwitcherTilesBuilder extends StatelessWidget {
+  const VerticalFloorSwitcherTilesBuilder({super.key, required this.floorLabelBuilder, this.style});
 
-  final SBBMapFloorSelectorStyle? style;
+  final SBBMapFloorLabelBuilder floorLabelBuilder;
+  final SBBMapFloorSwitcherStyle? style;
 
   @override
   Widget build(BuildContext context) {
@@ -19,8 +21,9 @@ class FloorSelectorTilesBuilder extends StatelessWidget {
       final tileFloor = mapFloorController.availableFloors[i];
       if (i > 0) tiles.add(const Divider());
       tiles.add(
-        SBBMapFloorSelectorTile(
+        SBBMapVerticalFloorSwitcherTile(
           floor: tileFloor,
+          floorLabelBuilder: floorLabelBuilder,
           onPressed: () => _toggleSelectedFloor(
             tileFloor,
             mapFloorController.currentFloor,
