@@ -10,14 +10,20 @@ class SBBMapDefaultUI extends StatelessWidget {
     super.key,
     required this.locationEnabled,
     required this.isFloorSwitchingEnabled,
+    this.floorSwitcherOrientation = SBBMapFloorSwitcherOrientation.vertical,
     this.smallControls = false,
   });
 
   final bool locationEnabled;
   final bool isFloorSwitchingEnabled;
 
+  /// Which of the two floor switchers to render.
+  final SBBMapFloorSwitcherOrientation floorSwitcherOrientation;
+
   /// When `true`, renders the compact 32 × 32 px variants of each control.
   final bool smallControls;
+
+  bool get _isHorizontal => floorSwitcherOrientation == SBBMapFloorSwitcherOrientation.horizontal;
 
   @override
   Widget build(BuildContext context) {
@@ -25,22 +31,36 @@ class SBBMapDefaultUI extends StatelessWidget {
 
     final bool showStyleSwitcher = uiContainer.mapStyler.getStyleIds().length > 1;
     final bool showStyleSwitcherAndMyLocation = showStyleSwitcher && locationEnabled;
-    final bool showFloorSelector = isFloorSwitchingEnabled && uiContainer.mapFloorController.availableFloors.isNotEmpty;
+    final bool showFloorSwitcher = isFloorSwitchingEnabled && uiContainer.mapFloorController.availableFloors.isNotEmpty;
 
     return Align(
       alignment: Alignment.topRight,
       child: Padding(
         padding: _kActionButtonPadding,
         child: Column(
+          crossAxisAlignment: .end,
           children: [
             if (showStyleSwitcher) smallControls ? const SBBMapStyleSwitcherSmall() : const SBBMapStyleSwitcher(),
             if (showStyleSwitcherAndMyLocation) const SizedBox(height: 12.0),
             if (locationEnabled) smallControls ? const SBBMapMyLocationButtonSmall() : const SBBMapMyLocationButton(),
-            if (showFloorSelector) smallControls ? const SizedBox(height: 36.0) : const SizedBox(height: 54.0),
-            if (showFloorSelector) smallControls ? const SBBMapFloorSelectorSmall() : const SBBMapFloorSelector(),
+            if (showFloorSwitcher) SizedBox(height: _heightDependingOnLayout()),
+            if (showFloorSwitcher) _floorSwitcher(),
           ],
         ),
       ),
     );
   }
+
+  double _heightDependingOnLayout() {
+    if (smallControls) return _isHorizontal ? 12.0 : 36.0;
+
+    return _isHorizontal ? 16.0 : 54.0;
+  }
+
+  Widget _floorSwitcher() => switch ((floorSwitcherOrientation, smallControls)) {
+    (.vertical, false) => const SBBMapVerticalFloorSwitcher(),
+    (.vertical, true) => const SBBMapVerticalFloorSwitcherSmall(),
+    (.horizontal, false) => const SBBMapHorizontalFloorSwitcher(),
+    (.horizontal, true) => const SBBMapHorizontalFloorSwitcherSmall(),
+  };
 }
