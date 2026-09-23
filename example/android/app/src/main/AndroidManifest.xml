@@ -8,7 +8,7 @@
 
 
     <application
-        android:label="SBB Karten Flutter"
+        android:label="Maps Flutter"
         android:name="${applicationName}"
         android:icon="@mipmap/trye"
         android:roundIcon="@mipmap/round_icon"

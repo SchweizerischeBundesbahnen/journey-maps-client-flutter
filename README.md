@@ -210,7 +210,7 @@ All versions are tested with the latest (3.47.x) and oldest supported (3.38.1) F
 
 <p align="left"><img src="https://raw.githubusercontent.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/main/example/gallery/app_icon/icon.webp" alt="Icon of the example app" width="5%"></p>
 
-The **SBB Karten Flutter** demo application is available both in the SBB Enterprise Playstore (Android) and
+The **Maps Flutter** demo application is available both in the SBB Enterprise Playstore (Android) and
 in the managed iOS SBB Store (Ivanti
 MobileIron).
 
