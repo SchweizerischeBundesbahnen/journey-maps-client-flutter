@@ -186,7 +186,7 @@ class SBBMap extends StatefulWidget {
   /// Within this builder's [BuildContext], the following SBBMap UI Controls
   /// can be used and will work
   /// * [SBBMapMyLocationButton].
-  /// * [SBBMapVerticalFloorSwitcher].
+  /// * [SBBMapVerticalFloorSwitcher] and [SBBMapHorizontalFloorSwitcher].
   /// * [SBBMapStyleSwitcher].
   ///
   /// If null, the above mentioned UI controls are built with
