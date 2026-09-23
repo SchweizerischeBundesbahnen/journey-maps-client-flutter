@@ -1,0 +1,214 @@
+// coverage:ignore-file
+import 'package:flutter/material.dart';
+import 'package:sbb_maps_flutter/src/sbb_map_ui/corporate_ui/sbb_map_branding.dart';
+import 'package:sbb_maps_flutter/src/sbb_map_ui/sbb_map_ui_container/sbb_map_ui_container.dart';
+import 'package:sbb_maps_flutter/src/sbb_map_ui/styles/styles.dart';
+import 'package:sbb_maps_flutter/src/sbb_map_ui/widgets/sbb_map_floor_switcher/sbb_map_floor_label_builder.dart';
+
+/// The fixed width of the small floor switcher (32 logical pixels).
+const double _kSmallFloorSwitcherWidth = 32.0;
+const Size _kSmallTileSize = Size(24, 24);
+const double _kElevation = 4.0;
+const double _kSelectedInnerContainerRadius = 6.0;
+const EdgeInsets _kSelectedInnerContainerPadding = EdgeInsets.all(4);
+const _kAnimationDuration = Duration(milliseconds: 300);
+
+/// A smaller (32 px wide) tile used inside [SBBMapVerticalFloorSwitcherSmall].
+class _SBBMapVerticalFloorSwitcherTileSmall extends StatelessWidget {
+  const _SBBMapVerticalFloorSwitcherTileSmall({
+    required this.floor,
+    required this.floorLabelBuilder,
+    required this.onPressed,
+    this.isSelected = false,
+    this.isLast = false,
+    this.isFirst = false,
+    this.style,
+  });
+
+  final int floor;
+  final SBBMapFloorLabelBuilder floorLabelBuilder;
+  final void Function() onPressed;
+  final bool isSelected;
+  final bool isLast;
+  final bool isFirst;
+  final SBBMapFloorSwitcherStyle? style;
+
+  @override
+  Widget build(BuildContext context) {
+    final resolvedStyle = _resolveStyleWithInherited(context);
+
+    return Material(
+      elevation: _kElevation,
+      borderRadius: _determineFirstOrLastBorder(
+        diameter: _kSmallFloorSwitcherWidth,
+        defaultRadius: Radius.zero,
+      ),
+      shadowColor: resolvedStyle.shadowColor,
+      color: resolvedStyle.backgroundColor,
+      child: InkResponse(
+        containedInkWell: true,
+        highlightColor: resolvedStyle.pressedColor,
+        splashColor: resolvedStyle.pressedColor,
+        onTap: onPressed,
+        child: Padding(
+          padding: _kSelectedInnerContainerPadding,
+          child: AnimatedContainer(
+            duration: _kAnimationDuration,
+            height: _kSmallTileSize.height,
+            width: _kSmallTileSize.width,
+            decoration: BoxDecoration(
+              borderRadius: _determineFirstOrLastBorder(
+                diameter: _kSmallTileSize.width,
+                defaultRadius: const Radius.circular(_kSelectedInnerContainerRadius),
+              ),
+              color: isSelected ? resolvedStyle.selectedBackgroundColor : resolvedStyle.backgroundColor,
+            ),
+            child: Center(
+              child: Text(
+                floorLabelBuilder(floor),
+                style: SBBMapTextStyles.extraSmallLight.copyWith(
+                  color: isSelected ? resolvedStyle.selectedTextColor : resolvedStyle.textColor,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  BorderRadius _determineFirstOrLastBorder({
+    required double diameter,
+    required Radius defaultRadius,
+  }) {
+    if (isFirst) {
+      return BorderRadius.vertical(
+        top: Radius.circular(diameter / 2),
+        bottom: defaultRadius,
+      );
+    } else if (isLast) {
+      return BorderRadius.vertical(
+        top: defaultRadius,
+        bottom: Radius.circular(diameter / 2),
+      );
+    } else {
+      return BorderRadius.all(defaultRadius);
+    }
+  }
+
+  SBBMapFloorSwitcherStyle _resolveStyleWithInherited(BuildContext context) {
+    final inheritedStyle = Theme.of(context).extension<SBBMapFloorSwitcherStyle>()!;
+    return inheritedStyle.merge(style);
+  }
+}
+
+/// Thin divider between tiles in the small floor switcher.
+class _SmallDivider extends StatelessWidget {
+  const _SmallDivider();
+
+  @override
+  Widget build(BuildContext context) {
+    final isDarkMode = SBBMapUiContainer.of(context).mapStyler.isDarkMode;
+    return Container(
+      constraints: const BoxConstraints(maxWidth: _kSmallFloorSwitcherWidth),
+      height: 1.0,
+      color: isDarkMode ? SBBMapColors.metal : SBBMapColors.cement,
+    );
+  }
+}
+
+/// Builds the column of [_SBBMapVerticalFloorSwitcherTileSmall] widgets.
+class _SmallVerticalFloorSwitcherTilesBuilder extends StatelessWidget {
+  const _SmallVerticalFloorSwitcherTilesBuilder({required this.floorLabelBuilder, this.style});
+
+  final SBBMapFloorLabelBuilder floorLabelBuilder;
+  final SBBMapFloorSwitcherStyle? style;
+
+  @override
+  Widget build(BuildContext context) {
+    final mapFloorController = SBBMapUiContainer.of(context).mapFloorController;
+
+    final tiles = <Widget>[];
+    for (var i = 0; i < mapFloorController.availableFloors.length; i++) {
+      final tileFloor = mapFloorController.availableFloors[i];
+      if (i > 0) tiles.add(const _SmallDivider());
+      tiles.add(
+        _SBBMapVerticalFloorSwitcherTileSmall(
+          floor: tileFloor,
+          floorLabelBuilder: floorLabelBuilder,
+          onPressed: () => _toggleSelectedFloor(
+            tileFloor,
+            mapFloorController.currentFloor,
+            mapFloorController.switchFloor,
+          ),
+          isSelected: mapFloorController.currentFloor == tileFloor,
+          isFirst: i == 0 && mapFloorController.availableFloors.length > 1,
+          isLast: i == mapFloorController.availableFloors.length - 1 && mapFloorController.availableFloors.length > 1,
+          style: style,
+        ),
+      );
+    }
+    return Column(mainAxisSize: .min, children: tiles);
+  }
+
+  void _toggleSelectedFloor(
+    int tileFloor,
+    int? selectedFloor,
+    Future<void> Function(int?) onFloorSelected,
+  ) {
+    onFloorSelected(selectedFloor == tileFloor ? null : tileFloor);
+  }
+}
+
+/// A smaller (32 px wide) variant of [SBBMapVerticalFloorSwitcher].
+///
+/// Only works inside the [BuildContext] of [SBBMap.builder].
+///
+/// The maximum width of this widget is constrained to 32 logical pixels.
+class SBBMapVerticalFloorSwitcherSmall extends StatelessWidget {
+  const SBBMapVerticalFloorSwitcherSmall({super.key, this.floorLabelBuilder, this.style});
+
+  /// Maps a floor to the label shown for it.
+  ///
+  /// Defaults to [defaultFloorLabel], the floor's integer string form.
+  final SBBMapFloorLabelBuilder? floorLabelBuilder;
+
+  final SBBMapFloorSwitcherStyle? style;
+
+  @override
+  Widget build(BuildContext context) {
+    final floorController = SBBMapUiContainer.of(context).mapFloorController;
+    final resolvedStyle = _resolveStyleWithInherited(context);
+
+    return ListenableBuilder(
+      listenable: floorController,
+      builder: (context, child) => floorController.availableFloors.isEmpty
+          ? const SizedBox.shrink()
+          : SizedBox(
+              width: _kSmallFloorSwitcherWidth,
+              child: DecoratedBox(
+                decoration: ShapeDecoration(
+                  shape: StadiumBorder(
+                    side: resolvedStyle.borderSide ?? BorderSide.none,
+                  ),
+                ),
+                position: .foreground,
+                child: _SmallVerticalFloorSwitcherTilesBuilder(
+                  floorLabelBuilder: floorLabelBuilder ?? defaultFloorLabel,
+                  style: resolvedStyle,
+                ),
+              ),
+            ),
+    );
+  }
+
+  SBBMapFloorSwitcherStyle _resolveStyleWithInherited(BuildContext context) {
+    final inheritedStyle = Theme.of(context).extension<SBBMapFloorSwitcherStyle>()!;
+    return inheritedStyle.merge(style);
+  }
+}
+
+@Deprecated(
+  'Use SBBMapVerticalFloorSwitcherSmall instead. Deprecated after 2.8.2. Will be removed in 3.0.0.',
+)
+typedef SBBMapFloorSelectorSmall = SBBMapVerticalFloorSwitcherSmall;
