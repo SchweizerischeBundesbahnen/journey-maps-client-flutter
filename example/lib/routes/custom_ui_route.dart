@@ -46,7 +46,7 @@ class _CustomUiRouteState extends State<CustomUiRoute> {
                   ),
                   Padding(
                     padding: EdgeInsets.only(right: SBBSpacing.medium, bottom: SBBSpacing.xLarge),
-                    child: SBBMapFloorSelectorSmall(),
+                    child: SBBMapVerticalFloorSwitcherSmall(),
                   ),
                 ],
               ),

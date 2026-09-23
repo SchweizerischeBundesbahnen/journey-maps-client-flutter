@@ -46,6 +46,7 @@ class _FeaturesRouteState extends State<FeaturesRoute> {
                       _FeatureRoute(title: 'Map Properties', routeName: '/map_properties'),
                       _FeatureRoute(title: 'Integration Data', routeName: '/integration_data'),
                       _FeatureRoute(title: 'Custom UI', routeName: '/custom_ui'),
+                      _FeatureRoute(title: 'Floor Switcher', routeName: '/floor_switcher'),
                       _FeatureRoute(title: 'POI', routeName: '/poi'),
                       _FeatureRoute(title: 'Routing', routeName: '/routing'),
                     ],

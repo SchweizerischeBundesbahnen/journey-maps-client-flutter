@@ -6,6 +6,7 @@ import 'routes/camera_route.dart';
 import 'routes/custom_ui_route.dart';
 import 'routes/display_annotations_route.dart';
 import 'routes/features_route.dart';
+import 'routes/floor_switcher_route.dart';
 import 'routes/map_properties_route.dart';
 import 'routes/plain_map_route.dart';
 import 'routes/poi_route.dart';
@@ -54,6 +55,7 @@ class _MainAppState extends State<MainApp> {
             '/camera': (context) => const CameraRoute(),
             '/standard': (context) => const StandardMapRoute(),
             '/custom_ui': (context) => const CustomUiRoute(),
+            '/floor_switcher': (context) => const FloorSwitcherRoute(),
             '/poi': (context) => const POIRoute(),
             '/routing': (context) => const RoutingRoute(),
             '/map_properties': (context) => const MapPropertiesRoute(),
