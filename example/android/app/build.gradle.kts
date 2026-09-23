@@ -1,10 +1,8 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.io.FileInputStream
 import java.util.Properties
 
 plugins {
     id("com.android.application")
-    id("kotlin-android")
     id("dev.flutter.flutter-gradle-plugin")
     id("com.github.triplet.play")
     id("maven-publish")
@@ -57,12 +55,6 @@ android {
     }
 }
 
-kotlin {
-    compilerOptions {
-        jvmTarget = JvmTarget.JVM_21
-    }
-}
-
 play {
     serviceAccountCredentials.set(file("keys/google_playstore_service_account.json"))
     track.set("alpha")
@@ -72,18 +64,11 @@ play {
 
 publishing {
     publications {
-        android.applicationVariants.all {
-            this.outputs.forEach { output ->
-                val publicationName = output.outputFile.name.replace(".apk", "")
-                create<MavenPublication>(publicationName) {
-                    val path =
-                        "${project.layout.buildDirectory.get().asFile.absolutePath}/outputs/bundle/release/${publicationName}.aab"
-                    artifact(File(path))
-                    groupId = "ch.sbb.rokas.flutter"
-                    artifactId = "ch.sbb.maps.flutter.example"
-                    version = flutter.versionName
-                }
-            }
+        create<MavenPublication>("app-release") {
+            artifact(layout.buildDirectory.file("outputs/bundle/release/app-release.aab"))
+            groupId = "ch.sbb.rokas.flutter"
+            artifactId = "ch.sbb.maps.flutter.example"
+            version = flutter.versionName
         }
     }
     repositories {
