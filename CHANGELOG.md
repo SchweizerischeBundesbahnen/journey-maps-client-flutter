@@ -1,5 +1,23 @@
 # Changelog
 
+## [2.9.0](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/compare/2.8.2...2.9.0) (2026-09-23)
+
+
+### Features
+
+* add `SBBMapFloorLabelBuilder` for localized floor labels (e.g. 'UG' / 'EG') ([#268](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/268)) ([b9e399e](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/b9e399e6c8cbdb5ab279a7491c1b8951d8769330))
+* add `SBBMapFloorSwitcherOrientation` for determining orientation in default UI ([#268](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/268)) ([b9e399e](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/b9e399e6c8cbdb5ab279a7491c1b8951d8769330))
+* add horizontal floor switcher `SBBMapHorizontalFloorSwitcher` ([#268](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/268)) ([b9e399e](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/b9e399e6c8cbdb5ab279a7491c1b8951d8769330))
+* add small variant of horizontal floor switcher ([#268](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/268)) ([b9e399e](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/b9e399e6c8cbdb5ab279a7491c1b8951d8769330))
+* add support for shortbread SBBMaps styles by adding `SBBMapsMapStyler` ([#258](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/258)) ([#260](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/260)) ([d4d97b5](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/d4d97b586ebf4f7249a79fe21e9625aab395263b))
+* deprecate `SBBMapFloorSelector` in favor of `SBBMapVerticalFloorSwitcher` ([#268](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/268)) ([b9e399e](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/b9e399e6c8cbdb5ab279a7491c1b8951d8769330))
+
+
+### Bug Fixes
+
+* drop support for Flutter 3.38.x ([#266](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/266)) ([2171908](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/217190841983c6340f50b1242e7f5a8c2dc1815f))
+* remove unused SBBWeb fonts ([#267](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/267)) ([caefb96](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/caefb96a3a7880a06086e21b955fb5fa7e22f7d0))
+
 ## [2.8.2](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/compare/2.8.1...2.8.2) (2026-09-18)
 
 
