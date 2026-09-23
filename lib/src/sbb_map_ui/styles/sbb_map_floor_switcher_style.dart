@@ -1,0 +1,118 @@
+import 'package:flutter/material.dart';
+import 'package:sbb_maps_flutter/src/sbb_map_ui/corporate_ui/sbb_map_branding.dart';
+import 'package:sbb_maps_flutter/src/sbb_map_ui/styles/sbb_map_base_style.dart';
+
+/// A style for both floor switchers, [SBBMapVerticalFloorSwitcher] and
+/// [SBBMapHorizontalFloorSwitcher], in either size.
+class SBBMapFloorSwitcherStyle extends ThemeExtension<SBBMapFloorSwitcherStyle> {
+  SBBMapFloorSwitcherStyle({
+    this.selectedBackgroundColor,
+    this.borderSide,
+    this.backgroundColor,
+    this.shadowColor,
+    this.textColor,
+    this.selectedTextColor,
+    this.iconColor,
+    this.pressedColor,
+  });
+
+  factory SBBMapFloorSwitcherStyle.$default({required SBBMapBaseStyle baseStyle}) {
+    return SBBMapFloorSwitcherStyle(
+      selectedBackgroundColor: baseStyle.themeValue(SBBMapColors.charcoal, SBBMapColors.graphite),
+      borderSide: baseStyle.themeValue(BorderSide.none, const BorderSide(color: SBBMapColors.metal)),
+      backgroundColor: baseStyle.themeValue(SBBMapColors.white, SBBMapColors.black),
+      shadowColor: SBBMapColors.cement,
+      textColor: baseStyle.themeValue(SBBMapColors.black, SBBMapColors.white),
+      selectedTextColor: baseStyle.themeValue(SBBMapColors.white, SBBMapColors.black),
+      pressedColor: SBBMapColors.transparent,
+    );
+  }
+
+  /// The background color of the selected floor.
+  final Color? selectedBackgroundColor;
+
+  /// The border side of the floor switcher.
+  final BorderSide? borderSide;
+
+  /// The background color of the floor switcher.
+  final Color? backgroundColor;
+
+  /// The shadow color of the floor switcher.
+  final Color? shadowColor;
+
+  /// The text color of the floor switcher.
+  final Color? textColor;
+
+  /// The text color of the selected floor.
+  final Color? selectedTextColor;
+
+  /// The color of the affordance glyphs — the floors icon and the close
+  /// icon of [SBBMapHorizontalFloorSwitcher].
+  ///
+  /// Left unset the glyphs take [textColor], so the glyphs can be made quieter
+  /// than the floor labels without touching them, and a theme that only sets
+  /// [textColor] still colors them.
+  final Color? iconColor;
+
+  /// The color of the floor switcher when pressed.
+  ///
+  /// This color corresponds to the color of the ink splash and highlight effect.
+  final Color? pressedColor;
+
+  @override
+  SBBMapFloorSwitcherStyle copyWith({
+    Color? selectedBackgroundColor,
+    BorderSide? borderSide,
+    Color? backgroundColor,
+    Color? shadowColor,
+    Color? textColor,
+    Color? selectedTextColor,
+    Color? iconColor,
+    Color? pressedColor,
+  }) {
+    return SBBMapFloorSwitcherStyle(
+      selectedBackgroundColor: selectedBackgroundColor ?? this.selectedBackgroundColor,
+      borderSide: borderSide ?? this.borderSide,
+      backgroundColor: backgroundColor ?? this.backgroundColor,
+      shadowColor: shadowColor ?? this.shadowColor,
+      textColor: textColor ?? this.textColor,
+      selectedTextColor: selectedTextColor ?? this.selectedTextColor,
+      iconColor: iconColor ?? this.iconColor,
+      pressedColor: pressedColor ?? this.pressedColor,
+    );
+  }
+
+  SBBMapFloorSwitcherStyle merge(SBBMapFloorSwitcherStyle? other) {
+    if (other == null) return this;
+    return copyWith(
+      selectedBackgroundColor: other.selectedBackgroundColor,
+      borderSide: other.borderSide,
+      backgroundColor: other.backgroundColor,
+      shadowColor: other.shadowColor,
+      textColor: other.textColor,
+      selectedTextColor: other.selectedTextColor,
+      iconColor: other.iconColor,
+      pressedColor: other.pressedColor,
+    );
+  }
+
+  @override
+  ThemeExtension<SBBMapFloorSwitcherStyle> lerp(SBBMapFloorSwitcherStyle? other, double t) {
+    if (other == null) return this;
+    return copyWith(
+      selectedBackgroundColor: Color.lerp(selectedBackgroundColor, other.selectedBackgroundColor, t),
+      borderSide: BorderSide.lerp(borderSide ?? BorderSide.none, other.borderSide ?? BorderSide.none, t),
+      backgroundColor: Color.lerp(backgroundColor, other.backgroundColor, t),
+      shadowColor: Color.lerp(shadowColor, other.shadowColor, t),
+      textColor: Color.lerp(textColor, other.textColor, t),
+      selectedTextColor: Color.lerp(selectedTextColor, other.selectedTextColor, t),
+      iconColor: Color.lerp(iconColor, other.iconColor, t),
+      pressedColor: Color.lerp(pressedColor, other.pressedColor, t),
+    );
+  }
+}
+
+@Deprecated(
+  'Use SBBMapFloorSwitcherStyle instead. Deprecated after 2.8.2. Will be removed in 3.0.0.',
+)
+typedef SBBMapFloorSelectorStyle = SBBMapFloorSwitcherStyle;
