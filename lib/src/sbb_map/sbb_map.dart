@@ -35,6 +35,7 @@ class SBBMap extends StatefulWidget {
     this.isMyLocationEnabled = false,
     this.onMapLocatorAvailable,
     this.isFloorSwitchingEnabled = true,
+    this.floorSwitcherOrientation = SBBMapFloorSwitcherOrientation.vertical,
     this.onFloorControllerAvailable,
     this.onRoutingControllerAvailable,
     this.builder,
@@ -112,9 +113,25 @@ class SBBMap extends StatefulWidget {
   /// Whether the default floor switching behavior should be exposed.
   ///
   /// If true, the floor controller will be available via the [onFloorControllerAvailable]
-  /// to programmatically switch floors. In the default UI, the [SBBMapFloorSelector]
-  /// will be shown.
+  /// to programmatically switch floors. In the default UI, the floor switcher
+  /// named by [floorSwitcherOrientation] will be shown.
   final bool isFloorSwitchingEnabled;
+
+  /// Which floor switcher the default UI renders.
+  ///
+  /// [SBBMapFloorSwitcherOrientation.vertical] is the always-expanded column
+  /// of floor tiles; [SBBMapFloorSwitcherOrientation.horizontal] is the
+  /// collapsible pill, which stays out of the way of the map until a traveller
+  /// needs it.
+  ///
+  /// Crosses with [smallControls] to give four combinations.
+  ///
+  /// This has no effect when a custom [SBBMap.builder] is provided, because
+  /// the builder takes full control of the UI layout.
+  ///
+  /// Defaults to [SBBMapFloorSwitcherOrientation.vertical]; the default
+  /// changes to [SBBMapFloorSwitcherOrientation.horizontal] in 3.0.0.
+  final SBBMapFloorSwitcherOrientation floorSwitcherOrientation;
 
   /// Callback for once the floor controller is available.
   ///
@@ -169,8 +186,8 @@ class SBBMap extends StatefulWidget {
   /// Within this builder's [BuildContext], the following SBBMap UI Controls
   /// can be used and will work
   /// * [SBBMapMyLocationButton].
-  /// * [SBBMapFloorSwitcher].
-  /// * [SBBMapStyleSwitcherButton].
+  /// * [SBBMapVerticalFloorSwitcher].
+  /// * [SBBMapStyleSwitcher].
   ///
   /// If null, the above mentioned UI controls are built with
   /// [Alignment.topRight] and the SBB design specification spacings.
@@ -212,8 +229,9 @@ class SBBMap extends StatefulWidget {
   ///
   /// * [SBBMapStyleSwitcherSmall] instead of [SBBMapStyleSwitcher]
   /// * [SBBMapMyLocationButtonSmall] instead of [SBBMapMyLocationButton]
-  /// * [SBBMapFloorSelectorSmall] instead of [SBBMapFloorSelector] — the
-  ///   floor selector is also constrained to a maximum width of 32 px.
+  /// * the compact variant of whichever floor switcher
+  ///   [floorSwitcherOrientation] names — 32 px wide when vertical, 32 px high
+  ///   when horizontal.
   ///
   /// This has no effect when a custom [SBBMap.builder] is provided, because
   /// the builder takes full control of the UI layout.
@@ -384,6 +402,7 @@ class _SBBMapState extends State<SBBMap> {
             (context) => SBBMapDefaultUI(
               locationEnabled: widget.isMyLocationEnabled,
               isFloorSwitchingEnabled: widget.isFloorSwitchingEnabled,
+              floorSwitcherOrientation: widget.floorSwitcherOrientation,
               smallControls: widget.smallControls,
             ),
       ),

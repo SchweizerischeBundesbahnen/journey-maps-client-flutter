@@ -7,7 +7,7 @@ import 'package:sbb_maps_flutter/src/sbb_map_ui/styles/styles.dart';
 /// These are:
 ///
 /// - [SBBMapIconButtonStyle]
-/// - [SBBMapFloorSelectorStyle]
+/// - [SBBMapFloorSwitcherStyle]
 ///
 class SBBMapStyleContainer extends StatelessWidget {
   const SBBMapStyleContainer({super.key, required this.child});
@@ -26,7 +26,7 @@ class SBBMapStyleContainer extends StatelessWidget {
     return theme.copyWith(
       extensions: parentExtensions
         ..add(SBBMapIconButtonStyle.$default(baseStyle: baseStyle))
-        ..add(SBBMapFloorSelectorStyle.$default(baseStyle: baseStyle)),
+        ..add(SBBMapFloorSwitcherStyle.$default(baseStyle: baseStyle)),
     );
   }
 }

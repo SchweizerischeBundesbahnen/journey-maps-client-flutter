@@ -5,7 +5,7 @@ import 'package:sbb_maps_flutter/sbb_maps_flutter.dart';
 /// The [SBBMapUiContainer] is an [InheritedWidget] that provides the
 /// [SBBMapStyler], [SBBMapLocator] and [SBBMapFloorController] to the
 /// * [SBBMapMyLocationButton]
-/// * [SBBMapFloorSelector]
+/// * [SBBMapVerticalFloorSwitcher]
 /// * [SBBMapStyleSwitcher]
 ///
 /// and all other widgets that are used in the [SBBMap.uiControlsBuilder] method.
