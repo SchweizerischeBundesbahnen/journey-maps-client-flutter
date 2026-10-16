@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.9.1](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/compare/2.9.0...2.9.1) (2026-10-16)
+
+
+### Bug Fixes
+
+* onMapLongClick null guard fixed ([#282](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/282)) ([61b4325](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/61b4325afcf859cc8feddcbeb029eb5e83fd5aa8))
+
 ## [2.9.0](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/compare/2.8.2...2.9.0) (2026-09-23)
 
 
