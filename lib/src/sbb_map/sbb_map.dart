@@ -350,7 +350,7 @@ class _SBBMapState extends State<SBBMap> {
             }
           },
           onMapLongClick: (point, coordinates) {
-            if (_isStyleLoaded && widget.onMapClick != null) {
+            if (_isStyleLoaded && widget.onMapLongClick != null) {
               widget.onMapLongClick!.call(point, coordinates);
             }
           },
