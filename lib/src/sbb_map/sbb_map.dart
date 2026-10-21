@@ -1,26 +1,14 @@
 // coverage:ignore-file
 
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:maplibre_gl/maplibre_gl.dart';
+import 'package:maplibre_gl/maplibre_gl.dart' hide MapCreatedCallback;
 import 'package:sbb_maps_flutter/sbb_maps_flutter.dart';
-import 'package:sbb_maps_flutter/src/sbb_map_annotator/annotator/annotator_impl.dart';
-import 'package:sbb_maps_flutter/src/sbb_map_controller/sbb_map_controller_impl.dart';
-import 'package:sbb_maps_flutter/src/sbb_map_floor_controller/sbb_map_floor_controller_impl.dart';
-import 'package:sbb_maps_flutter/src/sbb_map_locator/permission_handler_facade.dart';
-import 'package:sbb_maps_flutter/src/sbb_map_locator/sbb_map_locator_impl.dart';
-import 'package:sbb_maps_flutter/src/sbb_map_poi/controller/sbb_rokas_poi_controller_impl.dart';
-import 'package:sbb_maps_flutter/src/sbb_map_routing/controller/sbb_routing_controller_impl.dart';
+import 'package:sbb_maps_flutter/src/sbb_map/sbb_map_session.dart';
 import 'package:sbb_maps_flutter/src/sbb_map_ui/sbb_map_default_ui/sbb_map_default_ui.dart';
 import 'package:sbb_maps_flutter/src/sbb_map_ui/sbb_map_ui_container/sbb_map_ui_container.dart';
 import 'package:sbb_maps_flutter/src/sbb_map_ui/styles/sbb_map_style_container.dart';
 
-typedef MapCreatedCallback = void Function(SBBMapController controller);
-typedef OnMapLocatorAvailable = void Function(SBBMapLocator locator);
-typedef OnMapAnnotatorAvailable = void Function(SBBMapAnnotator annotator);
-typedef OnFloorControllerAvailable = void Function(SBBMapFloorController floorController);
-typedef OnRoutingControllerAvailable = void Function(SBBRoutingController routingController);
+export 'sbb_map_callbacks.dart';
 
 class SBBMap extends StatefulWidget {
   const SBBMap({
@@ -244,91 +232,25 @@ class SBBMap extends StatefulWidget {
 }
 
 class _SBBMapState extends State<SBBMap> {
-  SBBMapStyler? _internalMapStyler;
-
-  bool _isFirstTimeStyleLoaded = true;
-  bool _isFirstTimeStyleLoadingComplete = false;
-  bool _isStyleLoaded = false;
-  final Completer<SBBMapController> _controller = Completer<SBBMapController>();
-  final Completer<MapLibreMapController> _mlController = Completer<MapLibreMapController>();
-  late SBBMapFloorControllerImpl _floorController;
-  late SBBRoutingControllerImpl _routingController;
-  late SBBMapLocatorImpl _mapLocator;
-  late SBBRokasPOIControllerImpl _poiController;
-  final Completer<SBBMapAnnotatorImpl> _mapAnnotator = Completer();
-  SBBMapAnnotatorImpl? _annotator;
-
-  // ignore: deprecated_member_use_from_same_package
-  SBBMapStyler get _mapStyler => widget.mapStyler ?? (_internalMapStyler ??= SBBRokasMapStyler.full());
+  late final SBBMapSession _session;
 
   @override
   void initState() {
     super.initState();
-    _mapStyler.addListener(_reactToStyleChange);
-
-    _mapLocator = SBBMapLocatorImpl(_mlController.future, PermissionHandlerFacade());
-    _mapLocator.addListener(_setState);
-
-    _floorController = SBBMapFloorControllerImpl(_mlController.future);
-    _floorController.addListener(_setState);
-
-    _routingController = SBBRoutingControllerImpl(
-      annotator: _mapAnnotator.future,
-      controller: _mlController.future,
-      floorController: _floorController,
-    );
-    _routingController.addListener(_setState);
-
-    _poiController = SBBRokasPOIControllerImpl(
-      controller: _mlController.future,
-      onPoiSelected: widget.poiSettings.onPoiSelected,
-      onPoiDeselected: widget.poiSettings.onPoiDeselected,
-      isDarkMode: () => _mapStyler.isDarkMode,
-    );
-  }
-
-  void _reactToStyleChange() {
-    _mlController.future.then((c) {
-      c.setStyle(_mapStyler.currentStyleURI);
-      setState(() => _isStyleLoaded = false);
-    });
+    _session = SBBMapSession(config: _sessionConfig());
+    _session.addListener(_setState);
   }
 
   @override
   void didUpdateWidget(covariant SBBMap oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (identical(oldWidget.mapStyler, widget.mapStyler)) return;
-
-    final previousStyler = oldWidget.mapStyler ?? _internalMapStyler!;
-    final previousStyleURI = previousStyler.currentStyleURI;
-    previousStyler.removeListener(_reactToStyleChange);
-
-    if (widget.mapStyler != null && _internalMapStyler != null) {
-      _internalMapStyler!.dispose();
-      _internalMapStyler = null;
-    }
-
-    final currentStyler = _mapStyler;
-    currentStyler.addListener(_reactToStyleChange);
-
-    if (previousStyleURI != currentStyler.currentStyleURI) {
-      _mlController.future.then((c) => c.setStyle(currentStyler.currentStyleURI));
-    }
+    _session.update(_sessionConfig());
   }
 
   @override
   void dispose() {
-    _mapLocator.removeListener(_setState);
-    _floorController.removeListener(_setState);
-    _routingController.removeListener(_setState);
-
-    _mapStyler.removeListener(_reactToStyleChange);
-    _internalMapStyler?.dispose();
-    _annotator?.dispose();
-    _mapLocator.dispose();
-    _routingController.dispose();
-    _floorController.dispose();
-    _poiController.dispose();
+    _session.removeListener(_setState);
+    _session.dispose();
     super.dispose();
   }
 
@@ -339,30 +261,15 @@ class _SBBMapState extends State<SBBMap> {
         MapLibreMap(
           initialCameraPosition:
               widget.initialCameraPosition?.toMaplibre() ?? SBBCameraPosition.highLevelCH.toMaplibre(),
-          onMapCreated: _onMapCreated,
-          onStyleLoadedCallback: _onStyleLoadedCallback,
-          onMapClick: (point, coordinates) {
-            if (_isStyleLoaded && widget.poiSettings.onPoiSelected != null) {
-              _poiController.toggleSelectedPointOfInterest(point);
-            }
-            if (_isStyleLoaded && widget.onMapClick != null) {
-              widget.onMapClick!.call(point, coordinates);
-            }
-          },
-          onMapLongClick: (point, coordinates) {
-            if (_isStyleLoaded && widget.onMapLongClick != null) {
-              widget.onMapLongClick!.call(point, coordinates);
-            }
-          },
-          myLocationEnabled: _mapLocator.isLocationEnabled,
-          onUserLocationUpdated: (location) => _mapLocator.updateDeviceLocation(location.position),
+          onMapCreated: _session.onMapCreated,
+          onStyleLoadedCallback: _session.onStyleLoaded,
+          onMapClick: _session.onMapClick,
+          onMapLongClick: _session.onMapLongClick,
+          myLocationEnabled: _session.isLocationEnabled,
+          onUserLocationUpdated: _session.onUserLocationUpdated,
           trackCameraPosition: widget.trackCameraPosition,
-          onCameraTrackingDismissed: () {
-            if (_isStyleLoaded) _mapLocator.dismissTracking();
-          },
-          onCameraIdle: () {
-            if (_isStyleLoaded) _floorController.updateAvailableFloors();
-          },
+          onCameraTrackingDismissed: _session.onCameraTrackingDismissed,
+          onCameraIdle: _session.onCameraIdle,
           compassEnabled: widget.properties.compassEnabled,
           compassViewMargins: widget.properties.compassViewMargins,
           compassViewPosition: widget.properties.compassViewPosition,
@@ -377,25 +284,27 @@ class _SBBMapState extends State<SBBMap> {
     );
   }
 
-  void _onMapCreated(MapLibreMapController controller) async {
-    SBBMapController sbbMapController = SBBMapControllerImpl(
-      maplibreMapController: controller,
-      mapLocator: _mapLocator,
-    );
-
-    _mlController.complete(controller);
-    _controller.complete(sbbMapController);
-
-    if (widget.onMapCreated != null) {
-      widget.onMapCreated!(sbbMapController);
-    }
-  }
+  SBBMapSessionConfig _sessionConfig() => SBBMapSessionConfig(
+    mapStyler: widget.mapStyler,
+    initialCameraPosition: widget.initialCameraPosition,
+    isMyLocationEnabled: widget.isMyLocationEnabled,
+    isFloorSwitchingEnabled: widget.isFloorSwitchingEnabled,
+    poiSettings: widget.poiSettings,
+    onMapCreated: widget.onMapCreated,
+    onStyleLoaded: widget.onStyleLoaded,
+    onMapClick: widget.onMapClick,
+    onMapLongClick: widget.onMapLongClick,
+    onMapLocatorAvailable: widget.onMapLocatorAvailable,
+    onFloorControllerAvailable: widget.onFloorControllerAvailable,
+    onRoutingControllerAvailable: widget.onRoutingControllerAvailable,
+    onMapAnnotatorAvailable: widget.onMapAnnotatorAvailable,
+  );
 
   SBBMapStyleContainer _sbbMapUserControls() => SBBMapStyleContainer(
     child: SBBMapUiContainer(
-      mapStyler: _mapStyler,
-      mapLocator: _mapLocator,
-      mapFloorController: _floorController,
+      mapStyler: _session.mapStyler,
+      mapLocator: _session.mapLocator,
+      mapFloorController: _session.floorController,
       child: Builder(
         builder:
             widget.builder ??
@@ -408,78 +317,6 @@ class _SBBMapState extends State<SBBMap> {
       ),
     ),
   );
-
-  void _onStyleLoadedCallback() async {
-    if (!_isFirstTimeStyleLoadingComplete) {
-      _mlController.future.then(
-        (c) => c.setStyle(_mapStyler.currentStyleURI).then((_) {
-          setState(() {
-            _isFirstTimeStyleLoadingComplete = true;
-          });
-        }),
-      );
-      return;
-    }
-
-    setState(() {
-      _isStyleLoaded = true;
-    });
-
-    if (widget.initialCameraPosition == null && _isFirstTimeStyleLoaded) {
-      await _delayedMoveToCHBounds();
-    }
-
-    if (widget.isMyLocationEnabled && _isFirstTimeStyleLoaded) {
-      if (widget.onMapLocatorAvailable != null) {
-        widget.onMapLocatorAvailable!(_mapLocator);
-      }
-    }
-    if (widget.isFloorSwitchingEnabled && widget.onFloorControllerAvailable != null && _isFirstTimeStyleLoaded) {
-      widget.onFloorControllerAvailable!(_floorController);
-    }
-
-    _poiController.synchronizeWithNewStyle();
-    if (widget.poiSettings.onPoiControllerAvailable != null && _isFirstTimeStyleLoaded) {
-      widget.poiSettings.onPoiControllerAvailable!(_poiController);
-    }
-
-    _completeAnnotatorIfNecessary();
-    if (widget.onMapAnnotatorAvailable != null) {
-      _mapAnnotator.future.then((a) => a.onStyleChanged());
-      if (_isFirstTimeStyleLoaded) {
-        widget.onMapAnnotatorAvailable!(await _mapAnnotator.future);
-      }
-    }
-
-    if (widget.onRoutingControllerAvailable != null && _isFirstTimeStyleLoaded) {
-      widget.onRoutingControllerAvailable!(_routingController);
-    }
-
-    if (widget.onStyleLoaded != null) {
-      widget.onStyleLoaded!();
-    }
-    _isFirstTimeStyleLoaded = false;
-  }
-
-  Future<void> _delayedMoveToCHBounds() => _controller.future.then(
-    (c) => c.animateCameraMove(cameraUpdate: _getSwitzerlandLatLngBounds(), duration: Durations.short1),
-  );
-
-  SBBCameraUpdate _getSwitzerlandLatLngBounds() => SBBCameraUpdate.newLatLngBounds(
-    LatLngBounds(
-      southwest: const LatLng(45.7769477403, 5.93960949059),
-      northeast: const LatLng(47.8308275417, 10.6427014502),
-    ),
-  );
-
-  void _completeAnnotatorIfNecessary() {
-    if (!_mapAnnotator.isCompleted) {
-      _mlController.future.then((c) {
-        if (!mounted) return;
-        _mapAnnotator.complete(_annotator = SBBMapAnnotatorImpl(controller: c));
-      });
-    }
-  }
 
   void _setState() => setState(() {});
 }
