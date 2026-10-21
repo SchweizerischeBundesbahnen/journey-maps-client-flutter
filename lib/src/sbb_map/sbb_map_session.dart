@@ -3,16 +3,24 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:maplibre_gl/maplibre_gl.dart' hide MapCreatedCallback;
-import 'package:sbb_maps_flutter/sbb_maps_flutter.dart';
+import 'package:sbb_maps_flutter/src/sbb_camera/sbb_camera_position.dart';
+import 'package:sbb_maps_flutter/src/sbb_camera/sbb_camera_update.dart';
+import 'package:sbb_maps_flutter/src/sbb_map/sbb_map_callbacks.dart';
 import 'package:sbb_maps_flutter/src/sbb_map_annotator/annotator/annotator_impl.dart';
+import 'package:sbb_maps_flutter/src/sbb_map_controller/sbb_map_controller.dart';
 import 'package:sbb_maps_flutter/src/sbb_map_controller/sbb_map_controller_impl.dart';
+import 'package:sbb_maps_flutter/src/sbb_map_floor_controller/sbb_map_floor_controller.dart';
 import 'package:sbb_maps_flutter/src/sbb_map_floor_controller/sbb_map_floor_controller_impl.dart';
 import 'package:sbb_maps_flutter/src/sbb_map_locator/permission_handler_facade.dart';
+import 'package:sbb_maps_flutter/src/sbb_map_locator/sbb_map_locator.dart';
 import 'package:sbb_maps_flutter/src/sbb_map_locator/sbb_map_locator_impl.dart';
 import 'package:sbb_maps_flutter/src/sbb_map_poi/controller/sbb_rokas_poi_controller_impl.dart';
+import 'package:sbb_maps_flutter/src/sbb_map_poi/sbb_map_poi_settings.dart';
 import 'package:sbb_maps_flutter/src/sbb_map_routing/controller/sbb_routing_controller_impl.dart';
+import 'package:sbb_maps_flutter/src/sbb_map_style/sbb_map_styler.dart';
+import 'package:sbb_maps_flutter/src/sbb_map_style/sbb_rokas_map_styler.dart';
 
-/// The part of an [SBBMap]'s configuration that the [SBBMapSession] acts on.
+/// The part of an `SBBMap`'s configuration that the [SBBMapSession] acts on.
 @immutable
 class SBBMapSessionConfig {
   const SBBMapSessionConfig({
@@ -48,12 +56,20 @@ class SBBMapSessionConfig {
 
 enum _Lifecycle { awaitingMap, reloading, ready, disposed }
 
-/// The Map Session of one [SBBMap]: from map created to disposed, across every
+/// The Map Session of one `SBBMap`: from map created to disposed, across every
 /// style load in between.
 ///
 /// Owns the controllers, receives the map events and decides what happens on
 /// each one. Every event method returns a future that completes once the
-/// session has finished handling that event.
+/// session has finished handling that event, except for work it starts without
+/// waiting for, as the widget did before:
+///
+/// * on a style load, the annotator's re-sync with the new style
+///   ([SBBMapAnnotatorImpl.onStyleChanged]) and the annotator's creation on the
+///   first load, unless the app asked for the annotator;
+/// * on a styler notification, the new style being set on the map.
+///
+/// Once disposed, the session ignores every event.
 ///
 /// Notifies its listeners whenever the map or its UI controls need to rebuild.
 class SBBMapSession with ChangeNotifier {
@@ -77,17 +93,17 @@ class SBBMapSession with ChangeNotifier {
        _createDefaultMapStyler = createDefaultMapStyler ?? SBBRokasMapStyler.full {
     mapStyler.addListener(_reactToStyleChange);
 
-    _mapLocator = mapLocator ?? SBBMapLocatorImpl(_mlController.future, PermissionHandlerFacade());
+    _mapLocator = mapLocator ?? SBBMapLocatorImpl(_mapLibreController.future, PermissionHandlerFacade());
     _mapLocator.addListener(notifyListeners);
 
-    _floorController = floorController ?? SBBMapFloorControllerImpl(_mlController.future);
+    _floorController = floorController ?? SBBMapFloorControllerImpl(_mapLibreController.future);
     _floorController.addListener(notifyListeners);
 
     _routingController =
         routingController ??
         SBBRoutingControllerImpl(
           annotator: _mapAnnotator.future,
-          controller: _mlController.future,
+          controller: _mapLibreController.future,
           floorController: _floorController,
         );
     _routingController.addListener(notifyListeners);
@@ -95,12 +111,14 @@ class SBBMapSession with ChangeNotifier {
     _poiController =
         poiController ??
         SBBRokasPOIControllerImpl(
-          controller: _mlController.future,
+          controller: _mapLibreController.future,
           onPoiSelected: config.poiSettings.onPoiSelected,
           onPoiDeselected: config.poiSettings.onPoiDeselected,
           isDarkMode: () => mapStyler.isDarkMode,
         );
   }
+
+  static const Duration _moveToSwitzerlandDuration = Duration(milliseconds: 50);
 
   static final SBBCameraUpdate _switzerlandBounds = SBBCameraUpdate.newLatLngBounds(
     LatLngBounds(
@@ -117,8 +135,8 @@ class SBBMapSession with ChangeNotifier {
   _Lifecycle _lifecycle = _Lifecycle.awaitingMap;
   bool _isFirstStyleLoad = true;
 
-  final Completer<MapLibreMapController> _mlController = Completer<MapLibreMapController>();
-  final Completer<SBBMapController> _controller = Completer<SBBMapController>();
+  final Completer<MapLibreMapController> _mapLibreController = Completer<MapLibreMapController>();
+  final Completer<SBBMapController> _sbbMapController = Completer<SBBMapController>();
   final Completer<SBBMapAnnotatorImpl> _mapAnnotator = Completer<SBBMapAnnotatorImpl>();
   SBBMapAnnotatorImpl? _annotator;
   late final SBBMapLocatorImpl _mapLocator;
@@ -129,8 +147,10 @@ class SBBMapSession with ChangeNotifier {
   /// The styler given in the config, or a default one owned by this session.
   SBBMapStyler get mapStyler => _config.mapStyler ?? (_defaultMapStyler ??= _createDefaultMapStyler());
 
+  /// The locator of the device position and the "My Location" tracking.
   SBBMapLocator get mapLocator => _mapLocator;
 
+  /// The controller of the floor shown on the map.
   SBBMapFloorController get floorController => _floorController;
 
   /// Whether the "My Location" layer is currently enabled on the map.
@@ -138,9 +158,10 @@ class SBBMapSession with ChangeNotifier {
 
   bool get _isDisposed => _lifecycle == _Lifecycle.disposed;
 
+  /// False once disposed, so input events are ignored then too.
   bool get _acceptsInput => _lifecycle == _Lifecycle.ready;
 
-  /// Replaces the configuration, e.g. when the [SBBMap] widget is rebuilt.
+  /// Replaces the configuration, e.g. when the `SBBMap` widget is rebuilt.
   ///
   /// A swapped [SBBMapStyler] is followed from now on, and its style is set on
   /// the map if it differs from the previous styler's.
@@ -162,27 +183,30 @@ class SBBMapSession with ChangeNotifier {
     currentStyler.addListener(_reactToStyleChange);
 
     if (previousStyleURI != currentStyler.currentStyleURI) {
-      final controller = await _mlController.future;
+      final controller = await _mapLibreController.future;
       await controller.setStyle(currentStyler.currentStyleURI);
     }
   }
 
+  /// Handles the map being created: hands the [SBBMapController] to the app.
   Future<void> onMapCreated(MapLibreMapController controller) async {
     if (_isDisposed) return;
     final sbbMapController = SBBMapControllerImpl(maplibreMapController: controller, mapLocator: _mapLocator);
 
-    _mlController.complete(controller);
-    _controller.complete(sbbMapController);
+    _mapLibreController.complete(controller);
+    _sbbMapController.complete(sbbMapController);
 
     _config.onMapCreated?.call(sbbMapController);
   }
 
+  /// Handles a style load: makes the map accept input, hands the controllers
+  /// to the app on the first real load, and re-syncs POIs and annotations.
   Future<void> onStyleLoaded() async {
     if (_isDisposed) return;
     if (_lifecycle == _Lifecycle.awaitingMap) {
       // First-load workaround (#185): the map first loads MapLibre's default
       // style, so the real style is set here and its load is the first one.
-      final controller = await _mlController.future;
+      final controller = await _mapLibreController.future;
       await controller.setStyle(mapStyler.currentStyleURI);
       if (_lifecycle == _Lifecycle.awaitingMap) _lifecycle = _Lifecycle.reloading;
       notifyListeners();
@@ -192,65 +216,55 @@ class SBBMapSession with ChangeNotifier {
     _lifecycle = _Lifecycle.ready;
     notifyListeners();
 
-    if (_config.initialCameraPosition == null && _isFirstStyleLoad) {
-      await _moveCameraToSwitzerland();
-    }
+    if (_isFirstStyleLoad && _config.initialCameraPosition == null) await _moveCameraToSwitzerland();
 
-    if (_config.isMyLocationEnabled && _isFirstStyleLoad) {
-      _config.onMapLocatorAvailable?.call(_mapLocator);
-    }
-    if (_config.isFloorSwitchingEnabled && _config.onFloorControllerAvailable != null && _isFirstStyleLoad) {
-      _config.onFloorControllerAvailable!(_floorController);
+    // First-load work is interleaved with every-load work in the widget's order,
+    // and the flag is re-read after each await, so it is not one block.
+    if (_isFirstStyleLoad) {
+      if (_config.isMyLocationEnabled) _config.onMapLocatorAvailable?.call(_mapLocator);
+      if (_config.isFloorSwitchingEnabled) _config.onFloorControllerAvailable?.call(_floorController);
     }
 
     _poiController.synchronizeWithNewStyle();
-    if (_config.poiSettings.onPoiControllerAvailable != null && _isFirstStyleLoad) {
-      _config.poiSettings.onPoiControllerAvailable!(_poiController);
-    }
+    if (_isFirstStyleLoad) _config.poiSettings.onPoiControllerAvailable?.call(_poiController);
 
     _completeAnnotatorIfNecessary();
-    if (_config.onMapAnnotatorAvailable != null) {
+    final onMapAnnotatorAvailable = _config.onMapAnnotatorAvailable;
+    if (onMapAnnotatorAvailable != null) {
       _mapAnnotator.future.then((a) => a.onStyleChanged());
-      if (_isFirstStyleLoad) {
-        _config.onMapAnnotatorAvailable!(await _mapAnnotator.future);
-      }
+      if (_isFirstStyleLoad) onMapAnnotatorAvailable(await _mapAnnotator.future);
     }
 
-    if (_config.onRoutingControllerAvailable != null && _isFirstStyleLoad) {
-      _config.onRoutingControllerAvailable!(_routingController);
-    }
+    if (_isFirstStyleLoad) _config.onRoutingControllerAvailable?.call(_routingController);
 
     _config.onStyleLoaded?.call();
     _isFirstStyleLoad = false;
   }
 
+  /// Handles a click: toggles POI selection and forwards it to the app.
   Future<void> onMapClick(Point<double> point, LatLng coordinates) async {
-    if (_isDisposed) return;
     if (_acceptsInput && _config.poiSettings.onPoiSelected != null) {
       _poiController.toggleSelectedPointOfInterest(point);
     }
-    if (_acceptsInput && _config.onMapClick != null) {
-      _config.onMapClick!(point, coordinates);
-    }
+    if (_acceptsInput) _config.onMapClick?.call(point, coordinates);
   }
 
+  /// Handles a long click: forwards it to the app.
   Future<void> onMapLongClick(Point<double> point, LatLng coordinates) async {
-    if (_isDisposed) return;
-    if (_acceptsInput && _config.onMapLongClick != null) {
-      _config.onMapLongClick!(point, coordinates);
-    }
+    if (_acceptsInput) _config.onMapLongClick?.call(point, coordinates);
   }
 
+  /// Handles the camera coming to rest: updates the available floors.
   Future<void> onCameraIdle() async {
-    if (_isDisposed) return;
     if (_acceptsInput) await _floorController.updateAvailableFloors();
   }
 
+  /// Handles the user panning away from the device location: stops tracking.
   Future<void> onCameraTrackingDismissed() async {
-    if (_isDisposed) return;
     if (_acceptsInput) await _mapLocator.dismissTracking();
   }
 
+  /// Handles a new device location: passes it to the [mapLocator].
   Future<void> onUserLocationUpdated(UserLocation location) async {
     if (_isDisposed) return;
     _mapLocator.updateDeviceLocation(location.position);
@@ -276,20 +290,20 @@ class SBBMapSession with ChangeNotifier {
   }
 
   void _reactToStyleChange() {
-    _mlController.future.then((c) {
+    _mapLibreController.future.then((c) {
       c.setStyle(mapStyler.currentStyleURI);
       if (_lifecycle == _Lifecycle.ready) _lifecycle = _Lifecycle.reloading;
       notifyListeners();
     });
   }
 
-  Future<void> _moveCameraToSwitzerland() => _controller.future.then(
-    (c) => c.animateCameraMove(cameraUpdate: _switzerlandBounds, duration: const Duration(milliseconds: 50)),
+  Future<void> _moveCameraToSwitzerland() => _sbbMapController.future.then(
+    (c) => c.animateCameraMove(cameraUpdate: _switzerlandBounds, duration: _moveToSwitzerlandDuration),
   );
 
   void _completeAnnotatorIfNecessary() {
     if (!_mapAnnotator.isCompleted) {
-      _mlController.future.then((c) {
+      _mapLibreController.future.then((c) {
         if (_isDisposed) return;
         _mapAnnotator.complete(_annotator = _createAnnotator(c));
       });

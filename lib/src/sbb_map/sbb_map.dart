@@ -1,18 +1,14 @@
 // coverage:ignore-file
 
 import 'package:flutter/material.dart';
-import 'package:maplibre_gl/maplibre_gl.dart';
+import 'package:maplibre_gl/maplibre_gl.dart' hide MapCreatedCallback;
 import 'package:sbb_maps_flutter/sbb_maps_flutter.dart';
 import 'package:sbb_maps_flutter/src/sbb_map/sbb_map_session.dart';
 import 'package:sbb_maps_flutter/src/sbb_map_ui/sbb_map_default_ui/sbb_map_default_ui.dart';
 import 'package:sbb_maps_flutter/src/sbb_map_ui/sbb_map_ui_container/sbb_map_ui_container.dart';
 import 'package:sbb_maps_flutter/src/sbb_map_ui/styles/sbb_map_style_container.dart';
 
-typedef MapCreatedCallback = void Function(SBBMapController controller);
-typedef OnMapLocatorAvailable = void Function(SBBMapLocator locator);
-typedef OnMapAnnotatorAvailable = void Function(SBBMapAnnotator annotator);
-typedef OnFloorControllerAvailable = void Function(SBBMapFloorController floorController);
-typedef OnRoutingControllerAvailable = void Function(SBBRoutingController routingController);
+export 'sbb_map_callbacks.dart';
 
 class SBBMap extends StatefulWidget {
   const SBBMap({
