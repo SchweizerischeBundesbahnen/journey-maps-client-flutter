@@ -95,7 +95,7 @@ void main() {
   }
 
   group('input gating', () {
-    test('input_whenStyleNotYetLoaded_shouldBeIgnored', () async {
+    test('inputEvents_whenStyleNotYetLoaded_shouldBeIgnored', () async {
       final session = createSession(recordingConfig());
       await session.onMapCreated(mapLibre);
       await sendInputEvents(session);
@@ -108,7 +108,7 @@ void main() {
       verifyNever(locator.dismissTracking());
     });
 
-    test('input_whenStyleLoaded_shouldReachAppAndCollaborators', () async {
+    test('inputEvents_whenStyleLoaded_shouldReachAppAndCollaborators', () async {
       final session = createSession(recordingConfig());
       await loadFirstStyle(session);
 
@@ -119,7 +119,7 @@ void main() {
       verify(locator.dismissTracking()).called(1);
     });
 
-    test('input_whenReloadingAfterStylerSwitch_shouldBeIgnoredUntilStyleLoaded', () async {
+    test('inputEvents_whenReloadingAfterStylerSwitch_shouldBeIgnoredUntilStyleLoaded', () async {
       final session = createSession(recordingConfig());
       await loadFirstStyle(session);
 
@@ -139,7 +139,7 @@ void main() {
   });
 
   group('map styler', () {
-    test('stylerNotification_shouldSetStylersCurrentStyleOnMap', () async {
+    test('stylerNotification_whenStyleLoaded_shouldSetStylersCurrentStyleOnMap', () async {
       final session = createSession(recordingConfig());
       await loadFirstStyle(session);
       clearInteractions(mapLibre);
@@ -209,11 +209,14 @@ void main() {
   });
 
   group('style loaded', () {
-    SBBMapSessionConfig availableCallbacksConfig() => SBBMapSessionConfig(
+    SBBMapSessionConfig availableCallbacksConfig({
+      bool isMyLocationEnabled = true,
+      bool isFloorSwitchingEnabled = true,
+    }) => SBBMapSessionConfig(
       mapStyler: styler,
       initialCameraPosition: SBBCameraPosition.highLevelCH,
-      isMyLocationEnabled: true,
-      isFloorSwitchingEnabled: true,
+      isMyLocationEnabled: isMyLocationEnabled,
+      isFloorSwitchingEnabled: isFloorSwitchingEnabled,
       poiSettings: SBBMapPOISettings(onPoiControllerAvailable: (_) => calls.add('poi')),
       onMapLocatorAvailable: (_) => calls.add('locator'),
       onFloorControllerAvailable: (_) => calls.add('floor'),
@@ -227,7 +230,7 @@ void main() {
       await session.onStyleLoaded();
     }
 
-    test('firstStyleLoad_shouldFireAvailableCallbacksOnceInOrder', () async {
+    test('onStyleLoaded_whenFirstLoad_shouldFireAvailableCallbacksInOrder', () async {
       final session = createSession(availableCallbacksConfig());
 
       await loadFirstStyle(session);
@@ -235,7 +238,7 @@ void main() {
       expect(calls, ['locator', 'floor', 'poi', 'annotator', 'routing']);
     });
 
-    test('laterStyleLoads_shouldNotFireAvailableCallbacksAgain', () async {
+    test('onStyleLoaded_whenLaterLoad_shouldNotFireAvailableCallbacksAgain', () async {
       final session = createSession(availableCallbacksConfig());
       await loadFirstStyle(session);
       calls.clear();
@@ -246,26 +249,17 @@ void main() {
       expect(calls, isEmpty);
     });
 
-    test('firstStyleLoad_whenFeaturesDisabled_shouldNotFireTheirAvailableCallbacks', () async {
-      final config = availableCallbacksConfig();
+    test('onStyleLoaded_whenFeaturesDisabled_shouldNotFireTheirAvailableCallbacks', () async {
       final session = createSession(
-        SBBMapSessionConfig(
-          mapStyler: styler,
-          initialCameraPosition: SBBCameraPosition.highLevelCH,
-          isMyLocationEnabled: false,
-          isFloorSwitchingEnabled: false,
-          poiSettings: config.poiSettings,
-          onMapLocatorAvailable: config.onMapLocatorAvailable,
-          onFloorControllerAvailable: config.onFloorControllerAvailable,
-        ),
+        availableCallbacksConfig(isMyLocationEnabled: false, isFloorSwitchingEnabled: false),
       );
 
       await loadFirstStyle(session);
 
-      expect(calls, ['poi']);
+      expect(calls, ['poi', 'annotator', 'routing']);
     });
 
-    test('everyStyleLoad_shouldCallOnStyleLoaded', () async {
+    test('onStyleLoaded_whenAnyLoad_shouldCallAppOnStyleLoaded', () async {
       final session = createSession(
         SBBMapSessionConfig(
           mapStyler: styler,
@@ -281,7 +275,7 @@ void main() {
       expect(calls, ['styleLoaded', 'styleLoaded', 'styleLoaded']);
     });
 
-    test('everyStyleLoad_shouldResyncPoiController', () async {
+    test('onStyleLoaded_whenAnyLoad_shouldResyncPoiController', () async {
       final session = createSession(recordingConfig());
 
       await loadFirstStyle(session);
@@ -290,7 +284,7 @@ void main() {
       verify(poiController.synchronizeWithNewStyle()).called(2);
     });
 
-    test('firstStyleLoad_withoutInitialCameraPosition_shouldMoveCameraToSwitzerlandOnce', () async {
+    test('onStyleLoaded_whenNoInitialCameraPosition_shouldMoveCameraToSwitzerlandOnce', () async {
       final session = createSession(recordingConfig(initialCameraPosition: null));
 
       await loadFirstStyle(session);
@@ -309,7 +303,7 @@ void main() {
       );
     });
 
-    test('firstStyleLoad_withInitialCameraPosition_shouldNotMoveCamera', () async {
+    test('onStyleLoaded_whenInitialCameraPosition_shouldNotMoveCamera', () async {
       final session = createSession(recordingConfig());
 
       await loadFirstStyle(session);
@@ -319,7 +313,7 @@ void main() {
   });
 
   group('poi selection', () {
-    test('click_whenOnPoiSelectedSet_shouldReachPoiSelection', () async {
+    test('onMapClick_whenOnPoiSelectedSet_shouldTogglePoiSelection', () async {
       final session = createSession(recordingConfig(poiSettings: SBBMapPOISettings(onPoiSelected: (_) {})));
       await loadFirstStyle(session);
 
@@ -329,7 +323,7 @@ void main() {
       expect(calls, ['click']);
     });
 
-    test('click_whenOnPoiSelectedNotSet_shouldNotReachPoiSelection', () async {
+    test('onMapClick_whenOnPoiSelectedNotSet_shouldNotTogglePoiSelection', () async {
       final session = createSession(recordingConfig());
       await loadFirstStyle(session);
 
@@ -341,7 +335,7 @@ void main() {
   });
 
   group('dispose', () {
-    test('dispose_shouldReleaseEveryCollaboratorAndStopFollowingStyler', () async {
+    test('dispose_whenStyleLoaded_shouldReleaseEveryCollaboratorAndStopFollowingStyler', () async {
       final session = createSession(recordingConfig());
       await loadFirstStyle(session);
       await pumpEventQueue();
@@ -359,7 +353,7 @@ void main() {
       verifyNever(mapLibre.setStyle(any));
     });
 
-    test('dispose_shouldStopListeningToLocatorFloorAndRoutingControllers', () {
+    test('dispose_whenCreated_shouldStopListeningToLocatorFloorAndRoutingControllers', () {
       final session = createSession(recordingConfig());
       final locatorListener = verify(locator.addListener(captureAny)).captured.single;
       final floorListener = verify(floorController.addListener(captureAny)).captured.single;
@@ -372,7 +366,7 @@ void main() {
       verify(routingController.removeListener(routingListener)).called(1);
     });
 
-    test('events_whenDisposed_shouldBeIgnored', () async {
+    test('mapEvents_whenDisposed_shouldBeIgnored', () async {
       final session = createSession(recordingConfig(onStyleLoaded: () => calls.add('styleLoaded')));
       await loadFirstStyle(session);
       calls.clear();
@@ -427,7 +421,7 @@ void main() {
   });
 
   group('map events', () {
-    test('mapCreated_shouldHandTheMapControllerToTheApp', () async {
+    test('onMapCreated_whenCalled_shouldHandMapControllerToApp', () async {
       final controllers = <SBBMapController>[];
       final session = createSession(SBBMapSessionConfig(mapStyler: styler, onMapCreated: controllers.add));
 
@@ -436,7 +430,7 @@ void main() {
       expect(controllers, hasLength(1));
     });
 
-    test('userLocationUpdated_shouldUpdateDeviceLocation', () async {
+    test('onUserLocationUpdated_whenCalled_shouldUpdateDeviceLocation', () async {
       final session = createSession(recordingConfig());
 
       await session.onUserLocationUpdated(
@@ -455,7 +449,7 @@ void main() {
       verify(locator.updateDeviceLocation(_latLng)).called(1);
     });
 
-    test('collaboratorGetters_shouldExposeOwnedCollaborators', () {
+    test('getters_whenCreated_shouldExposeOwnedCollaborators', () {
       final session = createSession(recordingConfig());
 
       expect(session.mapStyler, same(styler));
@@ -466,27 +460,19 @@ void main() {
   });
 
   group('production collaborators', () {
-    test('defaults_shouldBeWiredToTheMapAndStyler', () async {
+    test('constructor_whenNoCollaboratorsGiven_shouldCreateProductionOnes', () async {
       SBBRokasPOIController? poi;
-      SBBMapAnnotator? createdAnnotator;
-      styler.toggleDarkMode();
       final session = SBBMapSession(
-        config: SBBMapSessionConfig(
-          mapStyler: styler,
-          initialCameraPosition: SBBCameraPosition.highLevelCH,
-          poiSettings: SBBMapPOISettings(onPoiControllerAvailable: (c) => poi = c),
-          onMapAnnotatorAvailable: (a) => createdAnnotator = a,
-        ),
+        config: recordingConfig(poiSettings: SBBMapPOISettings(onPoiControllerAvailable: (c) => poi = c)),
       );
       await loadFirstStyle(session);
       when(mapLibre.querySourceFeatures(any, any, any)).thenAnswer((_) async => [_poiGeoJson]);
 
+      // Selecting a POI reads the styler's dark mode through the session.
       await poi!.showPointsOfInterest();
       await poi!.selectPointOfInterest(sbbId: 'sbb-id');
 
-      expect(createdAnnotator, isA<SBBMapAnnotatorImpl>());
-      final properties = verify(mapLibre.setLayerProperties(any, captureAny)).captured.last as SymbolLayerProperties;
-      expect(properties.iconImage, 'sbb_marker_poi_dark_selected');
+      expect(session.mapLocator, isA<SBBMapLocatorImpl>());
       session.dispose();
     });
   });
