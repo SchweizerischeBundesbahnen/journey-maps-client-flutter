@@ -136,6 +136,8 @@ class SBBMapSession with ChangeNotifier {
   /// Whether the "My Location" layer is currently enabled on the map.
   bool get isLocationEnabled => _mapLocator.isLocationEnabled;
 
+  bool get _isDisposed => _lifecycle == _Lifecycle.disposed;
+
   bool get _acceptsInput => _lifecycle == _Lifecycle.ready;
 
   /// Replaces the configuration, e.g. when the [SBBMap] widget is rebuilt.
@@ -166,6 +168,7 @@ class SBBMapSession with ChangeNotifier {
   }
 
   Future<void> onMapCreated(MapLibreMapController controller) async {
+    if (_isDisposed) return;
     final sbbMapController = SBBMapControllerImpl(maplibreMapController: controller, mapLocator: _mapLocator);
 
     _mlController.complete(controller);
@@ -175,6 +178,7 @@ class SBBMapSession with ChangeNotifier {
   }
 
   Future<void> onStyleLoaded() async {
+    if (_isDisposed) return;
     if (_lifecycle == _Lifecycle.awaitingMap) {
       // First-load workaround (#185): the map first loads MapLibre's default
       // style, so the real style is set here and its load is the first one.
@@ -221,6 +225,7 @@ class SBBMapSession with ChangeNotifier {
   }
 
   Future<void> onMapClick(Point<double> point, LatLng coordinates) async {
+    if (_isDisposed) return;
     if (_acceptsInput && _config.poiSettings.onPoiSelected != null) {
       _poiController.toggleSelectedPointOfInterest(point);
     }
@@ -230,20 +235,24 @@ class SBBMapSession with ChangeNotifier {
   }
 
   Future<void> onMapLongClick(Point<double> point, LatLng coordinates) async {
+    if (_isDisposed) return;
     if (_acceptsInput && _config.onMapLongClick != null) {
       _config.onMapLongClick!(point, coordinates);
     }
   }
 
   Future<void> onCameraIdle() async {
+    if (_isDisposed) return;
     if (_acceptsInput) await _floorController.updateAvailableFloors();
   }
 
   Future<void> onCameraTrackingDismissed() async {
+    if (_isDisposed) return;
     if (_acceptsInput) await _mapLocator.dismissTracking();
   }
 
   Future<void> onUserLocationUpdated(UserLocation location) async {
+    if (_isDisposed) return;
     _mapLocator.updateDeviceLocation(location.position);
   }
 
@@ -281,7 +290,7 @@ class SBBMapSession with ChangeNotifier {
   void _completeAnnotatorIfNecessary() {
     if (!_mapAnnotator.isCompleted) {
       _mlController.future.then((c) {
-        if (_lifecycle == _Lifecycle.disposed) return;
+        if (_isDisposed) return;
         _mapAnnotator.complete(_annotator = _createAnnotator(c));
       });
     }

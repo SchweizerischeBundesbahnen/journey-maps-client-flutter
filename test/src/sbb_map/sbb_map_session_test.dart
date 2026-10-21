@@ -77,10 +77,12 @@ void main() {
     SBBMapStyler? mapStyler,
     SBBCameraPosition? initialCameraPosition = SBBCameraPosition.highLevelCH,
     SBBMapPOISettings poiSettings = const SBBMapPOISettings(),
+    void Function()? onStyleLoaded,
   }) => SBBMapSessionConfig(
     mapStyler: mapStyler ?? styler,
     initialCameraPosition: initialCameraPosition,
     poiSettings: poiSettings,
+    onStyleLoaded: onStyleLoaded,
     onMapClick: (_, _) => calls.add('click'),
     onMapLongClick: (_, _) => calls.add('longClick'),
   );
@@ -355,6 +357,22 @@ void main() {
       verify(poiController.dispose()).called(1);
       verify(annotator.dispose()).called(1);
       verifyNever(mapLibre.setStyle(any));
+    });
+
+    test('events_whenDisposed_shouldBeIgnored', () async {
+      final session = createSession(recordingConfig(onStyleLoaded: () => calls.add('styleLoaded')));
+      await loadFirstStyle(session);
+      calls.clear();
+      clearInteractions(poiController);
+
+      session.dispose();
+      await session.onStyleLoaded();
+      await sendInputEvents(session);
+
+      expect(calls, isEmpty);
+      verifyNever(poiController.synchronizeWithNewStyle());
+      verifyNever(floorController.updateAvailableFloors());
+      verifyNever(locator.dismissTracking());
     });
 
     test('dispose_whenNoStylerGiven_shouldDisposeDefaultStyler', () {
