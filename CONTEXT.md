@@ -50,3 +50,12 @@ _Avoid_: level filter, floor filter, filter dialect
 The storey a user has selected, as exposed by `SBBMapFloorController`. Rendered
 into a style's Level Filter Idiom to decide what draws.
 _Avoid_: level, storey — except when quoting a style's own `level` property
+
+### Map lifecycle
+
+**Map Session**:
+The lifetime of one `SBBMap`'s MapLibre platform view, from map created to
+disposed, across every style load in between. Decides when the map takes input
+and what is re-applied after a style load.
+_Avoid_: map state, map lifecycle manager, map controller (that is the public
+`SBBMapController`)
