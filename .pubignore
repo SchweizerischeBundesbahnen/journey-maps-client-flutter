@@ -41,3 +41,4 @@ coverage/
 # Agentic setup
 docs/agents
 AGENTS.md
+docs/adr
