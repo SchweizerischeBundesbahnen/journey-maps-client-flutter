@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -250,9 +251,11 @@ void main() {
     SBBMapSessionConfig availableCallbacksConfig({
       bool isMyLocationEnabled = true,
       bool isFloorSwitchingEnabled = true,
+      SBBCameraPosition? initialCameraPosition = SBBCameraPosition.highLevelCH,
+      void Function()? onStyleLoaded,
     }) => SBBMapSessionConfig(
       mapStyler: styler,
-      initialCameraPosition: SBBCameraPosition.highLevelCH,
+      initialCameraPosition: initialCameraPosition,
       isMyLocationEnabled: isMyLocationEnabled,
       isFloorSwitchingEnabled: isFloorSwitchingEnabled,
       poiSettings: SBBMapPOISettings(onPoiControllerAvailable: (_) => calls.add('poi')),
@@ -260,6 +263,7 @@ void main() {
       onFloorControllerAvailable: (_) => calls.add('floor'),
       onMapAnnotatorAvailable: (_) => calls.add('annotator'),
       onRoutingControllerAvailable: (_) => calls.add('routing'),
+      onStyleLoaded: onStyleLoaded,
     );
 
     Future<void> reloadStyle(SBBMapSession session) async {
@@ -285,6 +289,27 @@ void main() {
       await reloadStyle(session);
 
       expect(calls, isEmpty);
+    });
+
+    test('onStyleLoaded_whenStyleLoadsDuringFirstLoad_shouldFireAvailableCallbacksOnce', () async {
+      final cameraMove = Completer<bool?>();
+      when(mapLibre.animateCamera(any, duration: anyNamed('duration'))).thenAnswer((_) => cameraMove.future);
+      var styleLoadedCount = 0;
+      final session = createSession(
+        availableCallbacksConfig(initialCameraPosition: null, onStyleLoaded: () => styleLoadedCount++),
+      );
+      await session.onMapCreated(mapLibre);
+      await session.onStyleLoaded(); // MapLibre's default style, before the real one
+
+      final firstLoad = session.onStyleLoaded();
+      await pumpEventQueue();
+      final secondLoad = session.onStyleLoaded();
+      await pumpEventQueue();
+      cameraMove.complete(true);
+      await Future.wait([firstLoad, secondLoad]);
+
+      expect(calls, ['locator', 'floor', 'poi', 'annotator', 'routing']);
+      expect(styleLoadedCount, 2);
     });
 
     test('onStyleLoaded_whenFeaturesDisabled_shouldNotFireTheirAvailableCallbacks', () async {

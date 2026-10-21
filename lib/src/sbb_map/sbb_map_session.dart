@@ -217,30 +217,34 @@ class SBBMapSession with ChangeNotifier {
     _lifecycle = _Lifecycle.ready;
     notifyListeners();
 
-    if (_isFirstStyleLoad && _config.initialCameraPosition == null) await _moveCameraToSwitzerland();
+    // Claimed before any await, so a style load arriving meanwhile is not
+    // taken for the first one.
+    final isFirstStyleLoad = _isFirstStyleLoad;
+    _isFirstStyleLoad = false;
 
-    // First-load work is interleaved with every-load work, and the flag is
-    // re-read after each await, so it is not one block.
-    if (_isFirstStyleLoad) {
+    if (isFirstStyleLoad && _config.initialCameraPosition == null) await _moveCameraToSwitzerland();
+
+    // First-load work is interleaved with every-load work, so it is not one
+    // block.
+    if (isFirstStyleLoad) {
       if (_config.isMyLocationEnabled) _config.onMapLocatorAvailable?.call(_mapLocator);
       if (_config.isFloorSwitchingEnabled) _config.onFloorControllerAvailable?.call(_floorController);
     }
 
     _poiController.synchronizeWithNewStyle();
     _floorController.synchronizeWithNewStyle();
-    if (_isFirstStyleLoad) _config.poiSettings.onPoiControllerAvailable?.call(_poiController);
+    if (isFirstStyleLoad) _config.poiSettings.onPoiControllerAvailable?.call(_poiController);
 
     _completeAnnotatorIfNecessary();
     _mapAnnotator.future.then((a) => a.onStyleChanged());
     final onMapAnnotatorAvailable = _config.onMapAnnotatorAvailable;
-    if (_isFirstStyleLoad && onMapAnnotatorAvailable != null) {
+    if (isFirstStyleLoad && onMapAnnotatorAvailable != null) {
       onMapAnnotatorAvailable(await _mapAnnotator.future);
     }
 
-    if (_isFirstStyleLoad) _config.onRoutingControllerAvailable?.call(_routingController);
+    if (isFirstStyleLoad) _config.onRoutingControllerAvailable?.call(_routingController);
 
     _config.onStyleLoaded?.call();
-    _isFirstStyleLoad = false;
   }
 
   /// Handles a click: toggles POI selection and forwards it to the app.
