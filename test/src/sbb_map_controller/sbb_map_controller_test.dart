@@ -77,6 +77,32 @@ void main() {
         verify(listener()).called(1);
       });
     });
+    group('dispose', () {
+      test('dispose_whenCalled_shouldNotDisposeMapLibreController', () {
+        final controller = SBBMapControllerImpl(maplibreMapController: mockMLController, mapLocator: mockMapLocator);
+
+        controller.dispose();
+
+        verifyNever(mockMLController.dispose());
+      });
+
+      test('dispose_whenMapLibreControllerChangesAfterwards_shouldStopFollowingIt', () {
+        final controller = SBBMapControllerImpl(maplibreMapController: mockMLController, mapLocator: mockMapLocator);
+        when(mockMLController.isCameraMoving).thenReturn(true);
+
+        controller.dispose();
+
+        expect(mockMLController.notifyListeners, returnsNormally);
+      });
+
+      test('dispose_whenAlreadyDisposed_shouldNotThrow', () {
+        final controller = SBBMapControllerImpl(maplibreMapController: mockMLController, mapLocator: mockMapLocator);
+        controller.dispose();
+
+        expect(controller.dispose, returnsNormally);
+      });
+    });
+
     test('getFilter should call mapLibre controller one to one', () {
       // arrange
       const fakeLayerId = 'fakeLayerId';
