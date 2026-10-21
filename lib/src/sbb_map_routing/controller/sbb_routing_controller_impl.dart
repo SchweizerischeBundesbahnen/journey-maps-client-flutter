@@ -65,7 +65,11 @@ class SBBRoutingControllerImpl with ChangeNotifier implements SBBRoutingControll
     }
   }
 
-  Iterable<SBBMapAnnotation> _getAnnotations(FeatureCollection featureCollection, {int currentFloor = 0}) {
+  /// Builds the route annotations once, as a list.
+  ///
+  /// Every annotation gets a random id when it is created, so the list keeps the
+  /// ids that are added to the annotator and later used to remove them.
+  List<SBBMapAnnotation> _getAnnotations(FeatureCollection featureCollection, {int currentFloor = 0}) {
     return featureCollection.features.map((f) {
       var annotation = f.toAnnotation();
       if (annotation is SBBMapLine) {
@@ -77,10 +81,10 @@ class SBBRoutingControllerImpl with ChangeNotifier implements SBBRoutingControll
         );
       }
       return annotation;
-    });
+    }).toList();
   }
 
-  Future<void> _updateAnnotations(Iterable<SBBMapAnnotation> annotations) async {
+  Future<void> _updateAnnotations(List<SBBMapAnnotation> annotations) async {
     await _removeAnnotationsIfNecessary();
     await _addAnnotations(annotations);
   }
@@ -94,10 +98,10 @@ class SBBRoutingControllerImpl with ChangeNotifier implements SBBRoutingControll
     }
   }
 
-  Future<void> _addAnnotations(Iterable<SBBMapAnnotation> annotations) async {
+  Future<void> _addAnnotations(List<SBBMapAnnotation> annotations) async {
     await _annotator.then((a) async {
       await a.addAnnotations(annotations);
-      _currentShownAnnotations = annotations.toList();
+      _currentShownAnnotations = annotations;
     });
   }
 
