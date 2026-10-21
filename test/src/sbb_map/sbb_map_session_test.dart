@@ -359,6 +359,19 @@ void main() {
       verifyNever(mapLibre.setStyle(any));
     });
 
+    test('dispose_shouldStopListeningToLocatorFloorAndRoutingControllers', () {
+      final session = createSession(recordingConfig());
+      final locatorListener = verify(locator.addListener(captureAny)).captured.single;
+      final floorListener = verify(floorController.addListener(captureAny)).captured.single;
+      final routingListener = verify(routingController.addListener(captureAny)).captured.single;
+
+      session.dispose();
+
+      verify(locator.removeListener(locatorListener)).called(1);
+      verify(floorController.removeListener(floorListener)).called(1);
+      verify(routingController.removeListener(routingListener)).called(1);
+    });
+
     test('events_whenDisposed_shouldBeIgnored', () async {
       final session = createSession(recordingConfig(onStyleLoaded: () => calls.add('styleLoaded')));
       await loadFirstStyle(session);
