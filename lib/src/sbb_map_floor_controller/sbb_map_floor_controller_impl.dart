@@ -49,6 +49,15 @@ class SBBMapFloorControllerImpl with ChangeNotifier implements SBBMapFloorContro
     _notifyListenersIfChanged(currentFloor: updatedFloor, availableFloors: updatedFloors);
   }
 
+  /// Called by the Map Session after every style load.
+  ///
+  /// A new style's layers show floor 0, so the [currentFloor] is re-applied to
+  /// them. Without a selected floor there is nothing to re-apply.
+  Future<void> synchronizeWithNewStyle() async {
+    final floor = _currentFloor;
+    if (floor != null) await _selectFloor(floor: floor);
+  }
+
   Future<List<dynamic>> _queryFeaturesWithFloorsFromSource() async {
     return await _controller.then(
       (controller) => controller.querySourceFeatures(_servicePointSourceId, _servicePointLayerId, null),

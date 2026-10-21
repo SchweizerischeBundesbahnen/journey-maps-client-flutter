@@ -64,9 +64,11 @@ enum _Lifecycle { awaitingMap, reloading, ready, disposed }
 /// session has finished handling that event, except for work it starts without
 /// waiting for:
 ///
-/// * on a style load, the annotator's re-sync with the new style
-///   ([SBBMapAnnotatorImpl.onStyleChanged]) and the annotator's creation on the
-///   first load, unless the app asked for the annotator;
+/// * on a style load, the re-syncs with the new style of the POIs
+///   ([SBBRokasPOIControllerImpl.synchronizeWithNewStyle]), the selected floor
+///   ([SBBMapFloorControllerImpl.synchronizeWithNewStyle]) and the annotator
+///   ([SBBMapAnnotatorImpl.onStyleChanged]), and the annotator's creation on
+///   the first load, unless the app asked for the annotator;
 /// * on a styler notification, the new style being set on the map.
 ///
 /// Once disposed, the session ignores every event.
@@ -200,7 +202,8 @@ class SBBMapSession with ChangeNotifier {
   }
 
   /// Handles a style load: makes the map accept input, hands the controllers
-  /// to the app on the first real load, and re-syncs POIs and annotations.
+  /// to the app on the first real load, and re-syncs POIs, the selected floor
+  /// and annotations.
   Future<void> onStyleLoaded() async {
     if (_isDisposed) return;
     if (_lifecycle == _Lifecycle.awaitingMap) {
@@ -226,6 +229,7 @@ class SBBMapSession with ChangeNotifier {
     }
 
     _poiController.synchronizeWithNewStyle();
+    _floorController.synchronizeWithNewStyle();
     if (_isFirstStyleLoad) _config.poiSettings.onPoiControllerAvailable?.call(_poiController);
 
     _completeAnnotatorIfNecessary();

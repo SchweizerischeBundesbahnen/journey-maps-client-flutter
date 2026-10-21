@@ -75,6 +75,42 @@ void main() {
         verify(listener()).called(1);
       });
     });
+    group('synchronizeWithNewStyle', () {
+      setUp(() async {
+        when(mockController.querySourceFeatures(any, any, any)).thenAnswer((_) async => threeFeatureWithThreeFloors);
+        when(mockController.getLayerIds()).thenAnswer((_) async => oneLevelLayers);
+        when(mockController.getFilter('layer2-lvl')).thenAnswer((_) async => layer2Level0Filter);
+        await sut.updateAvailableFloors();
+        reset(listener);
+      });
+
+      test('synchronizeWithNewStyle_whenFloorSelected_shouldReapplyItToNewStyleLayers', () async {
+        // arrange
+        await sut.switchFloor(1);
+        clearInteractions(mockController);
+        reset(listener);
+
+        // act: the new style's layers show floor 0 again
+        await sut.synchronizeWithNewStyle();
+
+        // expect
+        expect(sut.currentFloor, 1);
+        verify(mockController.setFilter('layer2-lvl', layer2Level1Filter)).called(1);
+        verify(mockController.setLayerVisibility('rokas_background_mask', false)).called(1);
+        verifyNever(listener());
+      });
+
+      test('synchronizeWithNewStyle_whenNoFloorSelected_shouldLeaveNewStyleUntouched', () async {
+        // act
+        await sut.synchronizeWithNewStyle();
+
+        // expect
+        expect(sut.currentFloor, null);
+        verifyNever(mockController.setFilter(any, any));
+        verifyNever(mockController.setLayerVisibility(any, any));
+        verifyNever(listener());
+      });
+    });
     group('switchFloor', () {
       setUp(() async {
         when(mockController.querySourceFeatures(any, any, any)).thenAnswer((_) async => threeFeatureWithThreeFloors);
