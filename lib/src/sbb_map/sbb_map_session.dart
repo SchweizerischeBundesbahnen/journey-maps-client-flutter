@@ -71,7 +71,8 @@ enum _Lifecycle { awaitingMap, reloading, ready, disposed }
 ///   the first load, unless the app asked for the annotator;
 /// * on a styler notification, the new style being set on the map.
 ///
-/// Once disposed, the session ignores every event.
+/// Once disposed, the session ignores every event, and the handling of an
+/// earlier event neither notifies listeners nor calls the app any more.
 ///
 /// Notifies its listeners whenever the map or its UI controls need to rebuild.
 class SBBMapSession with ChangeNotifier {
@@ -209,6 +210,7 @@ class SBBMapSession with ChangeNotifier {
       // here and its load is the first one.
       final controller = await _mapLibreController.future;
       await controller.setStyle(mapStyler.currentStyleURI);
+      if (_isDisposed) return;
       if (_lifecycle == _Lifecycle.awaitingMap) _lifecycle = _Lifecycle.reloading;
       notifyListeners();
       return;
@@ -223,6 +225,7 @@ class SBBMapSession with ChangeNotifier {
     _isFirstStyleLoad = false;
 
     if (isFirstStyleLoad && _config.initialCameraPosition == null) await _moveCameraToSwitzerland();
+    if (_isDisposed) return;
 
     // First-load work is interleaved with every-load work, so it is not one
     // block.
@@ -239,7 +242,9 @@ class SBBMapSession with ChangeNotifier {
     _mapAnnotator.future.then((a) => a.onStyleChanged());
     final onMapAnnotatorAvailable = _config.onMapAnnotatorAvailable;
     if (isFirstStyleLoad && onMapAnnotatorAvailable != null) {
-      onMapAnnotatorAvailable(await _mapAnnotator.future);
+      final annotator = await _mapAnnotator.future;
+      if (_isDisposed) return;
+      onMapAnnotatorAvailable(annotator);
     }
 
     if (isFirstStyleLoad) _config.onRoutingControllerAvailable?.call(_routingController);
@@ -301,6 +306,7 @@ class SBBMapSession with ChangeNotifier {
   /// is ignored until that style has loaded.
   Future<void> _reloadStyle() async {
     final controller = await _mapLibreController.future;
+    if (_isDisposed) return;
     final setStyle = controller.setStyle(mapStyler.currentStyleURI);
     if (_lifecycle == _Lifecycle.ready) _lifecycle = _Lifecycle.reloading;
     notifyListeners();
