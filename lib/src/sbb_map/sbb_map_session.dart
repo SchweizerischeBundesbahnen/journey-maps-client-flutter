@@ -166,7 +166,8 @@ class SBBMapSession with ChangeNotifier {
   /// Replaces the configuration, e.g. when the `SBBMap` widget is rebuilt.
   ///
   /// A swapped [SBBMapStyler] is followed from now on, and its style is set on
-  /// the map if it differs from the previous styler's.
+  /// the map if it differs from the previous styler's. Input is then ignored
+  /// until that style has loaded.
   Future<void> update(SBBMapSessionConfig config) async {
     final oldConfig = _config;
     _config = config;
@@ -184,10 +185,7 @@ class SBBMapSession with ChangeNotifier {
     final currentStyler = mapStyler;
     currentStyler.addListener(_reactToStyleChange);
 
-    if (previousStyleURI != currentStyler.currentStyleURI) {
-      final controller = await _mapLibreController.future;
-      await controller.setStyle(currentStyler.currentStyleURI);
-    }
+    if (previousStyleURI != currentStyler.currentStyleURI) await _reloadStyle();
   }
 
   /// Handles the map being created: hands the [SBBMapController] to the app.
@@ -293,12 +291,16 @@ class SBBMapSession with ChangeNotifier {
     super.dispose();
   }
 
-  void _reactToStyleChange() {
-    _mapLibreController.future.then((c) {
-      c.setStyle(mapStyler.currentStyleURI);
-      if (_lifecycle == _Lifecycle.ready) _lifecycle = _Lifecycle.reloading;
-      notifyListeners();
-    });
+  void _reactToStyleChange() => _reloadStyle();
+
+  /// Sets the current styler's style on the map. Once the map is ready, input
+  /// is ignored until that style has loaded.
+  Future<void> _reloadStyle() async {
+    final controller = await _mapLibreController.future;
+    final setStyle = controller.setStyle(mapStyler.currentStyleURI);
+    if (_lifecycle == _Lifecycle.ready) _lifecycle = _Lifecycle.reloading;
+    notifyListeners();
+    await setStyle;
   }
 
   Future<void> _moveCameraToSwitzerland() => _sbbMapController.future.then(

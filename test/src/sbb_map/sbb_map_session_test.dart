@@ -136,6 +136,44 @@ void main() {
 
       expect(calls, ['click', 'longClick']);
     });
+
+    test('inputEvents_whenReloadingAfterStylerSwappedForDifferentStyle_shouldBeIgnoredUntilStyleLoaded', () async {
+      final session = createSession(recordingConfig(poiSettings: SBBMapPOISettings(onPoiSelected: (_) {})));
+      await loadFirstStyle(session);
+
+      await session.update(
+        recordingConfig(
+          mapStyler: SBBCustomMapStyler(styles: [_otherStyle]),
+          poiSettings: SBBMapPOISettings(onPoiSelected: (_) {}),
+        ),
+      );
+      await sendInputEvents(session);
+
+      expect(calls, isEmpty);
+      verifyNever(poiController.toggleSelectedPointOfInterest(any));
+      verifyNever(floorController.updateAvailableFloors());
+      verifyNever(locator.dismissTracking());
+
+      await session.onStyleLoaded();
+      await sendInputEvents(session);
+
+      expect(calls, ['click', 'longClick']);
+      verify(poiController.toggleSelectedPointOfInterest(_point)).called(1);
+      verify(floorController.updateAvailableFloors()).called(1);
+      verify(locator.dismissTracking()).called(1);
+    });
+
+    test('inputEvents_whenStylerSwappedForSameStyle_shouldReachApp', () async {
+      final session = createSession(recordingConfig());
+      await loadFirstStyle(session);
+
+      await session.update(recordingConfig(mapStyler: SBBCustomMapStyler(styles: [_brightStyle])));
+      await sendInputEvents(session);
+
+      expect(calls, ['click', 'longClick']);
+      verify(floorController.updateAvailableFloors()).called(1);
+      verify(locator.dismissTracking()).called(1);
+    });
   });
 
   group('map styler', () {
