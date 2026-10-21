@@ -19,6 +19,22 @@ void main() {
       sut = SBBMapAnnotatorImpl(controller: mockController);
       reset(mockController);
     });
+    test('updateAnnotation should update the single annotation', () async {
+      // setup
+      final original = AnnotatorFixture.simpleSymbol();
+      final update = original.copyWith(coords: const LatLng(2.0, 3.0));
+      await sut.addAnnotation(original);
+      reset(mockController);
+
+      // act
+      await sut.updateAnnotation(update);
+
+      // verify
+      verify(
+        mockController.setGeoJsonSource(AnnotatorFixture.kSourceId, buildFeatureCollection([update.toGeoJson()])),
+      ).called(1);
+    });
+
     group('single calls', () {
       /// the updateAnnotation method (single) is just a special case
       /// we split the behavior into calling multiple times and calling a single time
