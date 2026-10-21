@@ -65,7 +65,7 @@ void main() {
         createDefaultMapStyler: createDefaultMapStyler,
       );
 
-  /// Today's first load: MapLibre loads its own default style, the session sets
+  /// The first load: MapLibre loads its own default style, the session sets
   /// the real style, and the second style load is the first real one.
   Future<void> loadFirstStyle(SBBMapSession session) async {
     await session.onMapCreated(mapLibre);

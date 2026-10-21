@@ -62,7 +62,7 @@ enum _Lifecycle { awaitingMap, reloading, ready, disposed }
 /// Owns the controllers, receives the map events and decides what happens on
 /// each one. Every event method returns a future that completes once the
 /// session has finished handling that event, except for work it starts without
-/// waiting for, as the widget did before:
+/// waiting for:
 ///
 /// * on a style load, the annotator's re-sync with the new style
 ///   ([SBBMapAnnotatorImpl.onStyleChanged]) and the annotator's creation on the
@@ -204,8 +204,8 @@ class SBBMapSession with ChangeNotifier {
   Future<void> onStyleLoaded() async {
     if (_isDisposed) return;
     if (_lifecycle == _Lifecycle.awaitingMap) {
-      // First-load workaround (#185): the map first loads MapLibre's default
-      // style, so the real style is set here and its load is the first one.
+      // The map first loads MapLibre's default style, so the real style is set
+      // here and its load is the first one.
       final controller = await _mapLibreController.future;
       await controller.setStyle(mapStyler.currentStyleURI);
       if (_lifecycle == _Lifecycle.awaitingMap) _lifecycle = _Lifecycle.reloading;
@@ -218,8 +218,8 @@ class SBBMapSession with ChangeNotifier {
 
     if (_isFirstStyleLoad && _config.initialCameraPosition == null) await _moveCameraToSwitzerland();
 
-    // First-load work is interleaved with every-load work in the widget's order,
-    // and the flag is re-read after each await, so it is not one block.
+    // First-load work is interleaved with every-load work, and the flag is
+    // re-read after each await, so it is not one block.
     if (_isFirstStyleLoad) {
       if (_config.isMyLocationEnabled) _config.onMapLocatorAvailable?.call(_mapLocator);
       if (_config.isFloorSwitchingEnabled) _config.onFloorControllerAvailable?.call(_floorController);
