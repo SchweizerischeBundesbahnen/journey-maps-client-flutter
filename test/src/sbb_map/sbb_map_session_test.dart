@@ -414,6 +414,58 @@ void main() {
       verifyNever(poiController.toggleSelectedPointOfInterest(any));
       expect(calls, ['click']);
     });
+
+    test('onMapClick_whenUpdateSetsOnPoiSelected_shouldTogglePoiSelection', () async {
+      final session = createSession(recordingConfig());
+      await loadFirstStyle(session);
+
+      await session.update(recordingConfig(poiSettings: SBBMapPOISettings(onPoiSelected: (_) {})));
+      await session.onMapClick(_point, _latLng);
+
+      verify(poiController.toggleSelectedPointOfInterest(_point)).called(1);
+    });
+
+    test('onMapClick_whenUpdateUnsetsOnPoiSelected_shouldNotTogglePoiSelection', () async {
+      final session = createSession(recordingConfig(poiSettings: SBBMapPOISettings(onPoiSelected: (_) {})));
+      await loadFirstStyle(session);
+
+      await session.update(recordingConfig());
+      await session.onMapClick(_point, _latLng);
+
+      verifyNever(poiController.toggleSelectedPointOfInterest(any));
+    });
+
+    test('update_whenPoiSettingsChange_shouldPassNewSelectionCallbacksToPoiController', () async {
+      void onPoiSelected(RokasPOI _) {}
+      void onPoiDeselected() {}
+      final session = createSession(recordingConfig(poiSettings: SBBMapPOISettings(onPoiSelected: (_) {})));
+      await loadFirstStyle(session);
+
+      await session.update(
+        recordingConfig(
+          poiSettings: SBBMapPOISettings(onPoiSelected: onPoiSelected, onPoiDeselected: onPoiDeselected),
+        ),
+      );
+
+      verify(
+        poiController.updateSelectionCallbacks(onPoiSelected: onPoiSelected, onPoiDeselected: onPoiDeselected),
+      ).called(1);
+    });
+
+    test('update_whenPoiSettingsEqual_shouldNotUpdatePoiController', () async {
+      void onPoiSelected(RokasPOI _) {}
+      final session = createSession(recordingConfig(poiSettings: SBBMapPOISettings(onPoiSelected: onPoiSelected)));
+      await loadFirstStyle(session);
+
+      await session.update(recordingConfig(poiSettings: SBBMapPOISettings(onPoiSelected: onPoiSelected)));
+
+      verifyNever(
+        poiController.updateSelectionCallbacks(
+          onPoiSelected: anyNamed('onPoiSelected'),
+          onPoiDeselected: anyNamed('onPoiDeselected'),
+        ),
+      );
+    });
   });
 
   group('dispose', () {
@@ -632,6 +684,29 @@ void main() {
       await poi!.selectPointOfInterest(sbbId: 'sbb-id');
 
       expect(session.mapLocator, isA<SBBMapLocatorImpl>());
+      session.dispose();
+    });
+
+    test('update_whenPoiSettingsChange_shouldCallNewOnPoiSelectedOnSelection', () async {
+      SBBRokasPOIController? poi;
+      final selected = <String>[];
+      final session = SBBMapSession(
+        config: recordingConfig(
+          poiSettings: SBBMapPOISettings(
+            onPoiControllerAvailable: (c) => poi = c,
+            onPoiSelected: (_) => selected.add('old'),
+          ),
+        ),
+      );
+      await loadFirstStyle(session);
+      when(mapLibre.queryRenderedFeatures(any, any, any)).thenAnswer((_) async => [_poiGeoJson]);
+      await poi!.showPointsOfInterest();
+
+      await session.update(recordingConfig(poiSettings: SBBMapPOISettings(onPoiSelected: (_) => selected.add('new'))));
+      await session.onMapClick(_point, _latLng);
+      await pumpEventQueue();
+
+      expect(selected, ['new']);
       session.dispose();
     });
   });

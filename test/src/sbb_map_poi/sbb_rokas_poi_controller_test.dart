@@ -806,4 +806,90 @@ void main() {
       expect(json['visibility'], 'none');
     });
   });
+
+  group('Unit Test SBBRokasPoiController selection callbacks update', () {
+    late MockMapLibreMapController mockController;
+    late List<String> calls;
+
+    setUp(() {
+      mockController = MockMapLibreMapController();
+      calls = [];
+      when(
+        mockController.queryRenderedFeatures(any, any, any),
+      ).thenAnswer((_) async => [mobilityBikesharingPoiGeoJSONFixture]);
+    });
+
+    SBBRokasPOIControllerImpl createSut() => SBBRokasPOIControllerImpl(
+      controller: Future.value(mockController),
+      onPoiSelected: (_) => calls.add('oldSelected'),
+      onPoiDeselected: () => calls.add('oldDeselected'),
+    );
+
+    test('updateSelectionCallbacks_whenPoiSelectedThenDeselected_shouldCallNewCallbacksOnly', () async {
+      // arrange
+      final sut = createSut();
+      await sut.showPointsOfInterest();
+      // act
+      await sut.updateSelectionCallbacks(
+        onPoiSelected: (_) => calls.add('newSelected'),
+        onPoiDeselected: () => calls.add('newDeselected'),
+      );
+      await sut.toggleSelectedPointOfInterest(const Point(0, 0));
+      when(mockController.queryRenderedFeatures(any, any, any)).thenAnswer((_) async => []);
+      await sut.toggleSelectedPointOfInterest(const Point(0, 0));
+      // expect
+      expect(calls, ['newSelected', 'newDeselected']);
+    });
+
+    test('updateSelectionCallbacks_whenPoisBecomeClickable_shouldMoveVisibilityAndFilterToClickableLayer', () async {
+      // arrange
+      final sut = SBBRokasPOIControllerImpl(controller: Future.value(mockController));
+      await sut.showPointsOfInterest(categories: [SBBPoiCategoryType.bakery]);
+      reset(mockController);
+      // act
+      await sut.updateSelectionCallbacks(onPoiSelected: (_) {}, onPoiDeselected: null);
+      // expect
+      verifyInOrder([
+        mockController.setLayerVisibility(rokasPoiBaseLayerIdWithFloorNonClickable, false),
+        mockController.setFilter(rokasPoiBaseLayerIdWithFloorClickable, subCategoryFilterWithBakeryFixture),
+        mockController.setLayerVisibility(rokasPoiBaseLayerIdWithFloorClickable, true),
+      ]);
+    });
+
+    test('updateSelectionCallbacks_whenPoisStopBeingClickable_shouldMoveVisibilityToNonClickableLayer', () async {
+      // arrange
+      final sut = createSut();
+      await sut.showPointsOfInterest();
+      reset(mockController);
+      // act
+      await sut.updateSelectionCallbacks(onPoiSelected: null, onPoiDeselected: null);
+      // expect
+      verifyInOrder([
+        mockController.setLayerVisibility(rokasPoiBaseLayerIdWithFloorClickable, false),
+        mockController.setLayerVisibility(rokasPoiBaseLayerIdWithFloorNonClickable, true),
+      ]);
+      verifyNever(mockController.setFilter(any, any));
+    });
+
+    test('updateSelectionCallbacks_whenHiddenAndClickabilityChanges_shouldKeepPoisHidden', () async {
+      // arrange
+      final sut = SBBRokasPOIControllerImpl(controller: Future.value(mockController));
+      // act
+      await sut.updateSelectionCallbacks(onPoiSelected: (_) {}, onPoiDeselected: null);
+      // expect
+      verifyNever(mockController.setLayerVisibility(any, true));
+      verifyNever(mockController.setFilter(any, any));
+    });
+
+    test('updateSelectionCallbacks_whenClickabilityUnchanged_shouldNotTouchLayers', () async {
+      // arrange
+      final sut = createSut();
+      await sut.showPointsOfInterest(categories: [SBBPoiCategoryType.bakery]);
+      reset(mockController);
+      // act
+      await sut.updateSelectionCallbacks(onPoiSelected: (_) {}, onPoiDeselected: () {});
+      // expect
+      verifyZeroInteractions(mockController);
+    });
+  });
 }

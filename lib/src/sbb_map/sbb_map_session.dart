@@ -69,7 +69,9 @@ enum _Lifecycle { awaitingMap, reloading, ready, disposed }
 ///   ([SBBMapFloorControllerImpl.synchronizeWithNewStyle]) and the annotator
 ///   ([SBBMapAnnotatorImpl.onStyleChanged]), and the annotator's creation on
 ///   the first load, unless the app asked for the annotator;
-/// * on a styler notification, the new style being set on the map.
+/// * on a styler notification, the new style being set on the map;
+/// * on a config update with new POI settings, the POI controller applying
+///   them to the map ([SBBRokasPOIControllerImpl.updateSelectionCallbacks]).
 ///
 /// Once disposed, the session ignores every event, and the handling of an
 /// earlier event neither notifies listeners nor calls the app any more.
@@ -166,12 +168,23 @@ class SBBMapSession with ChangeNotifier {
 
   /// Replaces the configuration, e.g. when the `SBBMap` widget is rebuilt.
   ///
+  /// New [SBBMapSessionConfig.poiSettings] are handed to the POI controller,
+  /// whose selection and deselection callbacks follow them from now on.
+  ///
   /// A swapped [SBBMapStyler] is followed from now on, and its style is set on
   /// the map if it differs from the previous styler's. Input is then ignored
   /// until that style has loaded.
   Future<void> update(SBBMapSessionConfig config) async {
     final oldConfig = _config;
     _config = config;
+    if (oldConfig.poiSettings != config.poiSettings) {
+      unawaited(
+        _poiController.updateSelectionCallbacks(
+          onPoiSelected: config.poiSettings.onPoiSelected,
+          onPoiDeselected: config.poiSettings.onPoiDeselected,
+        ),
+      );
+    }
     if (identical(oldConfig.mapStyler, config.mapStyler)) return;
 
     final previousStyler = oldConfig.mapStyler ?? _defaultMapStyler!;
