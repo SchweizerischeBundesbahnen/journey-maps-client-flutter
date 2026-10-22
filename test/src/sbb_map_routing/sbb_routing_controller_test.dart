@@ -5,6 +5,7 @@ import 'package:maplibre_gl/maplibre_gl.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:sbb_maps_flutter/sbb_maps_flutter.dart';
+import 'package:sbb_maps_flutter/src/sbb_map_annotator/annotator/annotator_impl.dart';
 import 'package:sbb_maps_flutter/src/sbb_map_routing/controller/sbb_routing_controller_impl.dart';
 
 import '../../util/mock_callback_function.dart';
@@ -137,6 +138,72 @@ void main() {
 
       verifyNever(mockAnnotator.addAnnotations(any)).called(0);
       verifyNever(mockAnnotator.removeAnnotations(any)).called(0);
+    });
+  });
+
+  group('SBBRoutingController with the real annotator', () {
+    late List<Map<String, dynamic>> sentSourceData;
+
+    List<dynamic> featuresOf(Map<String, dynamic> sourceData) => sourceData['features'] as List<dynamic>;
+
+    Future<void> changeFloor(int floor) async {
+      when(mockFloorController.currentFloor).thenReturn(floor);
+      mockFloorController.notifyListeners();
+      await pumpEventQueue();
+    }
+
+    setUp(() {
+      mockMapLibreController = MockMapLibreMapController();
+      mockFloorController = ListenableMockSBBMapFloorController();
+      sentSourceData = [];
+      when(mockMapLibreController.onFeatureTapped).thenReturn(<OnFeatureInteractionCallback>[]);
+      when(mockMapLibreController.setGeoJsonSource(any, any)).thenAnswer((invocation) async {
+        sentSourceData.add(invocation.positionalArguments[1] as Map<String, dynamic>);
+      });
+      sut = SBBRoutingControllerImpl(
+        controller: Future.value(mockMapLibreController),
+        annotator: Future.value(SBBMapAnnotatorImpl(controller: mockMapLibreController)),
+        floorController: mockFloorController,
+      );
+    });
+
+    test('floor changes replace the route instead of adding copies of it', () async {
+      await sut.routeFromFeatureCollection(featureCollectionFixtureGeneral);
+      final routeFeatureCount = featureCollectionFixtureGeneral.features.length;
+      expect(featuresOf(sentSourceData.last), hasLength(routeFeatureCount));
+
+      for (final floor in [1, 0, 2, -1]) {
+        await changeFloor(floor);
+
+        expect(
+          featuresOf(sentSourceData.last),
+          hasLength(routeFeatureCount),
+          reason: 'after switching to floor $floor',
+        );
+      }
+    });
+  });
+
+  group('SBBRoutingController route annotations', () {
+    setUp(() {
+      mockAnnotator = MockSBBMapAnnotator();
+      mockFloorController = ListenableMockSBBMapFloorController();
+      sut = SBBRoutingControllerImpl(
+        controller: Future.value(MockMapLibreMapController()),
+        annotator: Future.value(mockAnnotator),
+        floorController: mockFloorController,
+      );
+    });
+
+    test('keep their ids when iterated more than once', () async {
+      await sut.routeFromFeatureCollection(featureCollectionFixtureGeneral);
+
+      final annotations =
+          verify(mockAnnotator.addAnnotations(captureAny)).captured.single as Iterable<SBBMapAnnotation>;
+
+      final idsOfFirstPass = annotations.map((a) => a.id).toList();
+
+      expect(annotations.map((a) => a.id), orderedEquals(idsOfFirstPass));
     });
   });
 }
