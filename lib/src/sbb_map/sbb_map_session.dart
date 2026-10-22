@@ -229,10 +229,10 @@ class SBBMapSession with ChangeNotifier {
     if (_isFirstStyleLoad) _config.poiSettings.onPoiControllerAvailable?.call(_poiController);
 
     _completeAnnotatorIfNecessary();
+    _mapAnnotator.future.then((a) => a.onStyleChanged());
     final onMapAnnotatorAvailable = _config.onMapAnnotatorAvailable;
-    if (onMapAnnotatorAvailable != null) {
-      _mapAnnotator.future.then((a) => a.onStyleChanged());
-      if (_isFirstStyleLoad) onMapAnnotatorAvailable(await _mapAnnotator.future);
+    if (_isFirstStyleLoad && onMapAnnotatorAvailable != null) {
+      onMapAnnotatorAvailable(await _mapAnnotator.future);
     }
 
     if (_isFirstStyleLoad) _config.onRoutingControllerAvailable?.call(_routingController);
