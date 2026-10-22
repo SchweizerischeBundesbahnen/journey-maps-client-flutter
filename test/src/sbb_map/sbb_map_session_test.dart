@@ -284,6 +284,15 @@ void main() {
       verify(poiController.synchronizeWithNewStyle()).called(2);
     });
 
+    test('onStyleLoaded_whenAnyLoad_shouldResyncFloorController', () async {
+      final session = createSession(recordingConfig());
+
+      await loadFirstStyle(session);
+      await reloadStyle(session);
+
+      verify(floorController.synchronizeWithNewStyle()).called(2);
+    });
+
     test('onStyleLoaded_whenAnyLoadWithoutOnMapAnnotatorAvailable_shouldResyncAnnotator', () async {
       final session = createSession(recordingConfig());
 
