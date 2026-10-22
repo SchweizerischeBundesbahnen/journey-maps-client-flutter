@@ -73,14 +73,6 @@ class SBBMapLocatorImpl with ChangeNotifier implements SBBMapLocator {
     });
   }
 
-  void _dismissTracking() {
-    _mapController.then((controller) {
-      if (isTracking && controller.isCameraMoving) {
-        dismissTracking();
-      }
-    });
-  }
-
   void _notifyListeners({bool? isTracking, bool? enableMyLocation, LatLng? lastKnownLocation}) {
     final bool prevIsLocEnabled = _isLocationEnabled;
     final bool prevIsTracking = _isTracking;
@@ -95,13 +87,5 @@ class SBBMapLocatorImpl with ChangeNotifier implements SBBMapLocator {
         prevLastKnownLocation != _lastKnownLocation) {
       notifyListeners();
     }
-  }
-
-  @override
-  void dispose() {
-    _mapController.then((controller) {
-      controller.removeListener(_dismissTracking);
-    });
-    super.dispose();
   }
 }
