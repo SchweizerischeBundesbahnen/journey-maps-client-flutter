@@ -2,7 +2,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 import 'package:mockito/mockito.dart';
 import 'package:sbb_maps_flutter/sbb_maps_flutter.dart';
-import 'package:sbb_maps_flutter/src/sbb_map_annotator/annotations/sbb_map_annotation.dart';
 import 'package:sbb_maps_flutter/src/sbb_map_annotator/annotator/annotator_impl.dart';
 
 import '../../../util/mock_callback_function.dart';
@@ -114,6 +113,29 @@ void main() {
 
       // verify + expect
       verifyInOrder([mockCallback(registeredS), rokasIconCallback(registeredI)]);
+    });
+
+    test('should call line and fill callbacks for known lines and fills', () async {
+      // setup
+      final tappedLines = <SBBMapLine>[];
+      final tappedFills = <SBBMapFill>[];
+      sut.onLineTapped(tappedLines.add);
+      sut.onFillTapped(tappedFills.add);
+      final line = SBBMapLine(vertices: [AnnotatorFixture.fakeCoords, const LatLng(2.0, 3.0)]);
+      final fill = SBBMapFill(
+        coords: [
+          [AnnotatorFixture.fakeCoords, const LatLng(2.0, 3.0), const LatLng(1.0, 3.0)],
+        ],
+      );
+      await sut.addAnnotations([line, fill]);
+
+      // act
+      _callAllWithAnnotation(mockCallbackList, line);
+      _callAllWithAnnotation(mockCallbackList, fill);
+
+      // expect
+      expect(tappedLines, equals([line]));
+      expect(tappedFills, equals([fill]));
     });
   });
 }

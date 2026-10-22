@@ -21,6 +21,9 @@ class SBBMapAnnotatorImpl implements SBBMapAnnotator {
   final _addedImages = <String, Uint8List>{};
   Completer<void>? _geoJsonAddingOperation;
 
+  /// Completes when the last enqueued mutation has finished, successfully or not.
+  Future<void> _mutationQueue = Future.value();
+
   bool _isGeoJsonSourceAdded = false;
 
   SBBMapAnnotatorImpl({required MapLibreMapController controller}) : _controller = controller {
@@ -41,12 +44,14 @@ class SBBMapAnnotatorImpl implements SBBMapAnnotator {
   }
 
   @override
-  Future<void> addAnnotations(Iterable<SBBMapAnnotation> annotations) async {
-    final newAnnotations = annotations.where(_isNotKnown);
-    if (newAnnotations.isEmpty) return;
+  Future<void> addAnnotations(Iterable<SBBMapAnnotation> annotations) {
+    return _enqueue(() async {
+      final newAnnotations = annotations.where(_isNotKnown).toList();
+      if (newAnnotations.isEmpty) return;
 
-    if (!_isGeoJsonSourceAdded) await _addGeoJsonSource();
-    return _addAnnotationsToLayer(newAnnotations);
+      if (!_isGeoJsonSourceAdded) await _addGeoJsonSource();
+      return _addAnnotationsToLayer(newAnnotations);
+    });
   }
 
   @override
@@ -55,10 +60,12 @@ class SBBMapAnnotatorImpl implements SBBMapAnnotator {
   }
 
   @override
-  Future<void> updateAnnotations(Iterable<SBBMapAnnotation> annotations) async {
-    final knownAnnotations = annotations.where(_isKnown);
-    if (knownAnnotations.isEmpty) return;
-    return _updateAll(knownAnnotations);
+  Future<void> updateAnnotations(Iterable<SBBMapAnnotation> annotations) {
+    return _enqueue(() async {
+      final knownAnnotations = annotations.where(_isKnown).toList();
+      if (knownAnnotations.isEmpty) return;
+      return _updateAll(knownAnnotations);
+    });
   }
 
   @override
@@ -67,10 +74,12 @@ class SBBMapAnnotatorImpl implements SBBMapAnnotator {
   }
 
   @override
-  Future<void> removeAnnotations(Iterable<SBBMapAnnotation> annotations) async {
-    final knownAnnotations = annotations.where(_isKnown);
-    if (knownAnnotations.isEmpty) return;
-    return _removeAll(annotations);
+  Future<void> removeAnnotations(Iterable<SBBMapAnnotation> annotations) {
+    return _enqueue(() async {
+      final knownAnnotations = annotations.where(_isKnown).toList();
+      if (knownAnnotations.isEmpty) return;
+      return _removeAll(knownAnnotations);
+    });
   }
 
   @override
@@ -124,13 +133,30 @@ class SBBMapAnnotatorImpl implements SBBMapAnnotator {
   }
 
   // Called by [SBBMap] when style changes.
-  Future<void> onStyleChanged() async {
-    if (!_isGeoJsonSourceAdded && _addedImages.isEmpty) return;
-    _geoJsonAddingOperation = null;
-    await _addGeoJsonSource();
-    await _reAddImages();
-    await _reInsertLayers();
-    return _updateAll([]);
+  //
+  // Runs in the mutation queue, so it re-syncs the state left by every
+  // mutation enqueued before it.
+  Future<void> onStyleChanged() {
+    return _enqueue(() async {
+      if (!_isGeoJsonSourceAdded && _addedImages.isEmpty) return;
+      _geoJsonAddingOperation = null;
+      await _addGeoJsonSource();
+      await _reAddImages();
+      await _reInsertLayers();
+      return _updateAll([]);
+    });
+  }
+
+  /// Runs [mutation] once every previously enqueued mutation has finished.
+  ///
+  /// Each mutation reads the annotation state, awaits the platform and writes
+  /// the state back. Running them one at a time keeps a mutation from
+  /// overwriting the result of another one that is still awaiting the platform.
+  /// A failing mutation reports its error to its own caller only.
+  Future<void> _enqueue(Future<void> Function() mutation) {
+    final result = _mutationQueue.then((_) => mutation());
+    _mutationQueue = result.then<void>((_) {}, onError: (_) {});
+    return result;
   }
 
   Future<void> _addGeoJsonSource() async {
