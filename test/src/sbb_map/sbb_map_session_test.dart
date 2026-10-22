@@ -34,6 +34,9 @@ const _latLng = LatLng(46.9, 7.4);
 const _brightStyle = SBBMapStyle.fromURL(id: 'bright', brightStyleURL: 'bright_uri', darkStyleURL: 'dark_uri');
 const _otherStyle = SBBMapStyle.fromURL(id: 'other', brightStyleURL: 'other_uri');
 
+/// An app callback, as recorded in a test's `calls`.
+enum _Call { click, longClick, locator, floor, poi, annotator, routing, styleLoaded }
+
 void main() {
   late MockMapLibreMapController mapLibre;
   late MockSBBMapLocatorImpl locator;
@@ -42,7 +45,7 @@ void main() {
   late MockSBBRokasPOIControllerImpl poiController;
   late MockSBBMapAnnotatorImpl annotator;
   late SBBCustomMapStyler styler;
-  late List<String> calls;
+  late List<_Call> calls;
 
   setUp(() {
     mapLibre = MockMapLibreMapController();
@@ -76,7 +79,7 @@ void main() {
 
   SBBMapSessionConfig recordingConfig({
     SBBMapStyler? mapStyler,
-    SBBCameraPosition? initialCameraPosition = SBBCameraPosition.highLevelCH,
+    SBBCameraPosition? initialCameraPosition = .highLevelCH,
     SBBMapPOISettings poiSettings = const SBBMapPOISettings(),
     void Function()? onStyleLoaded,
   }) => SBBMapSessionConfig(
@@ -84,8 +87,8 @@ void main() {
     initialCameraPosition: initialCameraPosition,
     poiSettings: poiSettings,
     onStyleLoaded: onStyleLoaded,
-    onMapClick: (_, _) => calls.add('click'),
-    onMapLongClick: (_, _) => calls.add('longClick'),
+    onMapClick: (_, _) => calls.add(.click),
+    onMapLongClick: (_, _) => calls.add(.longClick),
   );
 
   Future<void> sendInputEvents(SBBMapSession session) async {
@@ -115,7 +118,7 @@ void main() {
 
       await sendInputEvents(session);
 
-      expect(calls, ['click', 'longClick']);
+      expect(calls, <_Call>[.click, .longClick]);
       verify(floorController.updateAvailableFloors()).called(1);
       verify(locator.dismissTracking()).called(1);
     });
@@ -135,7 +138,7 @@ void main() {
       await session.onStyleLoaded();
       await sendInputEvents(session);
 
-      expect(calls, ['click', 'longClick']);
+      expect(calls, <_Call>[.click, .longClick]);
     });
 
     test('inputEvents_whenReloadingAfterStylerSwappedForDifferentStyle_shouldBeIgnoredUntilStyleLoaded', () async {
@@ -158,7 +161,7 @@ void main() {
       await session.onStyleLoaded();
       await sendInputEvents(session);
 
-      expect(calls, ['click', 'longClick']);
+      expect(calls, <_Call>[.click, .longClick]);
       verify(poiController.toggleSelectedPointOfInterest(_point)).called(1);
       verify(floorController.updateAvailableFloors()).called(1);
       verify(locator.dismissTracking()).called(1);
@@ -171,7 +174,7 @@ void main() {
       await session.update(recordingConfig(mapStyler: SBBCustomMapStyler(styles: [_brightStyle])));
       await sendInputEvents(session);
 
-      expect(calls, ['click', 'longClick']);
+      expect(calls, <_Call>[.click, .longClick]);
       verify(floorController.updateAvailableFloors()).called(1);
       verify(locator.dismissTracking()).called(1);
     });
@@ -251,18 +254,18 @@ void main() {
     SBBMapSessionConfig availableCallbacksConfig({
       bool isMyLocationEnabled = true,
       bool isFloorSwitchingEnabled = true,
-      SBBCameraPosition? initialCameraPosition = SBBCameraPosition.highLevelCH,
+      SBBCameraPosition? initialCameraPosition = .highLevelCH,
       void Function()? onStyleLoaded,
     }) => SBBMapSessionConfig(
       mapStyler: styler,
       initialCameraPosition: initialCameraPosition,
       isMyLocationEnabled: isMyLocationEnabled,
       isFloorSwitchingEnabled: isFloorSwitchingEnabled,
-      poiSettings: SBBMapPOISettings(onPoiControllerAvailable: (_) => calls.add('poi')),
-      onMapLocatorAvailable: (_) => calls.add('locator'),
-      onFloorControllerAvailable: (_) => calls.add('floor'),
-      onMapAnnotatorAvailable: (_) => calls.add('annotator'),
-      onRoutingControllerAvailable: (_) => calls.add('routing'),
+      poiSettings: SBBMapPOISettings(onPoiControllerAvailable: (_) => calls.add(.poi)),
+      onMapLocatorAvailable: (_) => calls.add(.locator),
+      onFloorControllerAvailable: (_) => calls.add(.floor),
+      onMapAnnotatorAvailable: (_) => calls.add(.annotator),
+      onRoutingControllerAvailable: (_) => calls.add(.routing),
       onStyleLoaded: onStyleLoaded,
     );
 
@@ -277,7 +280,7 @@ void main() {
 
       await loadFirstStyle(session);
 
-      expect(calls, ['locator', 'floor', 'poi', 'annotator', 'routing']);
+      expect(calls, <_Call>[.locator, .floor, .poi, .annotator, .routing]);
     });
 
     test('onStyleLoaded_whenLaterLoad_shouldNotFireAvailableCallbacksAgain', () async {
@@ -308,7 +311,7 @@ void main() {
       cameraMove.complete(true);
       await Future.wait([firstLoad, secondLoad]);
 
-      expect(calls, ['locator', 'floor', 'poi', 'annotator', 'routing']);
+      expect(calls, <_Call>[.locator, .floor, .poi, .annotator, .routing]);
       expect(styleLoadedCount, 2);
     });
 
@@ -319,15 +322,15 @@ void main() {
 
       await loadFirstStyle(session);
 
-      expect(calls, ['poi', 'annotator', 'routing']);
+      expect(calls, <_Call>[.poi, .annotator, .routing]);
     });
 
     test('onStyleLoaded_whenAnyLoad_shouldCallAppOnStyleLoaded', () async {
       final session = createSession(
         SBBMapSessionConfig(
           mapStyler: styler,
-          initialCameraPosition: SBBCameraPosition.highLevelCH,
-          onStyleLoaded: () => calls.add('styleLoaded'),
+          initialCameraPosition: .highLevelCH,
+          onStyleLoaded: () => calls.add(.styleLoaded),
         ),
       );
 
@@ -335,7 +338,7 @@ void main() {
       await reloadStyle(session);
       await reloadStyle(session);
 
-      expect(calls, ['styleLoaded', 'styleLoaded', 'styleLoaded']);
+      expect(calls, <_Call>[.styleLoaded, .styleLoaded, .styleLoaded]);
     });
 
     test('onStyleLoaded_whenAnyLoad_shouldResyncPoiController', () async {
@@ -402,7 +405,7 @@ void main() {
       await session.onMapClick(_point, _latLng);
 
       verify(poiController.toggleSelectedPointOfInterest(_point)).called(1);
-      expect(calls, ['click']);
+      expect(calls, <_Call>[.click]);
     });
 
     test('onMapClick_whenOnPoiSelectedNotSet_shouldNotTogglePoiSelection', () async {
@@ -412,7 +415,7 @@ void main() {
       await session.onMapClick(_point, _latLng);
 
       verifyNever(poiController.toggleSelectedPointOfInterest(any));
-      expect(calls, ['click']);
+      expect(calls, <_Call>[.click]);
     });
 
     test('onMapClick_whenUpdateSetsOnPoiSelected_shouldTogglePoiSelection', () async {
@@ -522,7 +525,7 @@ void main() {
     });
 
     test('mapEvents_whenDisposed_shouldBeIgnored', () async {
-      final session = createSession(recordingConfig(onStyleLoaded: () => calls.add('styleLoaded')));
+      final session = createSession(recordingConfig(onStyleLoaded: () => calls.add(.styleLoaded)));
       await loadFirstStyle(session);
       calls.clear();
       clearInteractions(poiController);
@@ -591,12 +594,12 @@ void main() {
         SBBMapSessionConfig(
           mapStyler: styler,
           isMyLocationEnabled: true,
-          poiSettings: SBBMapPOISettings(onPoiControllerAvailable: (_) => calls.add('poi')),
-          onMapLocatorAvailable: (_) => calls.add('locator'),
-          onFloorControllerAvailable: (_) => calls.add('floor'),
-          onMapAnnotatorAvailable: (_) => calls.add('annotator'),
-          onRoutingControllerAvailable: (_) => calls.add('routing'),
-          onStyleLoaded: () => calls.add('styleLoaded'),
+          poiSettings: SBBMapPOISettings(onPoiControllerAvailable: (_) => calls.add(.poi)),
+          onMapLocatorAvailable: (_) => calls.add(.locator),
+          onFloorControllerAvailable: (_) => calls.add(.floor),
+          onMapAnnotatorAvailable: (_) => calls.add(.annotator),
+          onRoutingControllerAvailable: (_) => calls.add(.routing),
+          onStyleLoaded: () => calls.add(.styleLoaded),
         ),
       );
       await session.onMapCreated(mapLibre);

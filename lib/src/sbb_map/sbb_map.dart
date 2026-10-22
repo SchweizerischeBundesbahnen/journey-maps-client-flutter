@@ -23,7 +23,7 @@ class SBBMap extends StatefulWidget {
     this.isMyLocationEnabled = false,
     this.onMapLocatorAvailable,
     this.isFloorSwitchingEnabled = true,
-    this.floorSwitcherOrientation = SBBMapFloorSwitcherOrientation.vertical,
+    this.floorSwitcherOrientation = .vertical,
     this.onFloorControllerAvailable,
     this.onRoutingControllerAvailable,
     this.builder,
