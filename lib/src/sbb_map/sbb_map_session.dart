@@ -125,7 +125,7 @@ class SBBMapSession with ChangeNotifier {
 
   static const Duration _moveToSwitzerlandDuration = Duration(milliseconds: 50);
 
-  static final SBBCameraUpdate _switzerlandBounds = SBBCameraUpdate.newLatLngBounds(
+  static final SBBCameraUpdate _switzerlandBounds = .newLatLngBounds(
     LatLngBounds(
       southwest: const LatLng(45.7769477403, 5.93960949059),
       northeast: const LatLng(47.8308275417, 10.6427014502),
@@ -137,12 +137,12 @@ class SBBMapSession with ChangeNotifier {
   final SBBMapStyler Function() _createDefaultMapStyler;
   SBBMapStyler? _defaultMapStyler;
 
-  _Lifecycle _lifecycle = _Lifecycle.awaitingMap;
+  _Lifecycle _lifecycle = .awaitingMap;
   bool _isFirstStyleLoad = true;
 
-  final Completer<MapLibreMapController> _mapLibreController = Completer<MapLibreMapController>();
-  final Completer<SBBMapController> _sbbMapController = Completer<SBBMapController>();
-  final Completer<SBBMapAnnotatorImpl> _mapAnnotator = Completer<SBBMapAnnotatorImpl>();
+  final Completer<MapLibreMapController> _mapLibreController = .new();
+  final Completer<SBBMapController> _sbbMapController = .new();
+  final Completer<SBBMapAnnotatorImpl> _mapAnnotator = .new();
   SBBMapAnnotatorImpl? _annotator;
   SBBMapControllerImpl? _sbbMapControllerImpl;
   late final SBBMapLocatorImpl _mapLocator;
@@ -162,10 +162,10 @@ class SBBMapSession with ChangeNotifier {
   /// Whether the "My Location" layer is currently enabled on the map.
   bool get isLocationEnabled => _mapLocator.isLocationEnabled;
 
-  bool get _isDisposed => _lifecycle == _Lifecycle.disposed;
+  bool get _isDisposed => _lifecycle == .disposed;
 
   /// False once disposed, so input events are ignored then too.
-  bool get _acceptsInput => _lifecycle == _Lifecycle.ready;
+  bool get _acceptsInput => _lifecycle == .ready;
 
   /// Replaces the configuration, e.g. when the `SBBMap` widget is rebuilt.
   ///
@@ -222,18 +222,18 @@ class SBBMapSession with ChangeNotifier {
   /// and annotations.
   Future<void> onStyleLoaded() async {
     if (_isDisposed) return;
-    if (_lifecycle == _Lifecycle.awaitingMap) {
+    if (_lifecycle == .awaitingMap) {
       // The map first loads MapLibre's default style, so the real style is set
       // here and its load is the first one.
       final controller = await _mapLibreController.future;
       await controller.setStyle(mapStyler.currentStyleURI);
       if (_isDisposed) return;
-      if (_lifecycle == _Lifecycle.awaitingMap) _lifecycle = _Lifecycle.reloading;
+      if (_lifecycle == .awaitingMap) _lifecycle = .reloading;
       notifyListeners();
       return;
     }
 
-    _lifecycle = _Lifecycle.ready;
+    _lifecycle = .ready;
     notifyListeners();
 
     // Claimed before any await, so a style load arriving meanwhile is not
@@ -304,7 +304,7 @@ class SBBMapSession with ChangeNotifier {
   /// that created it.
   @override
   void dispose() {
-    _lifecycle = _Lifecycle.disposed;
+    _lifecycle = .disposed;
     _mapLocator.removeListener(notifyListeners);
     _floorController.removeListener(notifyListeners);
     _routingController.removeListener(notifyListeners);
@@ -328,7 +328,7 @@ class SBBMapSession with ChangeNotifier {
     final controller = await _mapLibreController.future;
     if (_isDisposed) return;
     final setStyle = controller.setStyle(mapStyler.currentStyleURI);
-    if (_lifecycle == _Lifecycle.ready) _lifecycle = _Lifecycle.reloading;
+    if (_lifecycle == .ready) _lifecycle = .reloading;
     notifyListeners();
     await setStyle;
   }
