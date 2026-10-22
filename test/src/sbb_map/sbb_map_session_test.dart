@@ -464,6 +464,83 @@ void main() {
       verifyNever(locator.dismissTracking());
     });
 
+    test('dispose_whenFirstStyleBeingSet_shouldNotNotifyListeners', () async {
+      final setStyle = Completer<void>();
+      when(mapLibre.setStyle(any)).thenAnswer((_) => setStyle.future);
+      final session = createSession(recordingConfig());
+      var notifications = 0;
+      session.addListener(() => notifications++);
+      await session.onMapCreated(mapLibre);
+
+      final defaultStyleLoad = session.onStyleLoaded(); // MapLibre's default style, before the real one
+      await pumpEventQueue();
+      session.dispose();
+      setStyle.complete();
+      await defaultStyleLoad;
+
+      expect(notifications, 0);
+    });
+
+    test('dispose_whenStylerNotifiesJustBefore_shouldNotSetStyleNorNotifyListeners', () async {
+      final session = createSession(recordingConfig());
+      await loadFirstStyle(session);
+      clearInteractions(mapLibre);
+      var notifications = 0;
+      session.addListener(() => notifications++);
+
+      styler.toggleDarkMode();
+      session.dispose();
+      await pumpEventQueue();
+
+      verifyNever(mapLibre.setStyle(any));
+      expect(notifications, 0);
+    });
+
+    test('dispose_whenStylerSwappedJustBefore_shouldNotSetStyleNorNotifyListeners', () async {
+      final session = createSession(recordingConfig());
+      await loadFirstStyle(session);
+      clearInteractions(mapLibre);
+      var notifications = 0;
+      session.addListener(() => notifications++);
+
+      final update = session.update(recordingConfig(mapStyler: SBBCustomMapStyler(styles: [_otherStyle])));
+      session.dispose();
+      await update;
+
+      verifyNever(mapLibre.setStyle(any));
+      expect(notifications, 0);
+    });
+
+    test('dispose_whenFirstStyleLoadMovingCamera_shouldNotCallAppNorCollaborators', () async {
+      final cameraMove = Completer<bool?>();
+      when(mapLibre.animateCamera(any, duration: anyNamed('duration'))).thenAnswer((_) => cameraMove.future);
+      final session = createSession(
+        SBBMapSessionConfig(
+          mapStyler: styler,
+          isMyLocationEnabled: true,
+          poiSettings: SBBMapPOISettings(onPoiControllerAvailable: (_) => calls.add('poi')),
+          onMapLocatorAvailable: (_) => calls.add('locator'),
+          onFloorControllerAvailable: (_) => calls.add('floor'),
+          onMapAnnotatorAvailable: (_) => calls.add('annotator'),
+          onRoutingControllerAvailable: (_) => calls.add('routing'),
+          onStyleLoaded: () => calls.add('styleLoaded'),
+        ),
+      );
+      await session.onMapCreated(mapLibre);
+      await session.onStyleLoaded(); // MapLibre's default style, before the real one
+
+      unawaited(session.onStyleLoaded());
+      await pumpEventQueue();
+      session.dispose();
+      cameraMove.complete(true);
+      await pumpEventQueue();
+
+      expect(calls, isEmpty);
+      verifyNever(poiController.synchronizeWithNewStyle());
+      verifyNever(floorController.synchronizeWithNewStyle());
+      verifyNever(annotator.onStyleChanged());
+    });
+
     test('dispose_whenNoStylerGiven_shouldDisposeDefaultStyler', () {
       final defaultStyler = MockSBBMapStyler();
       final session = createSession(const SBBMapSessionConfig(), createDefaultMapStyler: () => defaultStyler);
