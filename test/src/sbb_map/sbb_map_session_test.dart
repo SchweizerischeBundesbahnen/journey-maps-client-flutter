@@ -487,6 +487,27 @@ void main() {
       verifyNever(mapLibre.setStyle(any));
     });
 
+    test('dispose_whenMapCreated_shouldDisposeMapControllerButNotMapLibreController', () async {
+      final controllers = <SBBMapController>[];
+      final session = createSession(SBBMapSessionConfig(mapStyler: styler, onMapCreated: controllers.add));
+      await session.onMapCreated(mapLibre);
+
+      session.dispose();
+
+      expect(() => controllers.single.addListener(() {}), throwsFlutterError);
+      verifyNever(mapLibre.dispose());
+    });
+
+    test('dispose_whenAppDisposedMapController_shouldNotThrow', () async {
+      final controllers = <SBBMapController>[];
+      final session = createSession(SBBMapSessionConfig(mapStyler: styler, onMapCreated: controllers.add));
+      await session.onMapCreated(mapLibre);
+      controllers.single.dispose();
+
+      expect(session.dispose, returnsNormally);
+      verifyNever(mapLibre.dispose());
+    });
+
     test('dispose_whenCreated_shouldStopListeningToLocatorFloorAndRoutingControllers', () {
       final session = createSession(recordingConfig());
       final locatorListener = verify(locator.addListener(captureAny)).captured.single;

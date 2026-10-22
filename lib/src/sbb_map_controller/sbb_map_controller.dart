@@ -55,4 +55,14 @@ abstract class SBBMapController with ChangeNotifier {
   /// Returns the most recent camera position reported by the platform side.
   /// Will be null, if [SBBMap.trackCameraPosition] is false.
   SBBCameraPosition? get cameraPosition;
+
+  /// Releases what this controller owns: its listeners and its subscription to
+  /// the camera updates of the map.
+  ///
+  /// The map itself is left running, since it belongs to the [SBBMap], which
+  /// also disposes this controller when it is disposed. Calling [dispose] more
+  /// than once is allowed, and no other method of this controller may be called
+  /// afterwards.
+  @override
+  void dispose() => super.dispose();
 }

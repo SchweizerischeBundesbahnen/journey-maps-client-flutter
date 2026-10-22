@@ -14,12 +14,17 @@ class SBBMapControllerImpl with ChangeNotifier implements SBBMapController {
   final SBBMapLocator _mapLocator;
   bool _isCameraMoving;
   SBBCameraPosition? _cameraPosition;
+  bool _isDisposed = false;
 
+  /// The [MapLibreMapController] is left to the [MapLibreMap] widget that
+  /// created it, which disposes it together with the platform view.
   @override
   void dispose() {
+    // Both the app and the Map Session may dispose this controller.
+    if (_isDisposed) return;
+    _isDisposed = true;
     _maplibreMapController.removeListener(_notifyListenersIfStateChanged);
     super.dispose();
-    _maplibreMapController.dispose();
   }
 
   @override

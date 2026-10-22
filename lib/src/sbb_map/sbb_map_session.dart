@@ -144,6 +144,7 @@ class SBBMapSession with ChangeNotifier {
   final Completer<SBBMapController> _sbbMapController = Completer<SBBMapController>();
   final Completer<SBBMapAnnotatorImpl> _mapAnnotator = Completer<SBBMapAnnotatorImpl>();
   SBBMapAnnotatorImpl? _annotator;
+  SBBMapControllerImpl? _sbbMapControllerImpl;
   late final SBBMapLocatorImpl _mapLocator;
   late final SBBMapFloorControllerImpl _floorController;
   late final SBBRoutingControllerImpl _routingController;
@@ -205,7 +206,10 @@ class SBBMapSession with ChangeNotifier {
   /// Handles the map being created: hands the [SBBMapController] to the app.
   Future<void> onMapCreated(MapLibreMapController controller) async {
     if (_isDisposed) return;
-    final sbbMapController = SBBMapControllerImpl(maplibreMapController: controller, mapLocator: _mapLocator);
+    final sbbMapController = _sbbMapControllerImpl = SBBMapControllerImpl(
+      maplibreMapController: controller,
+      mapLocator: _mapLocator,
+    );
 
     _mapLibreController.complete(controller);
     _sbbMapController.complete(sbbMapController);
@@ -294,8 +298,10 @@ class SBBMapSession with ChangeNotifier {
     _mapLocator.updateDeviceLocation(location.position);
   }
 
-  /// Releases everything the session created. A styler given in the config is
-  /// left to its owner.
+  /// Releases everything the session created, including the
+  /// [SBBMapController] handed to the app. A styler given in the config is left
+  /// to its owner, and the [MapLibreMapController] to the `MapLibreMap` widget
+  /// that created it.
   @override
   void dispose() {
     _lifecycle = _Lifecycle.disposed;
@@ -306,6 +312,7 @@ class SBBMapSession with ChangeNotifier {
     mapStyler.removeListener(_reactToStyleChange);
     _defaultMapStyler?.dispose();
     _annotator?.dispose();
+    _sbbMapControllerImpl?.dispose();
     _mapLocator.dispose();
     _routingController.dispose();
     _floorController.dispose();
