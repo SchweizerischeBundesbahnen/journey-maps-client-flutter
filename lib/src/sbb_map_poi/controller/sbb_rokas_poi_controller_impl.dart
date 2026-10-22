@@ -32,17 +32,19 @@ class SBBRokasPOIControllerImpl with ChangeNotifier implements SBBRokasPOIContro
 
   SBBRokasPOIControllerImpl({
     required Future<MapLibreMapController> controller,
-    this.onPoiSelected,
-    this.onPoiDeselected,
+    OnPoiSelected? onPoiSelected,
+    VoidCallback? onPoiDeselected,
     bool Function()? isDarkMode,
   }) : _controller = controller,
+       _onPoiSelected = onPoiSelected,
+       _onPoiDeselected = onPoiDeselected,
        _isDarkMode = isDarkMode ?? _notDarkMode;
 
   static bool _notDarkMode() => false;
 
   final Future<MapLibreMapController> _controller;
-  final OnPoiSelected? onPoiSelected;
-  final VoidCallback? onPoiDeselected;
+  OnPoiSelected? _onPoiSelected;
+  VoidCallback? _onPoiDeselected;
 
   final bool Function() _isDarkMode;
 
@@ -151,6 +153,30 @@ class SBBRokasPOIControllerImpl with ChangeNotifier implements SBBRokasPOIContro
     _updateAndNotifyListenersIfChanged(filters: null, visibility: null, selectedPOI: poi);
   }
 
+  /// Replaces the callbacks called on POI selection and deselection.
+  ///
+  /// Whether [onPoiSelected] is set decides which style layer shows the
+  /// [SBBRokasPoiLayer.baseWithFloor] POIs (clickable or not). When that
+  /// changes, the layer's category filter and visibility are applied to the
+  /// newly used style layer and the previously used one is hidden.
+  Future<void> updateSelectionCallbacks({
+    required OnPoiSelected? onPoiSelected,
+    required VoidCallback? onPoiDeselected,
+  }) async {
+    final previousLayerId = _layerIdFromPoiLayer(SBBRokasPoiLayer.baseWithFloor);
+    _onPoiSelected = onPoiSelected;
+    _onPoiDeselected = onPoiDeselected;
+    if (_layerIdFromPoiLayer(SBBRokasPoiLayer.baseWithFloor) == previousLayerId) return;
+
+    await _controller.then((c) async {
+      await c.setLayerVisibility(previousLayerId, false);
+      await _reapplyFilter(c, SBBRokasPoiLayer.baseWithFloor);
+      if (_layerToVisibility[SBBRokasPoiLayer.baseWithFloor]!) {
+        await c.setLayerVisibility(_layerIdFromPoiLayer(SBBRokasPoiLayer.baseWithFloor), true);
+      }
+    });
+  }
+
   /// This method is called by [SBBMap] whenever the style changes.
   ///
   /// This reapplies all filters and visibilities to the style / layers.
@@ -212,14 +238,14 @@ class SBBRokasPOIControllerImpl with ChangeNotifier implements SBBRokasPOIContro
     await _controller.then((c) async {
       c.setFilter(_rokasSelectedPoiLayerId, _buildSbbIdFilter(poi.sbbId));
       c.setLayerProperties(_rokasSelectedPoiLayerId, _selectedPoiLayerProperties(isSelectionVisible: true));
-      onPoiSelected?.call(poi);
+      _onPoiSelected?.call(poi);
     });
   }
 
   Future<void> _deselectPointOfInterest() {
     return _controller.then((c) async {
       c.setLayerProperties(_rokasSelectedPoiLayerId, _selectedPoiLayerProperties(isSelectionVisible: false));
-      onPoiDeselected?.call();
+      _onPoiDeselected?.call();
     });
   }
 
@@ -247,7 +273,7 @@ class SBBRokasPOIControllerImpl with ChangeNotifier implements SBBRokasPOIContro
 
   String _layerIdFromPoiLayer(SBBRokasPoiLayer layer) => switch (layer) {
     SBBRokasPoiLayer.baseWithFloor =>
-      onPoiSelected != null ? _rokasBaseLvlPoiClickableLayerId : _rokasBaseLvlPoiNonClickableLayerId,
+      _onPoiSelected != null ? _rokasBaseLvlPoiClickableLayerId : _rokasBaseLvlPoiNonClickableLayerId,
     SBBRokasPoiLayer.highlighted => _rokasHighlightedPoiLayerId,
   };
 
@@ -289,13 +315,15 @@ class SBBRokasPOIControllerImpl with ChangeNotifier implements SBBRokasPOIContro
     return Future.wait(result);
   }
 
-  Future<void> _reapplyAllFilters(MapLibreMapController c) {
-    final List<Future<void>> result = [];
-    for (final element in _layerToCategoryFilters.entries) {
-      if (const SetEquality().equals(element.value, _allPoiCategories())) continue;
-      result.add(_applyFilterToLayer(c, element.key, element.value));
-    }
-    return Future.wait(result);
+  Future<void> _reapplyAllFilters(MapLibreMapController c) =>
+      Future.wait(_layerToCategoryFilters.keys.map((layer) => _reapplyFilter(c, layer)));
+
+  /// Applies the layer's category filter to its style layer, unless it keeps
+  /// all categories.
+  Future<void> _reapplyFilter(MapLibreMapController c, SBBRokasPoiLayer layer) async {
+    final filter = _layerToCategoryFilters[layer]!;
+    if (const SetEquality().equals(filter, _allPoiCategories())) return;
+    await _applyFilterToLayer(c, layer, filter);
   }
 
   Future<void> _applyFilterToLayer(
