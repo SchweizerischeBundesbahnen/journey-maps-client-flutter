@@ -73,7 +73,9 @@ abstract class SBBRokasPOIController with ChangeNotifier {
   /// Only works if the POIs are visible. Only POIs in the loaded map tiles can
   /// be found by [sbbId]. If none is found, the currently selected POI is
   /// deselected.
-  Future<void> selectPointOfInterest({required String sbbId});
+  ///
+  /// Returns [selectedPointOfInterest] after the call.
+  Future<RokasPOI?> selectPointOfInterest({required String sbbId});
 
   /// For selection of a POI at [LatLng] [coordinates].
   ///
@@ -82,7 +84,9 @@ abstract class SBBRokasPOIController with ChangeNotifier {
   /// Set the [zoomLevel] to make sure the desired POIs are rendered.
   ///
   /// Will move the camera center to the given [coordinates].
-  Future<void> selectPointOfInterestAt({required LatLng coordinates, double zoomLevel});
+  ///
+  /// Returns [selectedPointOfInterest] after the call.
+  Future<RokasPOI?> selectPointOfInterestAt({required LatLng coordinates, double zoomLevel});
 
   /// Deselects the currently selected POI.
   ///
