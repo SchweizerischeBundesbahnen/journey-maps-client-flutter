@@ -16,7 +16,13 @@ import '../../../sbb_maps_flutter.dart';
 /// can be queried with [availablePOICategories].
 ///
 /// The [SBBRokasPOIController] is a [ChangeNotifier] and notifies listeners
-/// when the POI visibility or the POI category filter changes.
+/// when the POI visibility, the POI category filter or the
+/// [selectedPointOfInterest] changes.
+///
+/// Whenever [selectedPointOfInterest] changes, listeners are notified first
+/// and then [SBBMapPOISettings.onPoiSelected] or
+/// [SBBMapPOISettings.onPoiDeselected] is called, so both already see the new
+/// value. Two POIs count as the same when their [RokasPOI.sbbId] is equal.
 abstract class SBBRokasPOIController with ChangeNotifier {
   /// Get the available POI categories.
   List<SBBPoiCategoryType> get availablePOICategories;
@@ -55,6 +61,8 @@ abstract class SBBRokasPOIController with ChangeNotifier {
   ///
   /// The currently applied POI category's filter can be queried with
   /// [getCategoryFilterByLayer].
+  ///
+  /// Does not change the [selectedPointOfInterest].
   Future<void> showPointsOfInterest({
     SBBRokasPoiLayer layer = SBBRokasPoiLayer.baseWithFloor,
     List<SBBPoiCategoryType>? categories,
@@ -63,16 +71,20 @@ abstract class SBBRokasPOIController with ChangeNotifier {
   /// Hides points of interest.
   ///
   /// [layer] allows controlling which ROKAS POI will be hidden.
+  ///
+  /// If no POI layer stays visible, the selected POI is deselected.
   Future<void> hidePointsOfInterest({SBBRokasPoiLayer layer = SBBRokasPoiLayer.baseWithFloor});
 
   /// Hides all points of interest regardless of the [SBBRokasPoiLayer].
+  ///
+  /// Deselects the selected POI.
   Future<void> hideAllPointsOfInterest();
 
   /// For programmatic selection of a POI.
   ///
   /// Only works if the POIs are visible. Only POIs in the loaded map tiles can
   /// be found by [sbbId]. If none is found, the currently selected POI is
-  /// deselected.
+  /// deselected. Selecting the already selected POI changes nothing.
   ///
   /// Returns [selectedPointOfInterest] after the call.
   Future<RokasPOI?> selectPointOfInterest({required String sbbId});
@@ -80,7 +92,8 @@ abstract class SBBRokasPOIController with ChangeNotifier {
   /// For selection of a POI at [LatLng] [coordinates].
   ///
   /// Only works if POIs are visible. If no POI is underneath the given
-  /// [coordinates], the currently selected POI is deselected.
+  /// [coordinates], the currently selected POI is deselected. Selecting the
+  /// already selected POI changes nothing.
   /// Set the [zoomLevel] to make sure the desired POIs are rendered.
   ///
   /// Will move the camera center to the given [coordinates].
@@ -94,5 +107,8 @@ abstract class SBBRokasPOIController with ChangeNotifier {
   Future<void> deselectPointOfInterest();
 
   /// The currently selected POI.
+  ///
+  /// The highlight on the map is shown exactly while this is not null. It is
+  /// kept when the map style changes, unless the new style cannot show it.
   RokasPOI? get selectedPointOfInterest;
 }
