@@ -46,7 +46,9 @@ jobs:
 
       - run: flutter pub get
       - run: dart run build_runner build
-      - run: flutter build appbundle --profile --no-pub
+      - run: flutter build appbundle --release --no-pub
+        env:
+          SIGN_RELEASE_WITH_DEBUG_KEY: "true"
 
   build-iOS:
     name: Build iOS

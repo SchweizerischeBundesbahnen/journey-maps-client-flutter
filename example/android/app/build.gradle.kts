@@ -52,7 +52,12 @@ android {
 
     buildTypes {
         getByName("release") {
-            signingConfig = signingConfigs.getByName("release")
+            // for CI builds that have no access to the upload key
+            signingConfig = if (System.getenv("SIGN_RELEASE_WITH_DEBUG_KEY") == "true") {
+                signingConfigs.getByName("debug")
+            } else {
+                signingConfigs.getByName("release")
+            }
         }
     }
 }
