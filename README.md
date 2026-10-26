@@ -204,10 +204,10 @@ zoom level to start the map
 
 |               | iOS  | Android SDK |
 |---------------|------|-------------|
-| Oldest Tested | 15.5 | 28          |
-| Latest Tested | 26.6 | 37.1        |
+| Oldest Tested | 18.6 | 28          |
+| Latest Tested | 27.0 | 37.1        |
 
-All versions are tested with the latest (3.47.x) and oldest supported (3.38.1) Flutter SDK.
+All versions are tested with the latest (3.47.x) and oldest supported (3.41.0) Flutter SDK.
 
 #### Example App
 
