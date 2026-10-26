@@ -6,13 +6,10 @@ on:
       - closed
     branches:
       - main
-  workflow_dispatch:
 
 jobs:
   setup:
-    if: >-
-      github.event_name == 'workflow_dispatch' ||
-      (github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'exampleAppRelease:pending'))
+    if: github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'exampleAppRelease:pending')
     uses: ./.github/workflows/setup_flutter_toolchain.yml
 
   release-android-example-app:
@@ -81,7 +78,6 @@ jobs:
 
   label-cleanup:
     needs: release-android-example-app
-    if: github.event_name == 'pull_request_target'
     runs-on: ubuntu-latest
     env:
       PR_NUMBER: ${{ github.event.number }}
