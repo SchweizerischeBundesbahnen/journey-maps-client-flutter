@@ -43,7 +43,7 @@ class SBBMapFloorControllerImpl with ChangeNotifier implements SBBMapFloorContro
 
     int? updatedFloor = _currentFloor;
     if (_currentFloorShouldBeReset(updatedFloors)) {
-      _selectFloor(floor: 0);
+      await _selectFloor(floor: 0);
       updatedFloor = null;
     }
     _notifyListenersIfChanged(currentFloor: updatedFloor, availableFloors: updatedFloors);
@@ -146,8 +146,9 @@ class SBBMapFloorControllerImpl with ChangeNotifier implements SBBMapFloorContro
     final newFilter = [oldFilter[0]];
     bool floorFound = false;
     oldFilter.slice(1).forEach((item) {
-      if (item is String && _isFloorFilter(item)) {
-        // "floor" in "rokas_indoor" and "geojson_walk" layers
+      if (_isFloorOperand(item)) {
+        // "floor" in "rokas_indoor" and "geojson_walk" layers,
+        // or ['get','floor'] when filter: ['==', ['get','floor'], 0]
         floorFound = true;
         newFilter.add(item);
       } else if (item is List && _isBooleanGroup(item.firstOrNull)) {
@@ -168,9 +169,8 @@ class SBBMapFloorControllerImpl with ChangeNotifier implements SBBMapFloorContro
             levelFound = true;
             newInnerPart.add(innerPart);
           } else if (_isFloorFilter(innerPartString)) {
+            // when filter: ['all', ['==', ['get','floor'], 0]]
             levelFound = true;
-            // when filter: ['==', ['get','floor'], 0]
-            floorFound = true;
             newInnerPart.add(innerPart);
           } else if (levelFound) {
             levelFound = false;
@@ -213,7 +213,18 @@ class SBBMapFloorControllerImpl with ChangeNotifier implements SBBMapFloorContro
     return filterOperator == '==' && innerPartString == '["get","level"]';
   }
 
+  /// Whether [item], an operand of the filter root, is itself a reference to
+  /// the `floor` property, so the operand following it is the floor scalar.
+  bool _isFloorOperand(dynamic item) {
+    if (item is! String && item is! List) return false;
+    final itemString = jsonEncode(item);
+    return itemString == '"floor"' || itemString == '["get","floor"]';
+  }
+
+  /// A reference to the `floor` property: the bare `"floor"` name of the
+  /// legacy filter form, or a `["get","floor"]` read, also inside a `case`.
+  /// Other properties such as `floor_type` do not match.
   bool _isFloorFilter(String innerPartString) {
-    return innerPartString.contains('floor');
+    return innerPartString == '"floor"' || innerPartString.contains('["get","floor"]');
   }
 }
