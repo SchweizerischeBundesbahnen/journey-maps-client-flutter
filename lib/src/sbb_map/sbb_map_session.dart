@@ -54,7 +54,7 @@ class SBBMapSessionConfig {
   final OnMapAnnotatorAvailable? onMapAnnotatorAvailable;
 }
 
-enum _Lifecycle { awaitingMap, reloading, ready, disposed }
+enum _Lifecycle { loading, ready, disposed }
 
 /// The Map Session of one `SBBMap`: from map created to disposed, across every
 /// style load in between.
@@ -96,6 +96,7 @@ class SBBMapSession with ChangeNotifier {
        _createAnnotator = createAnnotator ?? ((c) => SBBMapAnnotatorImpl(controller: c)),
        // ignore: deprecated_member_use_from_same_package
        _createDefaultMapStyler = createDefaultMapStyler ?? SBBRokasMapStyler.full {
+    _initialStyleURI = mapStyler.currentStyleURI;
     mapStyler.addListener(_reactToStyleChange);
 
     _mapLocator = mapLocator ?? SBBMapLocatorImpl(_mapLibreController.future, PermissionHandlerFacade());
@@ -136,8 +137,9 @@ class SBBMapSession with ChangeNotifier {
   final SBBMapAnnotatorImpl Function(MapLibreMapController controller) _createAnnotator;
   final SBBMapStyler Function() _createDefaultMapStyler;
   SBBMapStyler? _defaultMapStyler;
+  late final String _initialStyleURI;
 
-  _Lifecycle _lifecycle = .awaitingMap;
+  _Lifecycle _lifecycle = .loading;
   bool _isFirstStyleLoad = true;
 
   final Completer<MapLibreMapController> _mapLibreController = .new();
@@ -152,6 +154,10 @@ class SBBMapSession with ChangeNotifier {
 
   /// The styler given in the config, or a default one owned by this session.
   SBBMapStyler get mapStyler => _config.mapStyler ?? (_defaultMapStyler ??= _createDefaultMapStyler());
+
+  /// The style the map is created with: the styler's style when the session
+  /// was created. Later style changes are set on the map by the session.
+  String get initialStyleURI => _initialStyleURI;
 
   /// The locator of the device position and the "My Location" tracking.
   SBBMapLocator get mapLocator => _mapLocator;
@@ -218,21 +224,10 @@ class SBBMapSession with ChangeNotifier {
   }
 
   /// Handles a style load: makes the map accept input, hands the controllers
-  /// to the app on the first real load, and re-syncs POIs, the selected floor
+  /// to the app on the first load, and re-syncs POIs, the selected floor
   /// and annotations.
   Future<void> onStyleLoaded() async {
     if (_isDisposed) return;
-    if (_lifecycle == .awaitingMap) {
-      // The map first loads MapLibre's default style, so the real style is set
-      // here and its load is the first one.
-      final controller = await _mapLibreController.future;
-      await controller.setStyle(mapStyler.currentStyleURI);
-      if (_isDisposed) return;
-      if (_lifecycle == .awaitingMap) _lifecycle = .reloading;
-      notifyListeners();
-      return;
-    }
-
     _lifecycle = .ready;
     notifyListeners();
 
@@ -322,13 +317,13 @@ class SBBMapSession with ChangeNotifier {
 
   void _reactToStyleChange() => _reloadStyle();
 
-  /// Sets the current styler's style on the map. Once the map is ready, input
-  /// is ignored until that style has loaded.
+  /// Sets the current styler's style on the map. Input is then ignored until
+  /// that style has loaded.
   Future<void> _reloadStyle() async {
     final controller = await _mapLibreController.future;
     if (_isDisposed) return;
     final setStyle = controller.setStyle(mapStyler.currentStyleURI);
-    if (_lifecycle == .ready) _lifecycle = .reloading;
+    _lifecycle = .loading;
     notifyListeners();
     await setStyle;
   }

@@ -259,6 +259,8 @@ class _SBBMapState extends State<SBBMap> {
     return Stack(
       children: [
         MapLibreMap(
+          // Kept constant: MapLibre would reload a changed styleString.
+          styleString: _session.initialStyleURI,
           initialCameraPosition:
               widget.initialCameraPosition?.toMaplibre() ?? SBBCameraPosition.highLevelCH.toMaplibre(),
           onMapCreated: _session.onMapCreated,
