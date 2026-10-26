@@ -246,7 +246,7 @@ class SBBRokasPOIControllerImpl with ChangeNotifier implements SBBRokasPOIContro
       await _deselectPointOfInterest();
     }
     _updateAndNotifyListenersIfChanged(visibility: null, filters: null, selectedPOI: poi);
-    return poi;
+    return _selectedPOI;
   }
 
   Future<void> _deselectPointOfInterest() {
