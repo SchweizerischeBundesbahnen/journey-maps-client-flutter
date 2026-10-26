@@ -10,6 +10,14 @@ on:
     secrets:
       example_app_env_file_base64:
         required: true
+      android_keystore_base64:
+        required: true
+      signing_keystore_password:
+        required: true
+      signing_key_password:
+        required: true
+      signing_key_alias:
+        required: true
 
 jobs:
   build-android:
@@ -44,11 +52,20 @@ jobs:
           fileDir: "./example"
           encodedString: ${{ secrets.example_app_env_file_base64 }}
 
+      - name: Write Keystore from base64 encoded secret
+        uses: timheuer/base64-to-file@v2.0
+        with:
+          fileName: "sbb_maps_flutter_example_keystore.jks"
+          fileDir: "./example/android/app/keys"
+          encodedString: ${{ secrets.android_keystore_base64 }}
+
       - run: flutter pub get
       - run: dart run build_runner build
       - run: flutter build appbundle --release --no-pub
         env:
-          SIGN_RELEASE_WITH_DEBUG_KEY: "true"
+          SIGNING_KEYSTORE_PASSWORD: ${{ secrets.signing_keystore_password }}
+          SIGNING_KEY_PASSWORD: ${{ secrets.signing_key_password }}
+          SIGNING_KEY_ALIAS: ${{ secrets.signing_key_alias }}
 
   build-iOS:
     name: Build iOS

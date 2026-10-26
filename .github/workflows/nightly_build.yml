@@ -35,6 +35,10 @@ jobs:
       flutter_sdks: ${{ format('["{0}",""]', needs.setup.outputs.floor) }}
     secrets:
       example_app_env_file_base64: ${{ secrets.EXAMPLE_APP_ENV_FILE_PROD_BASE64 }}
+      android_keystore_base64: ${{ secrets.ANDROID_KEYSTORE_64 }}
+      signing_keystore_password: ${{ secrets.SIGNING_KEYSTORE_PASSWORD }}
+      signing_key_password: ${{ secrets.SIGNING_KEY_PASSWORD }}
+      signing_key_alias: ${{ secrets.SIGNING_KEY_ALIAS }}
 
   check-support-window-drift:
     needs: [ setup ]
