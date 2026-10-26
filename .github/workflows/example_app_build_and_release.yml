@@ -6,15 +6,22 @@ on:
       - closed
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   setup:
-    if: github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'exampleAppRelease:pending')
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'exampleAppRelease:pending'))
     uses: ./.github/workflows/setup_flutter_toolchain.yml
 
   release-android-example-app:
     needs: [ setup ]
     runs-on: ubuntu-latest
+    env:
+      SIGNING_KEYSTORE_PASSWORD: ${{ secrets.SIGNING_KEYSTORE_PASSWORD }}
+      SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
+      SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
     defaults:
       run:
         working-directory: example
@@ -49,10 +56,6 @@ jobs:
       - run: flutter pub get
       - run: dart run build_runner build
       - run: flutter build appbundle --no-pub
-        env:
-          SIGNING_KEYSTORE_PASSWORD: ${{ secrets.SIGNING_KEYSTORE_PASSWORD }}
-          SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
-          SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
 
       - name: Create Signing Report
         run: ./gradlew signingReport
@@ -78,6 +81,7 @@ jobs:
 
   label-cleanup:
     needs: release-android-example-app
+    if: github.event_name == 'pull_request_target'
     runs-on: ubuntu-latest
     env:
       PR_NUMBER: ${{ github.event.number }}
