@@ -7,7 +7,6 @@ plugins {
     id("kotlin-android")
     id("dev.flutter.flutter-gradle-plugin")
     id("com.github.triplet.play")
-    id("maven-publish")
 }
 
 // for local signing
@@ -20,7 +19,8 @@ if (keystorePropertiesFile.exists()) {
 android {
     namespace = "ch.sbb.maps.flutter"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = "28.1.13356709" // required by maplibre_gl
+    // preinstalled on the GitHub ubuntu runner; must not be lower than the plugins' NDK (28.2)
+    ndkVersion = "29.0.14206865"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
@@ -70,35 +70,9 @@ play {
     artifactDir.set(file("../../build/app/outputs/bundle/release"))
 }
 
-publishing {
-    publications {
-        create<MavenPublication>("app-release") {
-            artifact(layout.buildDirectory.file("outputs/bundle/release/app-release.aab"))
-            groupId = "ch.sbb.rokas.flutter"
-            artifactId = "ch.sbb.maps.flutter.example"
-            version = flutter.versionName
-        }
-    }
-    repositories {
-        maven {
-            name = "temp"
-            url = uri(rootProject.layout.buildDirectory.get().asFile)
-        }
-    }
-}
-
 flutter {
     source = "../.."
 }
 
 dependencies {}
-
-afterEvaluate {
-    tasks.named("bundleRelease") {
-        finalizedBy("assembleRelease")
-    }
-    tasks.named("assembleRelease") {
-        finalizedBy("publishApp-releasePublicationToTempRepository")
-    }
-}
 
