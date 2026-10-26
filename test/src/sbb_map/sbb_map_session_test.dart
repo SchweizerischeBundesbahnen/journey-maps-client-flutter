@@ -69,11 +69,9 @@ void main() {
         createDefaultMapStyler: createDefaultMapStyler,
       );
 
-  /// The first load: MapLibre loads its own default style, the session sets
-  /// the real style, and the second style load is the first real one.
+  /// The first load: the map is created with the styler's style and loads it.
   Future<void> loadFirstStyle(SBBMapSession session) async {
     await session.onMapCreated(mapLibre);
-    await session.onStyleLoaded();
     await session.onStyleLoaded();
   }
 
@@ -101,10 +99,9 @@ void main() {
   group('input gating', () {
     test('inputEvents_whenStyleNotYetLoaded_shouldBeIgnored', () async {
       final session = createSession(recordingConfig());
-      await session.onMapCreated(mapLibre);
       await sendInputEvents(session);
 
-      await session.onStyleLoaded(); // MapLibre's default style, before the real one
+      await session.onMapCreated(mapLibre);
       await sendInputEvents(session);
 
       expect(calls, isEmpty);
@@ -181,6 +178,15 @@ void main() {
   });
 
   group('map styler', () {
+    test('initialStyleURI_whenStylerChangesLater_shouldStayStylersStyleAtCreation', () {
+      final session = createSession(recordingConfig());
+
+      styler.toggleDarkMode();
+      session.update(recordingConfig(mapStyler: SBBCustomMapStyler(styles: [_otherStyle])));
+
+      expect(session.initialStyleURI, 'bright_uri');
+    });
+
     test('stylerNotification_whenStyleLoaded_shouldSetStylersCurrentStyleOnMap', () async {
       final session = createSession(recordingConfig());
       await loadFirstStyle(session);
@@ -199,6 +205,19 @@ void main() {
 
       verify(mapLibre.setStyle('dark_uri')).called(1);
       session.dispose();
+    });
+
+    test('stylerNotification_whenBeforeMapCreated_shouldSetStylersCurrentStyleOnceMapCreated', () async {
+      final session = createSession(recordingConfig());
+
+      styler.toggleDarkMode();
+      await pumpEventQueue();
+      verifyNever(mapLibre.setStyle(any));
+
+      await session.onMapCreated(mapLibre);
+      await pumpEventQueue();
+
+      verify(mapLibre.setStyle('dark_uri')).called(1);
     });
 
     test('update_whenStylerSwappedForDifferentStyle_shouldSetNewStyle', () async {
@@ -283,6 +302,23 @@ void main() {
       expect(calls, <_Call>[.locator, .floor, .poi, .annotator, .routing]);
     });
 
+    test('onStyleLoaded_whenFirstLoad_shouldNotSetStyle', () async {
+      final session = createSession(availableCallbacksConfig());
+
+      await loadFirstStyle(session);
+
+      verifyNever(mapLibre.setStyle(any));
+    });
+
+    test('onStyleLoaded_whenFirstLoad_shouldCallAppOnStyleLoadedOnce', () async {
+      var styleLoadedCount = 0;
+      final session = createSession(availableCallbacksConfig(onStyleLoaded: () => styleLoadedCount++));
+
+      await loadFirstStyle(session);
+
+      expect(styleLoadedCount, 1);
+    });
+
     test('onStyleLoaded_whenLaterLoad_shouldNotFireAvailableCallbacksAgain', () async {
       final session = createSession(availableCallbacksConfig());
       await loadFirstStyle(session);
@@ -302,7 +338,6 @@ void main() {
         availableCallbacksConfig(initialCameraPosition: null, onStyleLoaded: () => styleLoadedCount++),
       );
       await session.onMapCreated(mapLibre);
-      await session.onStyleLoaded(); // MapLibre's default style, before the real one
 
       final firstLoad = session.onStyleLoaded();
       await pumpEventQueue();
@@ -540,23 +575,6 @@ void main() {
       verifyNever(locator.dismissTracking());
     });
 
-    test('dispose_whenFirstStyleBeingSet_shouldNotNotifyListeners', () async {
-      final setStyle = Completer<void>();
-      when(mapLibre.setStyle(any)).thenAnswer((_) => setStyle.future);
-      final session = createSession(recordingConfig());
-      var notifications = 0;
-      session.addListener(() => notifications++);
-      await session.onMapCreated(mapLibre);
-
-      final defaultStyleLoad = session.onStyleLoaded(); // MapLibre's default style, before the real one
-      await pumpEventQueue();
-      session.dispose();
-      setStyle.complete();
-      await defaultStyleLoad;
-
-      expect(notifications, 0);
-    });
-
     test('dispose_whenStylerNotifiesJustBefore_shouldNotSetStyleNorNotifyListeners', () async {
       final session = createSession(recordingConfig());
       await loadFirstStyle(session);
@@ -603,7 +621,6 @@ void main() {
         ),
       );
       await session.onMapCreated(mapLibre);
-      await session.onStyleLoaded(); // MapLibre's default style, before the real one
 
       unawaited(session.onStyleLoaded());
       await pumpEventQueue();
