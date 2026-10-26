@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 import 'package:mockito/annotations.dart';
@@ -139,6 +141,51 @@ void main() {
         expect(sut.currentFloor, null);
         verify(listener()).called(2);
       });
+      test('switchFloor_ifFloorNoLongerAvailableInSource_shouldApplyGroundFloorBeforeNotifying', () async {
+        // arrange
+        when(mockController.getLayerIds()).thenAnswer((_) async => oneLevelLayers);
+        when(mockController.getFilter('layer2-lvl')).thenAnswer((_) async => layer2Level0Filter);
+        await sut.switchFloor(-1);
+        final layerIds = Completer<List<dynamic>>();
+        when(mockController.getLayerIds()).thenAnswer((_) => layerIds.future);
+        when(mockController.querySourceFeatures(any, any, any)).thenAnswer((_) async => oneFeatureGroundAndFirstFloor);
+        var notifications = 0;
+        sut.addListener(() {
+          notifications++;
+          expect(layerIds.isCompleted, isTrue);
+        });
+
+        // act
+        final update = sut.updateAvailableFloors();
+        await pumpEventQueue();
+
+        // expect
+        expect(notifications, 0);
+        layerIds.complete(oneLevelLayers);
+        await update;
+        expect(notifications, 1);
+        expect(sut.currentFloor, null);
+      });
+      test('switchFloor_ifFloorNoLongerAvailableInSource_shouldNotCompleteBeforeGroundFloorIsApplied', () async {
+        // arrange
+        when(mockController.getLayerIds()).thenAnswer((_) async => oneLevelLayers);
+        when(mockController.getFilter('layer2-lvl')).thenAnswer((_) async => layer2Level0Filter);
+        await sut.switchFloor(-1);
+        final layerIds = Completer<List<dynamic>>();
+        when(mockController.getLayerIds()).thenAnswer((_) => layerIds.future);
+        when(mockController.querySourceFeatures(any, any, any)).thenAnswer((_) async => oneFeatureGroundAndFirstFloor);
+        var updateCompleted = false;
+
+        // act
+        final update = sut.updateAvailableFloors().then((_) => updateCompleted = true);
+        await pumpEventQueue();
+
+        // expect
+        expect(updateCompleted, isFalse);
+        layerIds.complete(oneLevelLayers);
+        await update;
+        expect(updateCompleted, isTrue);
+      });
       test('switchFloor_whenNoLevelLayersAvailable_anyFloorSwitchShouldNotApplyFilters', () async {
         // arrange mock controller
         when(mockController.getLayerIds()).thenAnswer((_) async => noLevelLayers);
@@ -268,6 +315,62 @@ void main() {
         // expect
         expect(sut.currentFloor, 1);
         verify(mockController.setFilter('layer2-lvl', nestedZoomGroupsLevel1Filter)).called(1);
+      });
+
+      test('switchFloor_whenFilterReadsOtherFloorProperties_shouldOnlySubstituteTheFloor', () async {
+        // arrange mock controller
+        when(mockController.getLayerIds()).thenAnswer((_) async => oneLevelLayers);
+        when(mockController.getFilter('layer2-lvl')).thenAnswer((_) async => floorTypeReadFloor0Filter);
+        when(mockController.setFilter(any, any)).thenAnswer((_) async => {});
+
+        // act
+        await sut.switchFloor(1);
+
+        // expect
+        expect(sut.currentFloor, 1);
+        verify(mockController.setFilter('layer2-lvl', floorTypeReadFloor1Filter)).called(1);
+      });
+
+      test('switchFloor_whenLegacyFloorFilter_shouldApplyFilter', () async {
+        // arrange mock controller
+        when(mockController.getLayerIds()).thenAnswer((_) async => oneLevelLayers);
+        when(mockController.getFilter('layer2-lvl')).thenAnswer((_) async => legacyFloor0Filter);
+        when(mockController.setFilter(any, any)).thenAnswer((_) async => {});
+
+        // act
+        await sut.switchFloor(1);
+
+        // expect
+        expect(sut.currentFloor, 1);
+        verify(mockController.setFilter('layer2-lvl', legacyFloor1Filter)).called(1);
+      });
+
+      test('switchFloor_whenTopLevelFloorReadFilter_shouldApplyFilter', () async {
+        // arrange mock controller
+        when(mockController.getLayerIds()).thenAnswer((_) async => oneLevelLayers);
+        when(mockController.getFilter('layer2-lvl')).thenAnswer((_) async => topLevelFloorRead0Filter);
+        when(mockController.setFilter(any, any)).thenAnswer((_) async => {});
+
+        // act
+        await sut.switchFloor(1);
+
+        // expect
+        expect(sut.currentFloor, 1);
+        verify(mockController.setFilter('layer2-lvl', topLevelFloorRead1Filter)).called(1);
+      });
+
+      test('switchFloor_whenFloorClauseIsFollowedByScalar_shouldLeaveTheScalarUntouched', () async {
+        // arrange mock controller
+        when(mockController.getLayerIds()).thenAnswer((_) async => oneLevelLayers);
+        when(mockController.getFilter('layer2-lvl')).thenAnswer((_) async => floorClauseThenScalarFloor0Filter);
+        when(mockController.setFilter(any, any)).thenAnswer((_) async => {});
+
+        // act
+        await sut.switchFloor(1);
+
+        // expect
+        expect(sut.currentFloor, 1);
+        verify(mockController.setFilter('layer2-lvl', floorClauseThenScalarFloor1Filter)).called(1);
       });
 
       test('switchFloor_whenLayerFilterInResponse_shouldApplyFilter', () async {

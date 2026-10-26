@@ -402,3 +402,78 @@ const nestedZoomGroupsLevel1Filter = [
     ],
   ],
 ];
+
+/// A filter reading `floor_type` next to the `['get', 'floor']` read. Only the
+/// floor scalar may be substituted; the `floor_type` operand is not a floor.
+const floorTypeReadFloor0Filter = [
+  'all',
+  [
+    '==',
+    ['get', 'floor_type'],
+    'platform',
+  ],
+  [
+    '==',
+    ['get', 'floor'],
+    0,
+  ],
+];
+const floorTypeReadFloor1Filter = [
+  'all',
+  [
+    '==',
+    ['get', 'floor_type'],
+    'platform',
+  ],
+  [
+    '==',
+    ['get', 'floor'],
+    1,
+  ],
+];
+
+/// Legacy filter form of the `rokas_indoor` and `geojson_walk` layers: the
+/// bare `floor` property name compared to the floor.
+const legacyFloor0Filter = [
+  '==',
+  'floor',
+  0,
+];
+const legacyFloor1Filter = [
+  '==',
+  'floor',
+  1,
+];
+
+/// A `['get', 'floor']` read compared to the floor at the filter root.
+const topLevelFloorRead0Filter = [
+  '==',
+  ['get', 'floor'],
+  0,
+];
+const topLevelFloorRead1Filter = [
+  '==',
+  ['get', 'floor'],
+  1,
+];
+
+/// A floor clause followed by a scalar operand of the root group. The floor
+/// clause decides only its own operands, never the root's.
+const floorClauseThenScalarFloor0Filter = [
+  'all',
+  [
+    '==',
+    ['get', 'floor'],
+    0,
+  ],
+  true,
+];
+const floorClauseThenScalarFloor1Filter = [
+  'all',
+  [
+    '==',
+    ['get', 'floor'],
+    1,
+  ],
+  true,
+];
