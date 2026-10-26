@@ -540,8 +540,9 @@ void main() {
 
     test('selectPointOfInterest_ifPOIsNotVisible_shouldNotDoAnything', () async {
       // act
-      await sut.selectPointOfInterest(sbbId: mobilityBikesharingPoiFixture.sbbId);
+      final result = await sut.selectPointOfInterest(sbbId: mobilityBikesharingPoiFixture.sbbId);
       // expect
+      expect(result, isNull);
       verifyNever(mockController.setFilter(any, any));
       verifyNever(mockController.setLayerProperties(any, any));
       verifyNever(mockController.querySourceFeatures(any, any, any));
@@ -550,6 +551,9 @@ void main() {
 
     test('selectPointOfInterest_ifPOIsVisibleAndPoiSelected_shouldNotifyListeners', () async {
       // arrange
+      final selectedPois = <RokasPOI>[];
+      sut = SBBRokasPOIControllerImpl(controller: Future.value(mockController), onPoiSelected: selectedPois.add);
+      sut.addListener(listener.call);
       await sut.showPointsOfInterest();
       reset(mockController);
       reset(listener);
@@ -558,20 +562,69 @@ void main() {
       ).thenAnswer((_) async => Future.value([mobilityBikesharingPoiGeoJSONFixture]));
 
       // act
-      await sut.selectPointOfInterest(sbbId: mobilityBikesharingPoiFixture.sbbId);
+      final result = await sut.selectPointOfInterest(sbbId: mobilityBikesharingPoiFixture.sbbId);
 
       // expect
+      expect(result, mobilityBikesharingPoiFixture);
       expect(sut.selectedPointOfInterest, mobilityBikesharingPoiFixture);
+      expect(selectedPois, [mobilityBikesharingPoiFixture]);
       verify(mockController.querySourceFeatures(journeyPoisSource, any, mobilityBikeSharingFilterFixture)).called(1);
       verify(mockController.setFilter(selectedPoiLayerId, mobilityBikeSharingFilterFixture)).called(1);
       verify(mockController.setLayerProperties(selectedPoiLayerId, any)).called(1);
       verify(listener()).called(1);
     });
 
+    test('selectPointOfInterest_ifPoiSelectedAndIdUnknown_shouldDeselectAndReturnNull', () async {
+      // arrange
+      final onPoiDeselected = MockCallbackFunction();
+      sut = SBBRokasPOIControllerImpl(controller: Future.value(mockController), onPoiDeselected: onPoiDeselected.call);
+      sut.addListener(listener.call);
+      await sut.showPointsOfInterest();
+      when(
+        mockController.querySourceFeatures(journeyPoisSource, 'journey_pois', mobilityBikeSharingFilterFixture),
+      ).thenAnswer((_) async => Future.value([mobilityBikesharingPoiGeoJSONFixture]));
+      await sut.selectPointOfInterest(sbbId: mobilityBikesharingPoiFixture.sbbId);
+      reset(mockController);
+      reset(listener);
+      when(mockController.querySourceFeatures(any, any, any)).thenAnswer((_) async => Future.value([]));
+
+      // act
+      final result = await sut.selectPointOfInterest(sbbId: 'unknown');
+
+      // expect
+      expect(result, isNull);
+      expect(sut.selectedPointOfInterest, isNull);
+      verify(mockController.setLayerProperties(selectedPoiLayerId, any)).called(1);
+      verifyNever(mockController.setFilter(any, any));
+      verify(onPoiDeselected()).called(1);
+      verify(listener()).called(1);
+    });
+
+    test('selectPointOfInterest_ifNothingSelectedAndIdUnknown_shouldNotDeselectAndReturnNull', () async {
+      // arrange
+      final onPoiDeselected = MockCallbackFunction();
+      sut = SBBRokasPOIControllerImpl(controller: Future.value(mockController), onPoiDeselected: onPoiDeselected.call);
+      sut.addListener(listener.call);
+      await sut.showPointsOfInterest();
+      reset(mockController);
+      reset(listener);
+      when(mockController.querySourceFeatures(any, any, any)).thenAnswer((_) async => Future.value([]));
+
+      // act
+      final result = await sut.selectPointOfInterest(sbbId: 'unknown');
+
+      // expect
+      expect(result, isNull);
+      verifyNever(mockController.setLayerProperties(any, any));
+      verifyNever(onPoiDeselected());
+      verifyNever(listener());
+    });
+
     test('selectPointOfInterestAt_ifPOIsNotVisible_shouldNotDoAnything', () async {
       // act
-      await sut.selectPointOfInterestAt(coordinates: LatLng(0, 0));
+      final result = await sut.selectPointOfInterestAt(coordinates: LatLng(0, 0));
       // expect
+      expect(result, isNull);
       verifyNever(mockController.setFilter(any, any));
       verifyNever(mockController.setLayerProperties(any, any));
       verifyNever(mockController.querySourceFeatures(any, any, any));
@@ -590,14 +643,45 @@ void main() {
       when(mockController.queryRenderedFeatures(point, any, any)).thenAnswer((_) => Future.value([]));
 
       // act
-      await sut.selectPointOfInterestAt(coordinates: coordinates);
+      final result = await sut.selectPointOfInterestAt(coordinates: coordinates);
       // expect
+      expect(result, isNull);
       verify(mockController.moveCamera(any)).called(1);
       verify(mockController.toScreenLocation(any)).called(1);
       verify(mockController.queryRenderedFeatures(any, any, any)).called(1);
       verifyNever(mockController.setFilter(any, any));
       verifyNever(mockController.setLayerProperties(any, any));
       verifyNever(listener());
+    });
+
+    test('selectPointOfInterestAt_ifPoiSelectedAndNoPoiUnderneath_shouldDeselectAndReturnNull', () async {
+      // arrange
+      const coordinates = LatLng(0, 0);
+      const point = Point(0.0, 0.0);
+      final onPoiDeselected = MockCallbackFunction();
+      sut = SBBRokasPOIControllerImpl(controller: Future.value(mockController), onPoiDeselected: onPoiDeselected.call);
+      sut.addListener(listener.call);
+      await sut.showPointsOfInterest();
+      when(
+        mockController.querySourceFeatures(journeyPoisSource, 'journey_pois', mobilityBikeSharingFilterFixture),
+      ).thenAnswer((_) async => Future.value([mobilityBikesharingPoiGeoJSONFixture]));
+      await sut.selectPointOfInterest(sbbId: mobilityBikesharingPoiFixture.sbbId);
+      reset(mockController);
+      reset(listener);
+      when(mockController.moveCamera(any)).thenAnswer((_) => Future.value());
+      when(mockController.toScreenLocation(coordinates)).thenAnswer((_) => Future.value(point));
+      when(mockController.queryRenderedFeatures(point, any, any)).thenAnswer((_) => Future.value([]));
+
+      // act
+      final result = await sut.selectPointOfInterestAt(coordinates: coordinates);
+
+      // expect
+      expect(result, isNull);
+      expect(sut.selectedPointOfInterest, isNull);
+      verify(mockController.setLayerProperties(selectedPoiLayerId, any)).called(1);
+      verifyNever(mockController.setFilter(any, any));
+      verify(onPoiDeselected()).called(1);
+      verify(listener()).called(1);
     });
 
     test('selectPointOfInterestAt_ifPoiIsVisibleAndPoiUnderneath_shouldSelectPoi', () async {
@@ -614,8 +698,9 @@ void main() {
       ).thenAnswer((_) => Future.value([mobilityBikesharingPoiGeoJSONFixture]));
 
       // act
-      await sut.selectPointOfInterestAt(coordinates: coordinates);
+      final result = await sut.selectPointOfInterestAt(coordinates: coordinates);
       // expect
+      expect(result, mobilityBikesharingPoiFixture);
       verify(mockController.moveCamera(any)).called(1);
       verify(mockController.toScreenLocation(any)).called(1);
       verify(mockController.queryRenderedFeatures(any, any, any)).called(1);

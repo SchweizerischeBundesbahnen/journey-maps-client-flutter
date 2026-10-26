@@ -107,11 +107,9 @@ class SBBRokasPOIControllerImpl with ChangeNotifier implements SBBRokasPOIContro
 
   /// For programmatic selection of a POI only.
   @override
-  Future<void> selectPointOfInterest({required String sbbId}) async {
-    if (!_isAnyPoiLayerVisible) return Future.value();
-    final RokasPOI? poi = await _getPoiFromSBBId(sbbId);
-    if (poi != null) await _selectPointOfInterest(poi);
-    _updateAndNotifyListenersIfChanged(visibility: null, filters: null, selectedPOI: poi);
+  Future<RokasPOI?> selectPointOfInterest({required String sbbId}) async {
+    if (!_isAnyPoiLayerVisible) return _selectedPOI;
+    return _replaceSelection(await _getPoiFromSBBId(sbbId));
   }
 
   /// For programmatic deselection of a POI only.
@@ -123,18 +121,16 @@ class SBBRokasPOIControllerImpl with ChangeNotifier implements SBBRokasPOIContro
   }
 
   @override
-  Future<void> selectPointOfInterestAt({required LatLng coordinates, double zoomLevel = 18.0}) async {
-    if (!_isAnyPoiLayerVisible) return Future.value();
-    return _controller.then((c) async {
+  Future<RokasPOI?> selectPointOfInterestAt({required LatLng coordinates, double zoomLevel = 18.0}) async {
+    if (!_isAnyPoiLayerVisible) return _selectedPOI;
+    final poi = await _controller.then((c) async {
       await c.moveCamera(CameraUpdate.newLatLngZoom(coordinates, zoomLevel));
       await Future.delayed(const Duration(milliseconds: 100));
 
       final point = await c.toScreenLocation(coordinates);
-      final poi = await _searchPOIAtPoint(point.toDouble());
-      if (poi != null) await _selectPointOfInterest(poi);
-
-      _updateAndNotifyListenersIfChanged(filters: null, visibility: null, selectedPOI: poi);
+      return _searchPOIAtPoint(point.toDouble());
     });
+    return _replaceSelection(poi);
   }
 
   /// Toggles the currently selected POI. Called by [SBBMap].
@@ -240,6 +236,17 @@ class SBBRokasPOIControllerImpl with ChangeNotifier implements SBBRokasPOIContro
       c.setLayerProperties(_rokasSelectedPoiLayerId, _selectedPoiLayerProperties(isSelectionVisible: true));
       _onPoiSelected?.call(poi);
     });
+  }
+
+  /// Selects [poi], or deselects the current POI if [poi] is null.
+  Future<RokasPOI?> _replaceSelection(RokasPOI? poi) async {
+    if (poi != null) {
+      await _selectPointOfInterest(poi);
+    } else if (_selectedPOI != null) {
+      await _deselectPointOfInterest();
+    }
+    _updateAndNotifyListenersIfChanged(visibility: null, filters: null, selectedPOI: poi);
+    return _selectedPOI;
   }
 
   Future<void> _deselectPointOfInterest() {
