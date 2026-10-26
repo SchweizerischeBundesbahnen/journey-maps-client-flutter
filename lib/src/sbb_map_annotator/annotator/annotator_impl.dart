@@ -19,7 +19,6 @@ class SBBMapAnnotatorImpl implements SBBMapAnnotator {
   final _addedLayers = <String, Layer>{};
   final _annotationTappedCallbacks = <String, dynamic>{};
   final _addedImages = <String, Uint8List>{};
-  Completer<void>? _geoJsonAddingOperation;
 
   /// Completes when the last enqueued mutation has finished, successfully or not.
   Future<void> _mutationQueue = Future.value();
@@ -139,7 +138,6 @@ class SBBMapAnnotatorImpl implements SBBMapAnnotator {
   Future<void> onStyleChanged() {
     return _enqueue(() async {
       if (!_isGeoJsonSourceAdded && _addedImages.isEmpty) return;
-      _geoJsonAddingOperation = null;
       await _addGeoJsonSource();
       await _reAddImages();
       await _reInsertLayers();
@@ -160,13 +158,11 @@ class SBBMapAnnotatorImpl implements SBBMapAnnotator {
   }
 
   Future<void> _addGeoJsonSource() async {
-    if (_geoJsonAddingOperation != null) return _geoJsonAddingOperation!.future;
-
-    _geoJsonAddingOperation = Completer<void>();
-    return _controller
+    _isGeoJsonSourceAdded = false;
+    await _controller
         .addGeoJsonSource(_kSourceId, buildFeatureCollection([]))
-        .catchError(_throwAnnotatorException('Adding geoJsonSource $_kSourceId failed with exception: '))
-        .then(_completeGeoJsonAdding());
+        .catchError(_throwAnnotatorException('Adding geoJsonSource $_kSourceId failed with exception: '));
+    _isGeoJsonSourceAdded = true;
   }
 
   Future<void> _addAnnotationsToLayer(Iterable<SBBMapAnnotation> annotations) async {
@@ -276,13 +272,6 @@ class SBBMapAnnotatorImpl implements SBBMapAnnotator {
 
       final key = _getAnnotationIdentifier(annotation);
       _annotationTappedCallbacks[key]?.call(annotation);
-    };
-  }
-
-  FutureOr<void> Function(void value) _completeGeoJsonAdding() {
-    return (_) {
-      _geoJsonAddingOperation?.complete();
-      _isGeoJsonSourceAdded = true;
     };
   }
 }

@@ -264,5 +264,49 @@ void main() {
         ).called(1);
       });
     });
+
+    group('after adding GeoJsonSource failed', () {
+      const timeout = Duration(seconds: 2);
+      final a = AnnotatorFixture.simpleSymbol();
+      final b = AnnotatorFixture.simpleSymbol();
+
+      setUp(() async {
+        var calls = 0;
+        when(mockController.addGeoJsonSource(any, any)).thenAnswer((_) {
+          calls++;
+          return calls == 1 ? Future.error(PlatformException(code: 'fakeCode')) : Future.value();
+        });
+        await expectLater(sut.addAnnotation(a), throwsA(isA<AnnotationException>()));
+      });
+
+      test('next annotation should retry adding GeoJsonSource', () async {
+        // act
+        await sut.addAnnotation(b).timeout(timeout);
+
+        // verify
+        verify(mockController.addGeoJsonSource(AnnotatorFixture.kSourceId, any)).called(2);
+        verify(
+          mockController.setGeoJsonSource(AnnotatorFixture.kSourceId, buildFeatureCollection([b.toGeoJson()])),
+        ).called(1);
+      });
+
+      test('style change should not block next annotation', () async {
+        // act
+        await sut.onStyleChanged().timeout(timeout);
+        await sut.addAnnotation(b).timeout(timeout);
+
+        // verify
+        verify(mockController.addGeoJsonSource(AnnotatorFixture.kSourceId, any)).called(2);
+      });
+
+      test('style change after next annotation should complete', () async {
+        // act
+        final addition = sut.addAnnotation(b);
+        final styleChange = sut.onStyleChanged();
+
+        // expect
+        await Future.wait([addition, styleChange]).timeout(timeout);
+      });
+    });
   });
 }
