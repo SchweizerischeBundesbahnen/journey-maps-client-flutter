@@ -1,5 +1,26 @@
 # Changelog
 
+## [2.9.1](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/compare/2.9.0...2.9.1) (2026-10-26)
+
+
+### Bug Fixes
+
+* annotations are re-synced on every style load ([#289](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/289)) ([#303](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/303)) ([4a514e0](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/4a514e002c5ff8a590a489ad1add76ca14a1455b))
+* apply updated poiSettings to the POI controller ([#308](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/308)) ([5590a78](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/5590a7833c858e3663d9481e814824406a01313e))
+* await the floor reset and match only real floor references ([#319](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/319)) ([fa50f08](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/fa50f0887be052ad595711e94dbb08fbae5d5a1e))
+* deselect the previous POI when a programmatic selection finds none ([#320](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/320)) ([4d59465](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/4d594652515ea8b7648c19809277dbfae3724703))
+* drop a POI selection that a newer call overtook ([#323](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/323)) ([#325](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/325)) ([322da74](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/322da74ca74a0fb2e847a7e05c5746b55113826c))
+* floor changes replace the routing route instead of stacking copies ([#287](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/287)) ([#311](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/311)) ([bee73a6](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/bee73a6e52026c3bb09d3e3c6a66d3dc97330de5))
+* ignore input while the style reloads after a styler swap ([#305](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/305)) ([d673693](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/d673693b61770ab1152a7d7c004f85512cffc982))
+* keep the POI selection, highlight and callbacks consistent ([#323](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/323)) ([#324](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/324)) ([6163213](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/61632138172931b03a0d2072ee15352904df6769))
+* leave the MapLibre controller to MapLibre ([#309](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/309)) ([7128b25](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/7128b25f84770dbbbf1a03580c016f11e367c024))
+* onMapLongClick null guard fixed ([#282](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/282)) ([61b4325](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/61b4325afcf859cc8feddcbeb029eb5e83fd5aa8))
+* retry the annotator source after a failed add instead of hanging ([#295](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/295)) ([#318](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/318)) ([d7c8487](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/d7c8487155a3e33b7021fdd2a8a695e309e1e347))
+* selected floor is re applied after every style load ([#290](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/290)) ([#304](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/304)) ([d3fc821](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/d3fc8219f48fed65b46519d2a469a11b3de906e3))
+* serialize annotator mutations so overlapping calls keep every update ([#288](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/288)) ([#310](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/310)) ([32eada3](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/32eada36098e7160953d6873004d56815a8f7dec))
+* stop notifying listeners after map session is disposed ([#296](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/296)) ([#307](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/307)) ([702973b](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/702973b41e4b8bd281e9e7fd630fbc7a770ab2ac))
+* style load during first style load does not trigger callbacks twice ([#306](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/306)) ([bc29958](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/bc299589a423422ba655b4e5bf11a01a558ba9cf))
+
 ## [2.9.0](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/compare/2.8.2...2.9.0) (2026-09-23)
 
 
