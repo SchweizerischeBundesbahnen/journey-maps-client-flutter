@@ -97,40 +97,48 @@ class SBBRokasPOIControllerImpl with ChangeNotifier implements SBBRokasPOIContro
   }
 
   @override
-  Future<void> hidePointsOfInterest({SBBRokasPoiLayer layer = SBBRokasPoiLayer.baseWithFloor}) async => _controller
-      .then((c) async => await c.setLayerVisibility(_layerIdFromPoiLayer(layer), false))
-      .then((_) => _updateVisibilityAndFilterForLayer(layer: layer, isVisible: false));
+  Future<void> hidePointsOfInterest({SBBRokasPoiLayer layer = SBBRokasPoiLayer.baseWithFloor}) async {
+    final c = await _controller;
+    await c.setLayerVisibility(_layerIdFromPoiLayer(layer), false);
+    final visibility = {..._layerToVisibility, layer: false};
+    await _applySelection(c, visibility.containsValue(true) ? _selectedPOI : null, visibility: visibility);
+  }
 
   @override
-  Future<void> hideAllPointsOfInterest() async =>
-      _controller.then(_hideAllPointsOfInterest).then((_) => _updateVisibilityForAllLayer());
+  Future<void> hideAllPointsOfInterest() async {
+    final c = await _controller;
+    await _hideAllPointsOfInterest(c);
+    await _applySelection(c, null, visibility: _allLayersWithVisibilityToFalse());
+  }
 
   /// For programmatic selection of a POI only.
   @override
   Future<RokasPOI?> selectPointOfInterest({required String sbbId}) async {
     if (!_isAnyPoiLayerVisible) return _selectedPOI;
-    return _replaceSelection(await _getPoiFromSBBId(sbbId));
+    final c = await _controller;
+    final poi = await _getPoiFromSBBId(sbbId);
+    await _applySelection(c, poi);
+    return _selectedPOI;
   }
 
   /// For programmatic deselection of a POI only.
   @override
   Future<void> deselectPointOfInterest() async {
-    if (!_isAnyPoiLayerVisible || _selectedPOI == null) return Future.value();
-    await _deselectPointOfInterest();
-    _updateAndNotifyListenersIfChanged(visibility: null, filters: null, selectedPOI: null);
+    if (!_isAnyPoiLayerVisible) return;
+    await _applySelection(await _controller, null);
   }
 
   @override
   Future<RokasPOI?> selectPointOfInterestAt({required LatLng coordinates, double zoomLevel = 18.0}) async {
     if (!_isAnyPoiLayerVisible) return _selectedPOI;
-    final poi = await _controller.then((c) async {
-      await c.moveCamera(CameraUpdate.newLatLngZoom(coordinates, zoomLevel));
-      await Future.delayed(const Duration(milliseconds: 100));
+    final c = await _controller;
+    await c.moveCamera(CameraUpdate.newLatLngZoom(coordinates, zoomLevel));
+    await Future.delayed(const Duration(milliseconds: 100));
 
-      final point = await c.toScreenLocation(coordinates);
-      return _searchPOIAtPoint(point.toDouble());
-    });
-    return _replaceSelection(poi);
+    final point = await c.toScreenLocation(coordinates);
+    final poi = await _searchPOIAtPoint(point.toDouble());
+    await _applySelection(c, poi);
+    return _selectedPOI;
   }
 
   /// Toggles the currently selected POI. Called by [SBBMap].
@@ -139,14 +147,10 @@ class SBBRokasPOIControllerImpl with ChangeNotifier implements SBBRokasPOIContro
   /// * If the user clicks on a POI, it will be selected and the currently selected POI will be deselected.
   /// * If the user clicks on an empty space, the currently selected POI will be deselected.
   Future<void> toggleSelectedPointOfInterest(Point<double> p) async {
-    if (!_isAnyPoiLayerVisible) return Future.value();
-    RokasPOI? poi = await _searchPOIAtPoint(p);
-    if (poi == null) {
-      await deselectPointOfInterest();
-    } else if (_selectedPOI != poi) {
-      await _selectPointOfInterest(poi);
-    }
-    _updateAndNotifyListenersIfChanged(filters: null, visibility: null, selectedPOI: poi);
+    if (!_isAnyPoiLayerVisible) return;
+    final c = await _controller;
+    final poi = await _searchPOIAtPoint(p);
+    await _applySelection(c, poi);
   }
 
   /// Replaces the callbacks called on POI selection and deselection.
@@ -175,16 +179,27 @@ class SBBRokasPOIControllerImpl with ChangeNotifier implements SBBRokasPOIContro
 
   /// This method is called by [SBBMap] whenever the style changes.
   ///
-  /// This reapplies all filters and visibilities to the style / layers.
+  /// This reapplies all filters, visibilities and the selection to the style / layers.
   Future<void> synchronizeWithNewStyle() async {
-    return _controller
-        .then((c) async {
-          await _hideAllPointsOfInterest(c);
-          await _reapplyAllFilters(c);
-          if (_isAnyPoiLayerVisible) await _reapplyVisibilities(c);
-          // calling updateListeners for "losing" the POI
-        })
-        .then((_) => _updateAndNotifyListenersIfChanged(filters: null, visibility: null, selectedPOI: null));
+    final c = await _controller;
+    await _hideAllPointsOfInterest(c);
+    await _reapplyAllFilters(c);
+    if (_isAnyPoiLayerVisible) await _reapplyVisibilities(c);
+    await _reapplySelection(c);
+  }
+
+  /// Highlights the selected POI in the new style, or deselects it if the
+  /// style has no layer to highlight it in.
+  Future<void> _reapplySelection(MapLibreMapController c) async {
+    if (_selectedPOI == null) return;
+    final hasSelectedLayer = (await c.getLayerIds()).contains(_rokasSelectedPoiLayerId);
+    // Read after the await: the selection may change while the layer ids are queried.
+    final selectedPOI = _selectedPOI;
+    if (!hasSelectedLayer) {
+      _commitSelection(null);
+    } else if (selectedPOI != null) {
+      await _showHighlight(c, selectedPOI);
+    }
   }
 
   Future<RokasPOI?> _searchPOIAtPoint(Point<double> p) async {
@@ -209,7 +224,7 @@ class SBBRokasPOIControllerImpl with ChangeNotifier implements SBBRokasPOIContro
 
     if (!const MapEquality().equals(_layerToVisibility, previousVisibility) ||
         !const MapEquality().equals(_layerToCategoryFilters, previousCategoriesFilter) ||
-        previousSelectedPOI != _selectedPOI) {
+        !_isSamePoi(previousSelectedPOI, _selectedPOI)) {
       notifyListeners();
     }
   }
@@ -230,31 +245,50 @@ class SBBRokasPOIControllerImpl with ChangeNotifier implements SBBRokasPOIContro
     ]);
   }
 
-  Future<void> _selectPointOfInterest(RokasPOI poi) async {
-    await _controller.then((c) async {
-      c.setFilter(_rokasSelectedPoiLayerId, _buildSbbIdFilter(poi.sbbId));
-      c.setLayerProperties(_rokasSelectedPoiLayerId, _selectedPoiLayerProperties(isSelectionVisible: true));
-      _onPoiSelected?.call(poi);
-    });
-  }
-
-  /// Selects [poi], or deselects the current POI if [poi] is null.
-  Future<RokasPOI?> _replaceSelection(RokasPOI? poi) async {
-    if (poi != null) {
-      await _selectPointOfInterest(poi);
-    } else if (_selectedPOI != null) {
-      await _deselectPointOfInterest();
+  /// Makes [poi] the selection (null deselects) together with the given
+  /// [visibility] change.
+  ///
+  /// Runs synchronously up to the commit, so callers must pass the resolved
+  /// controller [c] and call this right after reading the state they pass in.
+  /// The highlight calls are sent before the commit and awaited after it, so
+  /// they reach the map in the order the selection changes.
+  Future<void> _applySelection(
+    MapLibreMapController c,
+    RokasPOI? poi, {
+    Map<SBBRokasPoiLayer, bool>? visibility,
+  }) async {
+    if (_isSamePoi(poi, _selectedPOI)) {
+      _commitSelection(_selectedPOI, visibility: visibility);
+      return;
     }
-    _updateAndNotifyListenersIfChanged(visibility: null, filters: null, selectedPOI: poi);
-    return _selectedPOI;
+    final highlight = poi != null ? _showHighlight(c, poi) : _hideHighlight(c);
+    _commitSelection(poi, visibility: visibility);
+    await highlight;
   }
 
-  Future<void> _deselectPointOfInterest() {
-    return _controller.then((c) async {
-      c.setLayerProperties(_rokasSelectedPoiLayerId, _selectedPoiLayerProperties(isSelectionVisible: false));
+  /// Updates the state and notifies listeners. If the selection changed,
+  /// [_onPoiSelected] or [_onPoiDeselected] is called afterwards, so the
+  /// callbacks already read the new [selectedPointOfInterest].
+  void _commitSelection(RokasPOI? poi, {Map<SBBRokasPoiLayer, bool>? visibility}) {
+    final isSelectionChanged = !_isSamePoi(poi, _selectedPOI);
+    _updateAndNotifyListenersIfChanged(filters: null, visibility: visibility, selectedPOI: poi);
+    if (!isSelectionChanged) return;
+    if (poi != null) {
+      _onPoiSelected?.call(poi);
+    } else {
       _onPoiDeselected?.call();
-    });
+    }
   }
+
+  Future<void> _showHighlight(MapLibreMapController c, RokasPOI poi) => Future.wait([
+    c.setFilter(_rokasSelectedPoiLayerId, _buildSbbIdFilter(poi.sbbId)),
+    c.setLayerProperties(_rokasSelectedPoiLayerId, _selectedPoiLayerProperties(isSelectionVisible: true)),
+  ]);
+
+  Future<void> _hideHighlight(MapLibreMapController c) =>
+      c.setLayerProperties(_rokasSelectedPoiLayerId, _selectedPoiLayerProperties(isSelectionVisible: false));
+
+  static bool _isSamePoi(RokasPOI? a, RokasPOI? b) => a?.sbbId == b?.sbbId;
 
   /// [MapLibreMapController.setLayerProperties] serializes **all** symbol
   /// properties and sends `null` for every one that is omitted, which resets it
@@ -302,15 +336,7 @@ class SBBRokasPOIControllerImpl with ChangeNotifier implements SBBRokasPOIContro
     return _updateAndNotifyListenersIfChanged(
       filters: updatedCategories,
       visibility: updatedVisibility,
-      selectedPOI: null,
-    );
-  }
-
-  void _updateVisibilityForAllLayer() {
-    return _updateAndNotifyListenersIfChanged(
-      filters: null,
-      visibility: _allLayersWithVisibilityToFalse(),
-      selectedPOI: null,
+      selectedPOI: _selectedPOI,
     );
   }
 

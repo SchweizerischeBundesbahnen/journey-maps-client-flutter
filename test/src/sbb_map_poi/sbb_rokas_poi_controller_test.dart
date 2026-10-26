@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -975,6 +976,186 @@ void main() {
       await sut.updateSelectionCallbacks(onPoiSelected: (_) {}, onPoiDeselected: () {});
       // expect
       verifyZeroInteractions(mockController);
+    });
+  });
+
+  group('Unit Test SBBRokasPoiController selection consistency', () {
+    late MockMapLibreMapController mockController;
+    late SBBRokasPOIControllerImpl sut;
+    late List<String> calls;
+
+    setUp(() {
+      mockController = MockMapLibreMapController();
+      calls = [];
+      sut = SBBRokasPOIControllerImpl(
+        controller: Future.value(mockController),
+        onPoiSelected: (poi) => calls.add('selected ${poi.sbbId}, state ${sut.selectedPointOfInterest?.sbbId}'),
+        onPoiDeselected: () => calls.add('deselected, state ${sut.selectedPointOfInterest?.sbbId}'),
+      );
+      sut.addListener(() => calls.add('notified'));
+      when(
+        mockController.queryRenderedFeatures(any, any, any),
+      ).thenAnswer((_) async => [mobilityBikesharingPoiGeoJSONFixture]);
+    });
+
+    Future<void> showAndSelectPoi() async {
+      await sut.showPointsOfInterest();
+      await sut.toggleSelectedPointOfInterest(const Point(0, 0));
+      calls.clear();
+      clearInteractions(mockController);
+    }
+
+    test('hideAllPointsOfInterest_whenPoiSelected_shouldClearHighlightNotifyAndThenCallDeselected', () async {
+      // arrange
+      await showAndSelectPoi();
+      // act
+      await sut.hideAllPointsOfInterest();
+      // expect
+      expect(sut.selectedPointOfInterest, isNull);
+      expect(calls, ['notified', 'deselected, state null']);
+      verify(mockController.setLayerProperties(selectedPoiLayerId, any)).called(1);
+    });
+
+    test('hidePointsOfInterest_whenLastVisibleLayerHidden_shouldDeselect', () async {
+      // arrange
+      await showAndSelectPoi();
+      // act
+      await sut.hidePointsOfInterest();
+      // expect
+      expect(sut.selectedPointOfInterest, isNull);
+      expect(calls, ['notified', 'deselected, state null']);
+      verify(mockController.setLayerProperties(selectedPoiLayerId, any)).called(1);
+    });
+
+    test('hidePointsOfInterest_whenOtherLayerStaysVisible_shouldKeepSelection', () async {
+      // arrange
+      await showAndSelectPoi();
+      await sut.showPointsOfInterest(layer: SBBRokasPoiLayer.highlighted);
+      calls.clear();
+      // act
+      await sut.hidePointsOfInterest();
+      // expect
+      expect(sut.selectedPointOfInterest, mobilityBikesharingPoiFixture);
+      expect(calls, ['notified']);
+      verifyNever(mockController.setLayerProperties(selectedPoiLayerId, any));
+    });
+
+    test('selectPointOfInterest_whenOtherPoiFound_shouldNotifyAndThenCallSelectedWithNewState', () async {
+      // arrange
+      await sut.showPointsOfInterest();
+      calls.clear();
+      when(
+        mockController.querySourceFeatures(any, any, any),
+      ).thenAnswer((_) async => [mobilityBikesharingPoiGeoJSONFixture]);
+      // act
+      await sut.selectPointOfInterest(sbbId: mobilityBikesharingPoiFixture.sbbId);
+      // expect
+      final sbbId = mobilityBikesharingPoiFixture.sbbId;
+      expect(calls, ['notified', 'selected $sbbId, state $sbbId']);
+    });
+
+    test('selectPointOfInterest_whenSamePoiAlreadySelected_shouldDoNothingAndReturnIt', () async {
+      // arrange
+      await showAndSelectPoi();
+      when(
+        mockController.querySourceFeatures(any, any, any),
+      ).thenAnswer((_) async => [mobilityBikesharingPoiGeoJSONFixture]);
+      // act
+      final result = await sut.selectPointOfInterest(sbbId: mobilityBikesharingPoiFixture.sbbId);
+      // expect
+      expect(result, mobilityBikesharingPoiFixture);
+      expect(calls, isEmpty);
+      verifyNever(mockController.setFilter(any, any));
+      verifyNever(mockController.setLayerProperties(any, any));
+    });
+
+    test('toggleSelectedPointOfInterest_whenSameSbbIdWithOtherCoordinates_shouldDoNothing', () async {
+      // arrange
+      await showAndSelectPoi();
+      final shiftedPoi = {
+        ...mobilityBikesharingPoiGeoJSONFixture,
+        'geometry': {
+          'type': 'Point',
+          'coordinates': [7.4498355, 46.9525271],
+        },
+      };
+      when(mockController.queryRenderedFeatures(any, any, any)).thenAnswer((_) async => [shiftedPoi]);
+      // act
+      await sut.toggleSelectedPointOfInterest(const Point(0, 0));
+      // expect
+      expect(sut.selectedPointOfInterest, mobilityBikesharingPoiFixture);
+      expect(calls, isEmpty);
+      verifyNever(mockController.setFilter(any, any));
+      verifyNever(mockController.setLayerProperties(any, any));
+    });
+
+    test('deselectPointOfInterest_whenPoiSelected_shouldNotifyAndThenCallDeselectedWithNewState', () async {
+      // arrange
+      await showAndSelectPoi();
+      // act
+      await sut.deselectPointOfInterest();
+      // expect
+      expect(calls, ['notified', 'deselected, state null']);
+    });
+
+    test('synchronizeWithNewStyle_whenPoiSelected_shouldKeepSelectionAndReapplyHighlight', () async {
+      // arrange
+      await showAndSelectPoi();
+      when(mockController.getLayerIds()).thenAnswer((_) async => [selectedPoiLayerId]);
+      // act
+      await sut.synchronizeWithNewStyle();
+      // expect
+      expect(sut.selectedPointOfInterest, mobilityBikesharingPoiFixture);
+      expect(calls, isEmpty);
+      verify(mockController.setFilter(selectedPoiLayerId, mobilityBikeSharingFilterFixture)).called(1);
+      final properties =
+          verify(mockController.setLayerProperties(selectedPoiLayerId, captureAny)).captured.single
+              as SymbolLayerProperties;
+      expect(properties.toJson()['visibility'], 'visible');
+    });
+
+    test('synchronizeWithNewStyle_whenPoiSelectedAndStyleHasNoSelectedLayer_shouldDeselect', () async {
+      // arrange
+      await showAndSelectPoi();
+      when(mockController.getLayerIds()).thenAnswer((_) async => []);
+      // act
+      await sut.synchronizeWithNewStyle();
+      // expect
+      expect(sut.selectedPointOfInterest, isNull);
+      expect(calls, ['notified', 'deselected, state null']);
+      verifyNever(mockController.setFilter(selectedPoiLayerId, any));
+      verifyNever(mockController.setLayerProperties(selectedPoiLayerId, any));
+    });
+
+    test('toggleSelectedPointOfInterest_whenAllPoisHiddenDuringHighlight_shouldEndWithHighlightHidden', () async {
+      // arrange
+      final highlight = Completer<void>();
+      when(mockController.setFilter(selectedPoiLayerId, any)).thenAnswer((_) => highlight.future);
+      await sut.showPointsOfInterest();
+      calls.clear();
+      final tap = sut.toggleSelectedPointOfInterest(const Point(0, 0));
+      await pumpEventQueue();
+      // act
+      await sut.hideAllPointsOfInterest();
+      highlight.complete();
+      await tap;
+      // expect
+      final sbbId = mobilityBikesharingPoiFixture.sbbId;
+      expect(sut.selectedPointOfInterest, isNull);
+      expect(calls, ['notified', 'selected $sbbId, state $sbbId', 'notified', 'deselected, state null']);
+      final properties = verify(mockController.setLayerProperties(selectedPoiLayerId, captureAny)).captured;
+      expect((properties.last as SymbolLayerProperties).toJson()['visibility'], 'none');
+    });
+
+    test('showPointsOfInterest_whenPoiSelected_shouldKeepSelection', () async {
+      // arrange
+      await showAndSelectPoi();
+      // act
+      await sut.showPointsOfInterest(layer: SBBRokasPoiLayer.highlighted);
+      // expect
+      expect(sut.selectedPointOfInterest, mobilityBikesharingPoiFixture);
+      expect(calls, ['notified']);
+      verifyNever(mockController.setLayerProperties(selectedPoiLayerId, any));
     });
   });
 }

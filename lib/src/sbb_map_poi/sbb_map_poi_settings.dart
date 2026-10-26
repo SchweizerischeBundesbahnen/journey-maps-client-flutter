@@ -23,13 +23,18 @@ class SBBMapPOISettings {
   /// rounded square icons when this is non null.
   ///
   /// It is called both when a POI is selected by the user and when a POI is
-  /// selected programmatically.
+  /// selected programmatically, only if the selected POI changes. It is called
+  /// after [SBBRokasPOIController.selectedPointOfInterest] is updated and its
+  /// listeners are notified.
   final OnPoiSelected? onPoiSelected;
 
   /// Callback that is called when a POI is deselected.
   ///
   /// It is called both when a POI is deselected by the user and when a POI is
-  /// deselected programmatically.
+  /// deselected programmatically, which includes hiding the last visible POI
+  /// layer and switching to a map style that cannot show the selection. It is
+  /// called after [SBBRokasPOIController.selectedPointOfInterest] is updated and
+  /// its listeners are notified.
   final VoidCallback? onPoiDeselected;
 
   /// Deprecated. Use SBBRokasPOIController.showPointsOfInterest instead. Does exactly that.
