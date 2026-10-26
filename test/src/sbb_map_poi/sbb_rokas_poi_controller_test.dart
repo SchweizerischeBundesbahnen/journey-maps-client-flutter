@@ -1158,4 +1158,94 @@ void main() {
       verifyNever(mockController.setLayerProperties(selectedPoiLayerId, any));
     });
   });
+
+  group('Unit Test SBBRokasPoiController overlapping selections', () {
+    late MockMapLibreMapController mockController;
+    late SBBRokasPOIControllerImpl sut;
+    late List<String> calls;
+    late Completer<List> lookup;
+
+    setUp(() async {
+      mockController = MockMapLibreMapController();
+      calls = [];
+      lookup = Completer();
+      sut = SBBRokasPOIControllerImpl(
+        controller: Future.value(mockController),
+        onPoiSelected: (poi) => calls.add('selected ${poi.sbbId}'),
+        onPoiDeselected: () => calls.add('deselected'),
+      );
+      when(mockController.querySourceFeatures(any, any, any)).thenAnswer((_) => lookup.future);
+      await sut.showPointsOfInterest();
+    });
+
+    Future<RokasPOI?> completeLookup(Future<RokasPOI?> selection) {
+      lookup.complete([mobilityBikesharingPoiGeoJSONFixture]);
+      return selection;
+    }
+
+    test('selectPointOfInterest_whenAllPoisHiddenDuringLookup_shouldNotSelect', () async {
+      // arrange
+      final selection = sut.selectPointOfInterest(sbbId: mobilityBikesharingPoiFixture.sbbId);
+      await sut.hideAllPointsOfInterest();
+      // act
+      final result = await completeLookup(selection);
+      // expect
+      expect(result, isNull);
+      expect(sut.selectedPointOfInterest, isNull);
+      expect(calls, isEmpty);
+      verifyNever(mockController.setFilter(selectedPoiLayerId, any));
+    });
+
+    test('selectPointOfInterest_whenPoisHiddenAndShownDuringLookup_shouldNotSelect', () async {
+      // arrange
+      final selection = sut.selectPointOfInterest(sbbId: mobilityBikesharingPoiFixture.sbbId);
+      await sut.hidePointsOfInterest();
+      await sut.showPointsOfInterest();
+      // act
+      final result = await completeLookup(selection);
+      // expect
+      expect(result, isNull);
+      expect(calls, isEmpty);
+    });
+
+    test('selectPointOfInterest_whenStyleChangesDuringLookup_shouldNotSelect', () async {
+      // arrange
+      final selection = sut.selectPointOfInterest(sbbId: mobilityBikesharingPoiFixture.sbbId);
+      await sut.synchronizeWithNewStyle();
+      // act
+      final result = await completeLookup(selection);
+      // expect
+      expect(result, isNull);
+      expect(calls, isEmpty);
+    });
+
+    test('selectPointOfInterest_whenPoiTappedDuringLookup_shouldKeepTappedPoi', () async {
+      // arrange
+      final tappedPoi = {
+        ...mobilityBikesharingPoiGeoJSONFixture,
+        'properties': {...?mobilityBikesharingPoiGeoJSONFixture['properties'] as Map?, 'sbbId': 'tapped'},
+      };
+      when(mockController.queryRenderedFeatures(any, any, any)).thenAnswer((_) async => [tappedPoi]);
+      final selection = sut.selectPointOfInterest(sbbId: mobilityBikesharingPoiFixture.sbbId);
+      await sut.toggleSelectedPointOfInterest(const Point(0, 0));
+      // act
+      final result = await completeLookup(selection);
+      // expect
+      expect(result?.sbbId, 'tapped');
+      expect(sut.selectedPointOfInterest?.sbbId, 'tapped');
+      expect(calls, ['selected tapped']);
+    });
+
+    test('selectPointOfInterest_whenDeselectedDuringLookup_shouldStayDeselected', () async {
+      // arrange
+      final selection = sut.selectPointOfInterest(sbbId: mobilityBikesharingPoiFixture.sbbId);
+      await sut.deselectPointOfInterest();
+      // act
+      final result = await completeLookup(selection);
+      // expect
+      expect(result, isNull);
+      expect(sut.selectedPointOfInterest, isNull);
+      expect(calls, isEmpty);
+    });
+  });
 }
