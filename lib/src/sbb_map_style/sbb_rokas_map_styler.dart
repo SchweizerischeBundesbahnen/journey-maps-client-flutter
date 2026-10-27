@@ -3,7 +3,7 @@ import 'package:sbb_maps_flutter/sbb_maps_flutter.dart';
 import 'package:sbb_maps_flutter/src/sbb_map_style/api_key_missing_exception.dart';
 import 'package:sbb_maps_flutter/src/sbb_map_style/styler_config.dart';
 
-/// Holds the Legacy Journey Maps styles and is responsible for creating a default [SBBMapStyler] for [SBBMap].
+/// Holds the Legacy Journey Maps styles and creates a [SBBMapStyler] for [SBBMap].
 ///
 /// The base styles are:
 ///
@@ -115,10 +115,7 @@ class SBBRokasMapStyler {
     final logger = Logger();
     logger.w(
       'sbb_maps_flutter: You are currently using the deprecated SBBRokasMapStyler.\n'
-      'Its styles are no longer served after 31.12.2026. Switch to SBBMapsMapStyler.\n'
-      'If you did not construct this styler yourself, SBBMap created it as its default: '
-      'pass a SBBMapsMapStyler as mapStyler to opt out. This styler will become the '
-      'default in the next major version.',
+      'Its styles are no longer served after 31.12.2026. Switch to SBBMapsMapStyler.',
     );
   }
 }

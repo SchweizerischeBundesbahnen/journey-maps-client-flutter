@@ -18,7 +18,7 @@ import 'package:sbb_maps_flutter/src/sbb_map_poi/controller/sbb_rokas_poi_contro
 import 'package:sbb_maps_flutter/src/sbb_map_poi/sbb_map_poi_settings.dart';
 import 'package:sbb_maps_flutter/src/sbb_map_routing/controller/sbb_routing_controller_impl.dart';
 import 'package:sbb_maps_flutter/src/sbb_map_style/sbb_map_styler.dart';
-import 'package:sbb_maps_flutter/src/sbb_map_style/sbb_rokas_map_styler.dart';
+import 'package:sbb_maps_flutter/src/sbb_map_style/sbb_maps_map_styler.dart';
 
 /// The part of an `SBBMap`'s configuration that the [SBBMapSession] acts on.
 @immutable
@@ -94,8 +94,7 @@ class SBBMapSession with ChangeNotifier {
     SBBMapStyler Function()? createDefaultMapStyler,
   }) : _config = config,
        _createAnnotator = createAnnotator ?? ((c) => SBBMapAnnotatorImpl(controller: c)),
-       // ignore: deprecated_member_use_from_same_package
-       _createDefaultMapStyler = createDefaultMapStyler ?? SBBRokasMapStyler.full {
+       _createDefaultMapStyler = createDefaultMapStyler ?? SBBMapsMapStyler.full {
     _initialStyleURI = mapStyler.currentStyleURI;
     mapStyler.addListener(_reactToStyleChange);
 
