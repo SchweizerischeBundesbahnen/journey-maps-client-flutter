@@ -1,9 +1,10 @@
-import 'package:flutter/foundation.dart';
 import 'package:sbb_maps_flutter/sbb_maps_flutter.dart';
 
 typedef OnPoiControllerAvailable = void Function(SBBRokasPOIController poiController);
 
 typedef OnPoiSelected = void Function(RokasPOI poi);
+
+typedef OnPoiDeselected = void Function(RokasPOI deselected);
 
 class SBBMapPOISettings {
   /// Callback for once the POI controller is available.
@@ -28,14 +29,17 @@ class SBBMapPOISettings {
   /// listeners are notified.
   final OnPoiSelected? onPoiSelected;
 
-  /// Callback that is called when a POI is deselected.
+  /// Callback that is called with the POI that was deselected.
   ///
   /// It is called both when a POI is deselected by the user and when a POI is
   /// deselected programmatically, which includes hiding the last visible POI
   /// layer and switching to a map style that cannot show the selection. It is
   /// called after [SBBRokasPOIController.selectedPointOfInterest] is updated and
-  /// its listeners are notified.
-  final VoidCallback? onPoiDeselected;
+  /// its listeners are notified, so read the deselected POI from the argument:
+  /// [SBBRokasPOIController.selectedPointOfInterest] is already `null`.
+  ///
+  /// Selecting another POI while one is selected calls only [onPoiSelected].
+  final OnPoiDeselected? onPoiDeselected;
 
   const SBBMapPOISettings({
     this.onPoiControllerAvailable,

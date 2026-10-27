@@ -475,7 +475,7 @@ void main() {
 
     test('update_whenPoiSettingsChange_shouldPassNewSelectionCallbacksToPoiController', () async {
       void onPoiSelected(RokasPOI _) {}
-      void onPoiDeselected() {}
+      void onPoiDeselected(RokasPOI _) {}
       final session = createSession(recordingConfig(poiSettings: SBBMapPOISettings(onPoiSelected: (_) {})));
       await loadFirstStyle(session);
 
