@@ -10,7 +10,7 @@ class SBBMapDefaultUI extends StatelessWidget {
     super.key,
     required this.locationEnabled,
     required this.isFloorSwitchingEnabled,
-    this.floorSwitcherOrientation = SBBMapFloorSwitcherOrientation.vertical,
+    required this.floorSwitcherOrientation,
     this.smallControls = false,
   });
 
