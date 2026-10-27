@@ -77,3 +77,27 @@ A custom `SBBMap.builder` places its own floor switcher and is not affected.
 ## `onPoiDeselected` receives the deselected POI
 
 ## Floor filters in custom styles
+
+This only concerns you if you pass your own styles through `SBBCustomMapStyler` and use floor
+switching.
+
+The floor controller sets the selected floor in the filters of the layers whose id ends in `-lvl`.
+It walks `all`, `any` and `none` groups at any depth and changes the floor only in an `==`
+comparison of exactly two operands whose left side is one of these forms:
+
+| Form | Example |
+|---|---|
+| `['get', 'level']` | `['==', ['get', 'level'], 0]` |
+| `['case', ['has', 'level'], ['get', 'level'], 0]` | `['==', ['case', ['has', 'level'], ['get', 'level'], 0], 0]` |
+| `['case', ['has', 'floor'], ['get', 'floor'], 0]` | `['==', ['case', ['has', 'floor'], ['get', 'floor'], 0], 0]` |
+
+These are the forms of the SBB Maps style family. 2.x also changed two forms that no published style
+uses any more, and 3.0.0 leaves them untouched:
+
+* the bare property name, `['==', 'floor', 0]`;
+* a plain floor read, `['==', ['get', 'floor'], 0]`.
+
+Other comparisons are not changed either: `!=`, `>=`, `match`, or an `==` with a collator. A `-lvl`
+layer whose filter relies on one of them keeps the floor written in the style. Rewrite its filter with one of the forms
+in the table, for example `['==', ['get', 'floor'], 0]` becomes
+`['==', ['case', ['has', 'floor'], ['get', 'floor'], 0], 0]`.
