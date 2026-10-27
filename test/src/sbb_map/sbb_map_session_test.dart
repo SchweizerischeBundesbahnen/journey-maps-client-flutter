@@ -92,7 +92,7 @@ void main() {
   Future<void> sendInputEvents(SBBMapSession session) async {
     await session.onMapClick(_point, _latLng);
     await session.onMapLongClick(_point, _latLng);
-    await session.onCameraIdle();
+    await session.onMapIdle();
     await session.onCameraTrackingDismissed();
   }
 
@@ -680,6 +680,24 @@ void main() {
       await session.onMapCreated(mapLibre);
 
       expect(controllers, hasLength(1));
+    });
+
+    test('onMapIdle_afterFirstStyleLoad_shouldUpdateAvailableFloors', () async {
+      final session = createSession(recordingConfig());
+      await loadFirstStyle(session);
+
+      await session.onMapIdle();
+
+      verify(floorController.updateAvailableFloors()).called(1);
+    });
+
+    test('onMapIdle_whenFloorSwitchingDisabled_shouldNotUpdateAvailableFloors', () async {
+      final session = createSession(SBBMapSessionConfig(mapStyler: styler, isFloorSwitchingEnabled: false));
+      await loadFirstStyle(session);
+
+      await session.onMapIdle();
+
+      verifyNever(floorController.updateAvailableFloors());
     });
 
     test('onUserLocationUpdated_whenCalled_shouldUpdateDeviceLocation', () async {
