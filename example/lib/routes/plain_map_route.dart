@@ -9,11 +9,7 @@ class PlainMapRoute extends StatelessWidget {
   const PlainMapRoute({super.key});
   @override
   Widget build(BuildContext context) {
-    // Deliberately pinned to the deprecated styler: this is the only route left
-    // on the Legacy Journey Maps styles, so that a regression on that path is
-    // noticed before it is removed in the next major.
-    // ignore: deprecated_member_use
-    final mapStyler = SBBRokasMapStyler.noAerial(
+    final mapStyler = SBBMapsMapStyler.noAerial(
       apiKey: Env.journeyMapsTilesApiKey,
       isDarkMode: Provider.of<ThemeProvider>(context).isDark,
     );

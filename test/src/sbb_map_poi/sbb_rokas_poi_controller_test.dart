@@ -38,67 +38,6 @@ void main() {
       verifyNever(listener());
     });
 
-    test('getCurrentPoiCategories_whenNoFilter_shouldReturnAllAvailablePoiCategories', () {
-      // act
-      final result = sut.currentPOICategories;
-      // expect
-      expect(result, SBBPoiCategoryType.values.toList());
-      verifyNever(listener());
-    });
-
-    test('getCurrentPoiCategories_whenShowWithBaseLayerAndNoFilter_shouldReturnAllAvailablePoiCategories', () async {
-      // act
-      await sut.showPointsOfInterest();
-      final result = sut.currentPOICategories;
-      // expect
-      expect(result, SBBPoiCategoryType.values.toList());
-      verify(listener()).called(1); // for switching visibility
-    });
-
-    test('getCurrentPoiCategories_whenShowWithBaseLayerAndAllFiltered_shouldReturnEmptyList', () async {
-      // arrange
-      // act
-      await sut.showPointsOfInterest(categories: []);
-      final result = sut.currentPOICategories;
-      // expect
-      expect(result, []);
-      verify(listener()).called(1);
-    });
-
-    test('getCurrentPoiCategories_whenShowWithBaseLayerAnd([bike_parking])_shouldReturn[bike_parking]', () async {
-      // arrange
-      final categories = [SBBPoiCategoryType.bike_parking];
-      // act
-      await sut.showPointsOfInterest(categories: categories);
-      final result = sut.currentPOICategories;
-      // expect
-      expect(result, categories);
-      verify(listener()).called(1);
-    });
-
-    test('getCurrentPoiCategories_whenShowWithHighlightedPoiLayer_shouldReturnAllPOICategories', () async {
-      // arrange
-      final categories = [SBBPoiCategoryType.bike_parking];
-      // act
-      await sut.showPointsOfInterest(layer: SBBRokasPoiLayer.highlighted, categories: categories);
-      final result = sut.currentPOICategories;
-      // expect
-      expect(result, SBBPoiCategoryType.values.toList());
-      verify(listener()).called(1);
-    });
-
-    test('getCurrentPoiCategories_whenShowPointsOfInterestWithVaryingPoiTypes_shouldReturnBaseOnFloorFilter', () async {
-      // arrange
-      final categories = [SBBPoiCategoryType.bike_parking];
-      // act
-      await sut.showPointsOfInterest(layer: SBBRokasPoiLayer.baseWithFloor, categories: categories);
-      await sut.showPointsOfInterest(layer: SBBRokasPoiLayer.highlighted, categories: []);
-      final result = sut.currentPOICategories;
-      // expect
-      expect(result, categories);
-      verify(listener()).called(2);
-    });
-
     test('getCategoryFilterByLayer_whenNoFilterAndBaseLayer_shouldReturnAllAvailablePoiCategories', () {
       // act
       final result = sut.getCategoryFilterByLayer(layer: SBBRokasPoiLayer.baseWithFloor);
@@ -163,87 +102,6 @@ void main() {
         verify(listener()).called(2);
       },
     );
-
-    test('isPointsOfInterestVisible_whenDefault_shouldReturnFalse', () {
-      // act
-      final result = sut.isPointsOfInterestVisible;
-      // expect
-      expect(result, false);
-      verifyNever(listener());
-    });
-
-    test('isPointsOfInterestVisible_whenShow(null)_shouldReturnTrue', () async {
-      // arrange
-      // act
-      await sut.showPointsOfInterest();
-      final result = sut.isPointsOfInterestVisible;
-      // expect
-      expect(result, true);
-      verify(listener()).called(1);
-    });
-
-    test('isPointsOfInterestVisible_whenShow([])_shouldReturnTrue', () async {
-      // act
-      await sut.showPointsOfInterest(categories: []);
-      final result = sut.isPointsOfInterestVisible;
-      // expect
-      expect(result, true);
-      verify(listener()).called(1);
-    });
-
-    test('isPointsOfInterestVisible_whenShow([bike_parking])_shouldReturnTrue', () async {
-      // arrange
-      final categories = [SBBPoiCategoryType.bike_parking];
-      // act
-      await sut.showPointsOfInterest(categories: categories);
-      final result = sut.isPointsOfInterestVisible;
-      // expect
-      expect(result, true);
-      verify(listener()).called(1);
-    });
-
-    test('isPointsOfInterestVisible_whenShowAndHidePointsOfInterest_shouldReturnFalse', () async {
-      // act
-      await sut.showPointsOfInterest();
-      await sut.hidePointsOfInterest();
-      final result = sut.isPointsOfInterestVisible;
-      // expect
-      expect(result, false);
-      verify(listener()).called(2);
-    });
-
-    test('isPointsOfInterestVisible_whenShowTwoTypes_shouldReturnTrue', () async {
-      // act
-      await sut.showPointsOfInterest(layer: SBBRokasPoiLayer.baseWithFloor);
-      await sut.showPointsOfInterest(layer: SBBRokasPoiLayer.highlighted);
-      final result = sut.isPointsOfInterestVisible;
-      // expect
-      expect(result, true);
-      verify(listener()).called(2);
-    });
-
-    test('isPointsOfInterestVisible_whenShowTwoTypesAndHideOneType_shouldReturnTrue(Any)', () async {
-      // act
-      await sut.showPointsOfInterest(layer: SBBRokasPoiLayer.baseWithFloor);
-      await sut.showPointsOfInterest(layer: SBBRokasPoiLayer.highlighted);
-      await sut.hidePointsOfInterest();
-      final result = sut.isPointsOfInterestVisible;
-      // expect
-      expect(result, true);
-      verify(listener()).called(3);
-    });
-
-    test('isPointsOfInterestVisible_whenShowTwoTypesAndHideTwoTypes_shouldReturnFalse', () async {
-      // act
-      await sut.showPointsOfInterest(layer: SBBRokasPoiLayer.baseWithFloor);
-      await sut.showPointsOfInterest(layer: SBBRokasPoiLayer.highlighted);
-      await sut.hidePointsOfInterest();
-      await sut.hidePointsOfInterest(layer: SBBRokasPoiLayer.highlighted);
-      final result = sut.isPointsOfInterestVisible;
-      // expect
-      expect(result, false);
-      verify(listener()).called(4);
-    });
 
     test('getVisibilityByLayer_whenDefault_shouldReturnFalse', () {
       // act
@@ -536,7 +394,8 @@ void main() {
       // expect
       verify(listener()).called(1);
       verify(mockController.setLayerVisibility(any, false)).called(4);
-      expect(sut.isPointsOfInterestVisible, false);
+      expect(sut.getVisibilityByLayer(layer: SBBRokasPoiLayer.baseWithFloor), false);
+      expect(sut.getVisibilityByLayer(layer: SBBRokasPoiLayer.highlighted), false);
     });
 
     test('selectPointOfInterest_ifPOIsNotVisible_shouldNotDoAnything', () async {

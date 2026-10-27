@@ -6,8 +6,7 @@ import 'package:flutter/foundation.dart';
 /// available floors are read from the `service_points` source, and the floor is
 /// applied by rewriting the filters of the layers whose id ends in `-lvl`.
 ///
-/// Both the SBB Maps styles held by [SBBMapsMapStyler] and the Legacy Journey
-/// Maps styles held by [SBBRokasMapStyler] satisfy this.
+/// The SBB Maps styles held by [SBBMapsMapStyler] satisfy this.
 abstract class SBBMapFloorController with ChangeNotifier {
   /// Get the available floors in DESC order.
   ///

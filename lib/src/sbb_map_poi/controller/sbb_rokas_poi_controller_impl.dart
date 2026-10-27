@@ -71,13 +71,6 @@ class SBBRokasPOIControllerImpl with ChangeNotifier implements SBBRokasPOIContro
   @override
   RokasPOI? get selectedPointOfInterest => _selectedPOI;
 
-  @override
-  List<SBBPoiCategoryType> get currentPOICategories =>
-      _layerToCategoryFilters[SBBRokasPoiLayer.baseWithFloor]!.toList();
-
-  @override
-  bool get isPointsOfInterestVisible => _isAnyPoiLayerVisible;
-
   bool get _isAnyPoiLayerVisible => _layerToVisibility.values.any((isVisible) => isVisible);
 
   @override

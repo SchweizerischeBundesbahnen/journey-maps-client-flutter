@@ -37,15 +37,10 @@ class SBBMapPOISettings {
   /// its listeners are notified.
   final VoidCallback? onPoiDeselected;
 
-  /// Deprecated. Use SBBRokasPOIController.showPointsOfInterest instead. Does exactly that.
-  @Deprecated("Use SBBRokasPOIController.showPointsOfInterest. Deprecated after 2.4.0.")
-  final bool isPointOfInterestVisible;
-
   const SBBMapPOISettings({
     this.onPoiControllerAvailable,
     this.onPoiSelected,
     this.onPoiDeselected,
-    this.isPointOfInterestVisible = true,
   });
 
   @override
@@ -55,17 +50,11 @@ class SBBMapPOISettings {
     return other is SBBMapPOISettings &&
         other.onPoiControllerAvailable == onPoiControllerAvailable &&
         other.onPoiSelected == onPoiSelected &&
-        other.onPoiDeselected == onPoiDeselected &&
-        // ignore: deprecated_member_use_from_same_package
-        other.isPointOfInterestVisible == isPointOfInterestVisible;
+        other.onPoiDeselected == onPoiDeselected;
   }
 
   @override
   int get hashCode {
-    return onPoiControllerAvailable.hashCode ^
-        onPoiSelected.hashCode ^
-        onPoiDeselected.hashCode ^
-        // ignore: deprecated_member_use_from_same_package
-        isPointOfInterestVisible.hashCode;
+    return onPoiControllerAvailable.hashCode ^ onPoiSelected.hashCode ^ onPoiDeselected.hashCode;
   }
 }

@@ -27,18 +27,6 @@ abstract class SBBRokasPOIController with ChangeNotifier {
   /// Get the available POI categories.
   List<SBBPoiCategoryType> get availablePOICategories;
 
-  /// Deprecated.
-  ///
-  /// Use [getCategoryFilterByLayer] with [SBBRokasPoiLayer.baseWithFloor].
-  @Deprecated("Deprecated after v.2.4.0. Use getCategoryFilterByLayer with `RokasPoiLayer.baseOnFloor`.")
-  List<SBBPoiCategoryType> get currentPOICategories;
-
-  /// Deprecated. This will indicate whether ANY point of interest layer is visible.
-  ///
-  /// Use [getVisibilityByLayer] with the correct layer.
-  @Deprecated("Deprecated after v.2.4.0. Use getVisibilityByLayer with a `RokasPoiLayer`.")
-  bool get isPointsOfInterestVisible;
-
   /// Gets the currently applied POI category filter for the given [SBBRokasPoiLayer].
   ///
   /// Each filter is set individually for each [SBBRokasPoiLayer] when calling [showPointsOfInterest].

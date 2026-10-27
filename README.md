@@ -21,7 +21,7 @@ API key for style and routing usage (see details below).
         - [In code usage](#in-code-usage)
             - [API key](#api-key)
             - [Adding the map](#adding-the-map)
-            - [Migrating to the SBB Maps styles](#migrating-to-the-sbb-maps-styles)
+            - [Migrating to 3.0.0](#migrating-to-300)
             - [Accessing user location](#accessing-user-location)
             - [Focusing on user location when building map](#focusing-on-user-location-when-building-map)
         - [Tested deployment platforms](#tested-deployment-platforms)
@@ -115,29 +115,10 @@ final map = SBBMap(
 );
 ```
 
-###### Migrating to the SBB Maps styles
+###### Migrating to 3.0.0
 
-The Journey Maps styles held by `SBBRokasMapStyler` (`journey_maps_bright_v1`,
-`journey_maps_dark_v1`,
-`journey_maps_aerial_v1`) are no longer served after **31.12.2026**. They are replaced by the SBB
-Maps styles
-(`sbbmaps_bright`, `sbbmaps_dark`, `sbbmaps_aerial`), held by `SBBMapsMapStyler`.
-
-`SBBMapsMapStyler` mirrors `SBBRokasMapStyler` factory, so migrating is a one-line change:
-
-```dart
-
-final mapStyler = SBBMapsMapStyler.full(apiKey: Env.MY_API_KEY_NAME);
-```
-
-The same API key, the same `useIntegrationData` flag and the same `isDarkMode` handling apply. POIs,
-routing,
-annotations and floor switching behave identically on both.
-
-If you never passed a `mapStyler` to `SBBMap`, there is nothing to migrate: `SBBMap` creates a
-`SBBMapsMapStyler.full()` as its default.
-
-Upgrading from 2.x to 3.0.0? See the [migration guide](migration_guide_v3.md).
+Upgrading from 2.x? The [migration guide](migration_guide_v3.md) lists every breaking change and
+what to do about it.
 
 ###### Accessing user location
 
@@ -227,7 +208,7 @@ MobileIron).
 | Gesture                                 | :white_check_mark: | :white_check_mark: |
 | Accessing INT Tiles & POIs              | :white_check_mark: | :white_check_mark: |
 | Camera                                  | :white_check_mark: | :white_check_mark: |
-| Map Styles (including ROKAS Styles)     | :white_check_mark: | :white_check_mark: |
+| Map Styles                              | :white_check_mark: | :white_check_mark: |
 | Location (including device tracking)    | :white_check_mark: | :white_check_mark: |
 | Customizable UI                         | :white_check_mark: | :white_check_mark: |
 | Floor Switcher (switch levels)          | :white_check_mark: | :white_check_mark: |
@@ -314,10 +295,6 @@ Both variants read the same `SBBMapFloorSwitcherStyle` theme extension, so a flo
 switcher you have already themed is themed in either orientation. Its `iconColor` token
 colors the affordance glyphs — the floors icon and the close icon — independently of the
 floor labels; left unset they take `textColor`.
-
-> The widget names were `SBBMapFloorSelector`, `SBBMapFloorSelectorSmall` and
-> `SBBMapFloorSelectorStyle` up to 2.8.2. Those names still work as deprecated aliases and
-> are removed in 3.0.0; the migration is a mechanical rename.
 
 #### Accessing INT Tiles & POIs
 

@@ -207,8 +207,3 @@ class SBBMapVerticalFloorSwitcherSmall extends StatelessWidget {
     return inheritedStyle.merge(style);
   }
 }
-
-@Deprecated(
-  'Use SBBMapVerticalFloorSwitcherSmall instead. Deprecated after 2.8.2. Will be removed in 3.0.0.',
-)
-typedef SBBMapFloorSelectorSmall = SBBMapVerticalFloorSwitcherSmall;
