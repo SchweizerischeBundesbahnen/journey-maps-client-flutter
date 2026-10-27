@@ -10,7 +10,8 @@ annotations on top of them.
 
 **Style Family**:
 A versioned set of map styles published together by SBB DSRV GIS / geOps. Two
-exist: the Legacy Journey Maps family and the SBB Maps family.
+exist: the Legacy Journey Maps family and the SBB Maps family. The library ships
+a styler only for the SBB Maps family.
 _Avoid_: style set, style version, style generation
 
 **Legacy Journey Maps style family**:

@@ -111,8 +111,3 @@ class SBBMapFloorSwitcherStyle extends ThemeExtension<SBBMapFloorSwitcherStyle> 
     );
   }
 }
-
-@Deprecated(
-  'Use SBBMapFloorSwitcherStyle instead. Deprecated after 2.8.2. Will be removed in 3.0.0.',
-)
-typedef SBBMapFloorSelectorStyle = SBBMapFloorSwitcherStyle;
