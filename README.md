@@ -134,11 +134,10 @@ The same API key, the same `useIntegrationData` flag and the same `isDarkMode` h
 routing,
 annotations and floor switching behave identically on both.
 
-If you never passed a `mapStyler` to `SBBMap`, you are on the deprecated styles too — `SBBMap`
-creates a
-`SBBRokasMapStyler.full()` as its default and logs a warning saying so. Start passing a
-`SBBMapsMapStyler`
-explicitly. The default changes in the next major version, when `SBBRokasMapStyler` is removed.
+If you never passed a `mapStyler` to `SBBMap`, there is nothing to migrate: `SBBMap` creates a
+`SBBMapsMapStyler.full()` as its default.
+
+Upgrading from 2.x to 3.0.0? See the [migration guide](migration_guide_v3.md).
 
 ###### Accessing user location
 
@@ -397,6 +396,7 @@ see [track_device_location_route.dart](example/lib/routes/track_device_location_
 
 - [CODING_STANDARDS.md](CODING_STANDARDS.md)
 - [CONTRIBUTING.md](CONTRIBUTING.md)
+- [Migration guide to 3.0.0](migration_guide_v3.md)
 - [LICENSE.md](LICENSE.md)
 - [Journey Maps API Documentation](https://developer.sbb.ch/apis/journey-maps/documentation)
 - [Journey Maps Tiles API Documentation](https://developer.sbb.ch/apis/journey-maps-tiles/documentation)
