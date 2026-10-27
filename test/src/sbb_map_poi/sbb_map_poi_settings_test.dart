@@ -5,10 +5,10 @@ void main() {
   group('Unit Test SBBMapPOISettings', () {
     onPoiControllerAvailable1(controller) {}
     onPoiSelected1(poi) {}
-    onPoiDeselected1() {}
+    onPoiDeselected1(poi) {}
     onPoiControllerAvailable2(controller) {}
     onPoiSelected2(poi) {}
-    onPoiDeselected2() {}
+    onPoiDeselected2(poi) {}
 
     test('equality_whenAllPropertyValuesEqual_shouldBeEqual', () {
       final settings1 = SBBMapPOISettings(

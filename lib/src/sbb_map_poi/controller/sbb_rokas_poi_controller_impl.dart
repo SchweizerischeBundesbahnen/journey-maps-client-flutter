@@ -33,7 +33,7 @@ class SBBRokasPOIControllerImpl with ChangeNotifier implements SBBRokasPOIContro
   SBBRokasPOIControllerImpl({
     required Future<MapLibreMapController> controller,
     OnPoiSelected? onPoiSelected,
-    VoidCallback? onPoiDeselected,
+    OnPoiDeselected? onPoiDeselected,
     bool Function()? isDarkMode,
   }) : _controller = controller,
        _onPoiSelected = onPoiSelected,
@@ -44,7 +44,7 @@ class SBBRokasPOIControllerImpl with ChangeNotifier implements SBBRokasPOIContro
 
   final Future<MapLibreMapController> _controller;
   OnPoiSelected? _onPoiSelected;
-  VoidCallback? _onPoiDeselected;
+  OnPoiDeselected? _onPoiDeselected;
 
   final bool Function() _isDarkMode;
 
@@ -164,7 +164,7 @@ class SBBRokasPOIControllerImpl with ChangeNotifier implements SBBRokasPOIContro
   /// newly used style layer and the previously used one is hidden.
   Future<void> updateSelectionCallbacks({
     required OnPoiSelected? onPoiSelected,
-    required VoidCallback? onPoiDeselected,
+    required OnPoiDeselected? onPoiDeselected,
   }) async {
     final previousLayerId = _layerIdFromPoiLayer(SBBRokasPoiLayer.baseWithFloor);
     _onPoiSelected = onPoiSelected;
@@ -273,14 +273,16 @@ class SBBRokasPOIControllerImpl with ChangeNotifier implements SBBRokasPOIContro
   /// Updates the state and notifies listeners. If the selection changed,
   /// [_onPoiSelected] or [_onPoiDeselected] is called afterwards, so the
   /// callbacks already read the new [selectedPointOfInterest].
+  /// [_onPoiDeselected] receives the previously selected POI.
   void _commitSelection(RokasPOI? poi, {Map<SBBRokasPoiLayer, bool>? visibility}) {
-    final isSelectionChanged = !_isSamePoi(poi, _selectedPOI);
+    final previous = _selectedPOI;
+    final isSelectionChanged = !_isSamePoi(poi, previous);
     _updateAndNotifyListenersIfChanged(filters: null, visibility: visibility, selectedPOI: poi);
     if (!isSelectionChanged) return;
     if (poi != null) {
       _onPoiSelected?.call(poi);
-    } else {
-      _onPoiDeselected?.call();
+    } else if (previous != null) {
+      _onPoiDeselected?.call(previous);
     }
   }
 

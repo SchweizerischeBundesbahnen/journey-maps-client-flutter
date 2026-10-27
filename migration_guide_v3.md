@@ -62,4 +62,19 @@ SBBMap(
 
 ## `onPoiDeselected` receives the deselected POI
 
+`SBBMapPOISettings.onPoiDeselected` is an `OnPoiDeselected`, `void Function(RokasPOI deselected)`,
+instead of a `VoidCallback`. It receives the POI that was deselected. When it is called,
+`SBBRokasPOIController.selectedPointOfInterest` is already `null`, so the argument is the only place
+to read that POI.
+
+```dart
+SBBMapPOISettings(
+  onPoiDeselected: (deselected) => print('Deselected ${deselected.name}'),
+);
+```
+
+A callback that ignores the POI only needs the parameter: `onPoiDeselected: (_) => closeDetails()`.
+
+Selecting another POI while one is selected still calls only `onPoiSelected`, with the new POI.
+
 ## Floor filters in custom styles

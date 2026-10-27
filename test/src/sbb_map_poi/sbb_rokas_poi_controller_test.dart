@@ -436,7 +436,7 @@ void main() {
 
     test('selectPointOfInterest_ifPoiSelectedAndIdUnknown_shouldDeselectAndReturnNull', () async {
       // arrange
-      final onPoiDeselected = MockCallbackFunction();
+      final onPoiDeselected = MockCallbackPoiFunction();
       sut = SBBRokasPOIControllerImpl(controller: Future.value(mockController), onPoiDeselected: onPoiDeselected.call);
       sut.addListener(listener.call);
       await sut.showPointsOfInterest();
@@ -456,13 +456,13 @@ void main() {
       expect(sut.selectedPointOfInterest, isNull);
       verify(mockController.setLayerProperties(selectedPoiLayerId, any)).called(1);
       verifyNever(mockController.setFilter(any, any));
-      verify(onPoiDeselected()).called(1);
+      verify(onPoiDeselected(mobilityBikesharingPoiFixture)).called(1);
       verify(listener()).called(1);
     });
 
     test('selectPointOfInterest_ifNothingSelectedAndIdUnknown_shouldNotDeselectAndReturnNull', () async {
       // arrange
-      final onPoiDeselected = MockCallbackFunction();
+      final onPoiDeselected = MockCallbackPoiFunction();
       sut = SBBRokasPOIControllerImpl(controller: Future.value(mockController), onPoiDeselected: onPoiDeselected.call);
       sut.addListener(listener.call);
       await sut.showPointsOfInterest();
@@ -476,7 +476,7 @@ void main() {
       // expect
       expect(result, isNull);
       verifyNever(mockController.setLayerProperties(any, any));
-      verifyNever(onPoiDeselected());
+      verifyNever(onPoiDeselected(any));
       verifyNever(listener());
     });
 
@@ -518,7 +518,7 @@ void main() {
       // arrange
       const coordinates = LatLng(0, 0);
       const point = Point(0.0, 0.0);
-      final onPoiDeselected = MockCallbackFunction();
+      final onPoiDeselected = MockCallbackPoiFunction();
       sut = SBBRokasPOIControllerImpl(controller: Future.value(mockController), onPoiDeselected: onPoiDeselected.call);
       sut.addListener(listener.call);
       await sut.showPointsOfInterest();
@@ -540,7 +540,7 @@ void main() {
       expect(sut.selectedPointOfInterest, isNull);
       verify(mockController.setLayerProperties(selectedPoiLayerId, any)).called(1);
       verifyNever(mockController.setFilter(any, any));
-      verify(onPoiDeselected()).called(1);
+      verify(onPoiDeselected(mobilityBikesharingPoiFixture)).called(1);
       verify(listener()).called(1);
     });
 
@@ -767,7 +767,7 @@ void main() {
     SBBRokasPOIControllerImpl createSut() => SBBRokasPOIControllerImpl(
       controller: Future.value(mockController),
       onPoiSelected: (_) => calls.add('oldSelected'),
-      onPoiDeselected: () => calls.add('oldDeselected'),
+      onPoiDeselected: (_) => calls.add('oldDeselected'),
     );
 
     test('updateSelectionCallbacks_whenPoiSelectedThenDeselected_shouldCallNewCallbacksOnly', () async {
@@ -777,13 +777,13 @@ void main() {
       // act
       await sut.updateSelectionCallbacks(
         onPoiSelected: (_) => calls.add('newSelected'),
-        onPoiDeselected: () => calls.add('newDeselected'),
+        onPoiDeselected: (poi) => calls.add('newDeselected ${poi.sbbId}'),
       );
       await sut.toggleSelectedPointOfInterest(const Point(0, 0));
       when(mockController.queryRenderedFeatures(any, any, any)).thenAnswer((_) async => []);
       await sut.toggleSelectedPointOfInterest(const Point(0, 0));
       // expect
-      expect(calls, ['newSelected', 'newDeselected']);
+      expect(calls, ['newSelected', 'newDeselected ${mobilityBikesharingPoiFixture.sbbId}']);
     });
 
     test('updateSelectionCallbacks_whenPoisBecomeClickable_shouldMoveVisibilityAndFilterToClickableLayer', () async {
@@ -832,7 +832,7 @@ void main() {
       await sut.showPointsOfInterest(categories: [SBBPoiCategoryType.bakery]);
       reset(mockController);
       // act
-      await sut.updateSelectionCallbacks(onPoiSelected: (_) {}, onPoiDeselected: () {});
+      await sut.updateSelectionCallbacks(onPoiSelected: (_) {}, onPoiDeselected: (_) {});
       // expect
       verifyZeroInteractions(mockController);
     });
@@ -849,7 +849,7 @@ void main() {
       sut = SBBRokasPOIControllerImpl(
         controller: Future.value(mockController),
         onPoiSelected: (poi) => calls.add('selected ${poi.sbbId}, state ${sut.selectedPointOfInterest?.sbbId}'),
-        onPoiDeselected: () => calls.add('deselected, state ${sut.selectedPointOfInterest?.sbbId}'),
+        onPoiDeselected: (poi) => calls.add('deselected ${poi.sbbId}, state ${sut.selectedPointOfInterest?.sbbId}'),
       );
       sut.addListener(() => calls.add('notified'));
       when(
@@ -871,7 +871,7 @@ void main() {
       await sut.hideAllPointsOfInterest();
       // expect
       expect(sut.selectedPointOfInterest, isNull);
-      expect(calls, ['notified', 'deselected, state null']);
+      expect(calls, ['notified', 'deselected ${mobilityBikesharingPoiFixture.sbbId}, state null']);
       verify(mockController.setLayerProperties(selectedPoiLayerId, any)).called(1);
     });
 
@@ -882,7 +882,7 @@ void main() {
       await sut.hidePointsOfInterest();
       // expect
       expect(sut.selectedPointOfInterest, isNull);
-      expect(calls, ['notified', 'deselected, state null']);
+      expect(calls, ['notified', 'deselected ${mobilityBikesharingPoiFixture.sbbId}, state null']);
       verify(mockController.setLayerProperties(selectedPoiLayerId, any)).called(1);
     });
 
@@ -911,6 +911,21 @@ void main() {
       // expect
       final sbbId = mobilityBikesharingPoiFixture.sbbId;
       expect(calls, ['notified', 'selected $sbbId, state $sbbId']);
+    });
+
+    test('selectPointOfInterest_whenOtherPoiFoundWhilePoiSelected_shouldCallSelectedOnly', () async {
+      // arrange
+      await showAndSelectPoi();
+      const otherSbbId = 'other-sbb-id';
+      final otherPoiGeoJSON = {
+        ...mobilityBikesharingPoiGeoJSONFixture,
+        'properties': {...?mobilityBikesharingPoiGeoJSONFixture['properties'] as Map?, 'sbbId': otherSbbId},
+      };
+      when(mockController.querySourceFeatures(any, any, any)).thenAnswer((_) async => [otherPoiGeoJSON]);
+      // act
+      await sut.selectPointOfInterest(sbbId: otherSbbId);
+      // expect
+      expect(calls, ['notified', 'selected $otherSbbId, state $otherSbbId']);
     });
 
     test('selectPointOfInterest_whenSamePoiAlreadySelected_shouldDoNothingAndReturnIt', () async {
@@ -954,7 +969,7 @@ void main() {
       // act
       await sut.deselectPointOfInterest();
       // expect
-      expect(calls, ['notified', 'deselected, state null']);
+      expect(calls, ['notified', 'deselected ${mobilityBikesharingPoiFixture.sbbId}, state null']);
     });
 
     test('synchronizeWithNewStyle_whenPoiSelected_shouldKeepSelectionAndReapplyHighlight', () async {
@@ -981,7 +996,7 @@ void main() {
       await sut.synchronizeWithNewStyle();
       // expect
       expect(sut.selectedPointOfInterest, isNull);
-      expect(calls, ['notified', 'deselected, state null']);
+      expect(calls, ['notified', 'deselected ${mobilityBikesharingPoiFixture.sbbId}, state null']);
       verifyNever(mockController.setFilter(selectedPoiLayerId, any));
       verifyNever(mockController.setLayerProperties(selectedPoiLayerId, any));
     });
@@ -1001,7 +1016,7 @@ void main() {
       // expect
       final sbbId = mobilityBikesharingPoiFixture.sbbId;
       expect(sut.selectedPointOfInterest, isNull);
-      expect(calls, ['notified', 'selected $sbbId, state $sbbId', 'notified', 'deselected, state null']);
+      expect(calls, ['notified', 'selected $sbbId, state $sbbId', 'notified', 'deselected $sbbId, state null']);
       final properties = verify(mockController.setLayerProperties(selectedPoiLayerId, captureAny)).captured;
       expect((properties.last as SymbolLayerProperties).toJson()['visibility'], 'none');
     });
@@ -1031,7 +1046,7 @@ void main() {
       sut = SBBRokasPOIControllerImpl(
         controller: Future.value(mockController),
         onPoiSelected: (poi) => calls.add('selected ${poi.sbbId}'),
-        onPoiDeselected: () => calls.add('deselected'),
+        onPoiDeselected: (_) => calls.add('deselected'),
       );
       when(mockController.querySourceFeatures(any, any, any)).thenAnswer((_) => lookup.future);
       await sut.showPointsOfInterest();
