@@ -331,10 +331,10 @@ void main() {
         verify(mockController.setFilter('layer2-lvl', floorTypeReadFloor1Filter)).called(1);
       });
 
-      test('switchFloor_whenLegacyFloorFilter_shouldApplyFilter', () async {
+      test('switchFloor_whenBareFloorNameFilter_shouldNotChangeFilters', () async {
         // arrange mock controller
         when(mockController.getLayerIds()).thenAnswer((_) async => oneLevelLayers);
-        when(mockController.getFilter('layer2-lvl')).thenAnswer((_) async => legacyFloor0Filter);
+        when(mockController.getFilter('layer2-lvl')).thenAnswer((_) async => bareFloorNameFilter);
         when(mockController.setFilter(any, any)).thenAnswer((_) async => {});
 
         // act
@@ -342,13 +342,13 @@ void main() {
 
         // expect
         expect(sut.currentFloor, 1);
-        verify(mockController.setFilter('layer2-lvl', legacyFloor1Filter)).called(1);
+        verifyNever(mockController.setFilter(any, any));
       });
 
-      test('switchFloor_whenTopLevelFloorReadFilter_shouldApplyFilter', () async {
+      test('switchFloor_whenPlainFloorReadFilter_shouldNotChangeFilters', () async {
         // arrange mock controller
         when(mockController.getLayerIds()).thenAnswer((_) async => oneLevelLayers);
-        when(mockController.getFilter('layer2-lvl')).thenAnswer((_) async => topLevelFloorRead0Filter);
+        when(mockController.getFilter('layer2-lvl')).thenAnswer((_) async => plainFloorReadFilter);
         when(mockController.setFilter(any, any)).thenAnswer((_) async => {});
 
         // act
@@ -356,7 +356,7 @@ void main() {
 
         // expect
         expect(sut.currentFloor, 1);
-        verify(mockController.setFilter('layer2-lvl', topLevelFloorRead1Filter)).called(1);
+        verifyNever(mockController.setFilter(any, any));
       });
 
       test('switchFloor_whenFloorClauseIsFollowedByScalar_shouldLeaveTheScalarUntouched', () async {
@@ -388,6 +388,76 @@ void main() {
         verify(mockController.getFilter('layer2-lvl')).called(1);
         verify(mockController.setFilter('layer2-lvl', layer2Level1Filter)).called(1);
         verify(listener()).called(1); // first call checked in setUp
+      });
+
+      test('switchFloor_whenSbbMapsPlatformLayerFilter_shouldOnlySubstituteTheLevel', () async {
+        // arrange mock controller
+        when(mockController.getLayerIds()).thenAnswer((_) async => oneLevelLayers);
+        when(mockController.getFilter('layer2-lvl')).thenAnswer((_) async => platformKanteLevel0Filter);
+        when(mockController.setFilter(any, any)).thenAnswer((_) async => {});
+
+        // act
+        await sut.switchFloor(1);
+
+        // expect
+        expect(sut.currentFloor, 1);
+        verify(mockController.setFilter('layer2-lvl', platformKanteLevel1Filter)).called(1);
+      });
+
+      test('switchFloor_whenSbbMapsLabelLayerFilter_shouldOnlySubstituteTheLevel', () async {
+        // arrange mock controller
+        when(mockController.getLayerIds()).thenAnswer((_) async => oneLevelLayers);
+        when(mockController.getFilter('layer2-lvl')).thenAnswer((_) async => labelStreetsMainLevel0Filter);
+        when(mockController.setFilter(any, any)).thenAnswer((_) async => {});
+
+        // act
+        await sut.switchFloor(1);
+
+        // expect
+        expect(sut.currentFloor, 1);
+        verify(mockController.setFilter('layer2-lvl', labelStreetsMainLevel1Filter)).called(1);
+      });
+
+      test('switchFloor_whenSbbMapsLevelLayerHoldsNoLevelClause_shouldNotChangeFilters', () async {
+        // arrange mock controller
+        when(mockController.getLayerIds()).thenAnswer((_) async => oneLevelLayers);
+        when(mockController.getFilter('layer2-lvl')).thenAnswer((_) async => railwaysGravelFilter);
+        when(mockController.setFilter(any, any)).thenAnswer((_) async => {});
+
+        // act
+        await sut.switchFloor(1);
+
+        // expect
+        expect(sut.currentFloor, 1);
+        verifyNever(mockController.setFilter(any, any));
+      });
+
+      test('switchFloor_whenLevelClauseIsNestedInNoneGroup_shouldApplyFilter', () async {
+        // arrange mock controller
+        when(mockController.getLayerIds()).thenAnswer((_) async => oneLevelLayers);
+        when(mockController.getFilter('layer2-lvl')).thenAnswer((_) async => noneGroupLevel0Filter);
+        when(mockController.setFilter(any, any)).thenAnswer((_) async => {});
+
+        // act
+        await sut.switchFloor(1);
+
+        // expect
+        expect(sut.currentFloor, 1);
+        verify(mockController.setFilter('layer2-lvl', noneGroupLevel1Filter)).called(1);
+      });
+
+      test('switchFloor_whenLevelClauseIsFilterRoot_shouldApplyFilter', () async {
+        // arrange mock controller
+        when(mockController.getLayerIds()).thenAnswer((_) async => oneLevelLayers);
+        when(mockController.getFilter('layer2-lvl')).thenAnswer((_) async => rootLevel0Filter);
+        when(mockController.setFilter(any, any)).thenAnswer((_) async => {});
+
+        // act
+        await sut.switchFloor(1);
+
+        // expect
+        expect(sut.currentFloor, 1);
+        verify(mockController.setFilter('layer2-lvl', rootLevel1Filter)).called(1);
       });
     });
   });

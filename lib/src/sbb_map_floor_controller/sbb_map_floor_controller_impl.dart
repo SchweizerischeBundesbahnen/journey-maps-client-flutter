@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:logger/logger.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
@@ -142,89 +141,57 @@ class SBBMapFloorControllerImpl with ChangeNotifier implements SBBMapFloorContro
     if (oldFilter == null || oldFilter.isEmpty) {
       return oldFilter;
     }
+    return _replaceFloor(oldFilter, level);
+  }
 
-    final newFilter = [oldFilter[0]];
-    bool floorFound = false;
-    oldFilter.slice(1).forEach((item) {
-      if (_isFloorOperand(item)) {
-        // "floor" in "rokas_indoor" and "geojson_walk" layers,
-        // or ['get','floor'] when filter: ['==', ['get','floor'], 0]
-        floorFound = true;
-        newFilter.add(item);
-      } else if (item is List && _isBooleanGroup(item.firstOrNull)) {
-        // a nested all/any/none group holds clauses, not operands:
-        // the level clause sits one level deeper than usual
-        newFilter.add(_calculateLayerFilter(item, level));
-      } else if (item is List) {
-        bool levelFound = false;
-        final filterOperator = item[0];
-        final newInnerPart = [filterOperator];
-        item.slice(1).forEach((innerPart) {
-          final innerPartString = jsonEncode(innerPart);
-          if (_isCaseLvlFilter(innerPartString)) {
-            levelFound = true;
-            newInnerPart.add(innerPart);
-          } else if (_isGetLevelFilter(filterOperator, innerPartString)) {
-            // "level" in the level_* layers of the SBB Maps styles
-            levelFound = true;
-            newInnerPart.add(innerPart);
-          } else if (_isFloorFilter(innerPartString)) {
-            // when filter: ['all', ['==', ['get','floor'], 0]]
-            levelFound = true;
-            newInnerPart.add(innerPart);
-          } else if (levelFound) {
-            levelFound = false;
-            newInnerPart.add(level);
-          } else {
-            newInnerPart.add(innerPart);
-          }
-        });
-        newFilter.add(newInnerPart);
-      } else if (floorFound) {
-        floorFound = false;
-        newFilter.add(level);
-      } else {
-        newFilter.add(item);
-      }
-    });
+  /// Sets [floor] in every Level Filter Idiom clause of [expression]: `all`,
+  /// `any` and `none` groups are walked at any depth, and an
+  /// `['==', <idiom>, <floor>]` comparison gets [floor] as its third operand.
+  /// Every other expression is returned unchanged.
+  dynamic _replaceFloor(dynamic expression, int floor) {
+    if (expression is! List || expression.isEmpty) return expression;
 
-    return newFilter;
+    final filterOperator = expression.first;
+    if (_isBooleanGroup(filterOperator)) {
+      return [filterOperator, ...expression.skip(1).map((clause) => _replaceFloor(clause, floor))];
+    }
+    if (filterOperator == '==' && expression.length == 3 && _isLevelFilterIdiom(expression[1])) {
+      return [filterOperator, expression[1], floor];
+    }
+    return expression;
   }
 
   /// Whether [filterOperator] combines sub-filters rather than comparing
-  /// operands, in which case its children are clauses to walk rather than
-  /// operands to substitute.
+  /// operands, in which case its children are clauses to walk.
   ///
   /// `rokas-walk-platform-lvl` nests its floor clause inside `any` of `all`,
   /// two levels below the filter root.
   bool _isBooleanGroup(dynamic filterOperator) => const {'all', 'any', 'none'}.contains(filterOperator);
 
-  bool _isCaseLvlFilter(String innerPartString) {
+  /// Whether [operand], the left side of an `==` comparison, is a form of the
+  /// Level Filter Idiom of the SBB Maps style family:
+  ///
+  /// * `['get', 'level']`, used by the `level_*` basemap layers,
+  /// * `['case', ['has', 'level'], ['get', 'level'], 0]`, used by the
+  ///   `journey-pois-*` and `level_label_*` layers,
+  /// * `['case', ['has', 'floor'], ['get', 'floor'], 0]`, used by
+  ///   `rokas-walk-platform-lvl`.
+  bool _isLevelFilterIdiom(dynamic operand) {
+    final operandString = jsonEncode(operand);
+    return operandString == '["get","level"]' ||
+        _isCaseFilter(operandString, property: 'level') ||
+        _isCaseFilter(operandString, property: 'floor');
+  }
+
+  /// Whether [operandString] is a `case` that reads [property] when the
+  /// feature has it. Only this prefix is matched, not the fallback value. On
+  /// iOS the platform hands the `has` check back as
+  /// `['==', ['has', property], true]`.
+  bool _isCaseFilter(String operandString, {required String property}) {
     if (Platform.isIOS) {
-      return innerPartString.startsWith('["case",["==",["has","level"],true],["get","level"]');
+      return operandString.startsWith('["case",["==",["has","$property"],true],["get","$property"]');
     } else {
-      return innerPartString.startsWith('["case",["has","level"],["get","level"]');
+      return operandString.startsWith('["case",["has","$property"],["get","$property"]');
     }
-  }
-
-  /// Level Filter Idiom of the SBB Maps styles: a bare `['get', 'level']` read
-  /// compared to the floor with `==`, as in `['==', ['get', 'level'], 0]`.
-  bool _isGetLevelFilter(dynamic filterOperator, String innerPartString) {
-    return filterOperator == '==' && innerPartString == '["get","level"]';
-  }
-
-  /// Whether [item], an operand of the filter root, is itself a reference to
-  /// the `floor` property, so the operand following it is the floor scalar.
-  bool _isFloorOperand(dynamic item) {
-    if (item is! String && item is! List) return false;
-    final itemString = jsonEncode(item);
-    return itemString == '"floor"' || itemString == '["get","floor"]';
-  }
-
-  /// A reference to the `floor` property: the bare `"floor"` name of the
-  /// legacy filter form, or a `["get","floor"]` read, also inside a `case`.
-  /// Other properties such as `floor_type` do not match.
-  bool _isFloorFilter(String innerPartString) {
-    return innerPartString == '"floor"' || innerPartString.contains('["get","floor"]');
   }
 }

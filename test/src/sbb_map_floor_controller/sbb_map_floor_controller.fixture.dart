@@ -403,8 +403,8 @@ const nestedZoomGroupsLevel1Filter = [
   ],
 ];
 
-/// A filter reading `floor_type` next to the `['get', 'floor']` read. Only the
-/// floor scalar may be substituted; the `floor_type` operand is not a floor.
+/// A filter reading `floor_type` next to the `case` floor read. Only the floor
+/// scalar may be substituted; the `floor_type` operand is not a floor.
 const floorTypeReadFloor0Filter = [
   'all',
   [
@@ -414,7 +414,12 @@ const floorTypeReadFloor0Filter = [
   ],
   [
     '==',
-    ['get', 'floor'],
+    [
+      'case',
+      ['has', 'floor'],
+      ['get', 'floor'],
+      0,
+    ],
     0,
   ],
 ];
@@ -427,34 +432,30 @@ const floorTypeReadFloor1Filter = [
   ],
   [
     '==',
-    ['get', 'floor'],
+    [
+      'case',
+      ['has', 'floor'],
+      ['get', 'floor'],
+      0,
+    ],
     1,
   ],
 ];
 
-/// Legacy filter form of the `rokas_indoor` and `geojson_walk` layers: the
-/// bare `floor` property name compared to the floor.
-const legacyFloor0Filter = [
+/// The bare `floor` property name compared to a floor. No style family uses
+/// this form, so it is not a Level Filter Idiom.
+const bareFloorNameFilter = [
   '==',
   'floor',
   0,
-];
-const legacyFloor1Filter = [
-  '==',
-  'floor',
-  1,
 ];
 
-/// A `['get', 'floor']` read compared to the floor at the filter root.
-const topLevelFloorRead0Filter = [
+/// A plain `['get', 'floor']` read compared to a floor. No style family uses
+/// this form, so it is not a Level Filter Idiom.
+const plainFloorReadFilter = [
   '==',
   ['get', 'floor'],
   0,
-];
-const topLevelFloorRead1Filter = [
-  '==',
-  ['get', 'floor'],
-  1,
 ];
 
 /// A floor clause followed by a scalar operand of the root group. The floor
@@ -463,7 +464,12 @@ const floorClauseThenScalarFloor0Filter = [
   'all',
   [
     '==',
-    ['get', 'floor'],
+    [
+      'case',
+      ['has', 'floor'],
+      ['get', 'floor'],
+      0,
+    ],
     0,
   ],
   true,
@@ -472,8 +478,213 @@ const floorClauseThenScalarFloor1Filter = [
   'all',
   [
     '==',
-    ['get', 'floor'],
+    [
+      'case',
+      ['has', 'floor'],
+      ['get', 'floor'],
+      0,
+    ],
     1,
   ],
   true,
+];
+
+/// `level_platform_1x_kante-lvl` of `sbbmaps_bright`, verbatim: the bare
+/// `['get', 'level']` idiom among reads that must stay as they are.
+const platformKanteLevel0Filter = [
+  'all',
+  [
+    '==',
+    ['get', 'level'],
+    0,
+  ],
+  [
+    'match',
+    ['get', 'kind'],
+    ['platform', 'platform_fallback', 'platform_point_from_polygon'],
+    true,
+    false,
+  ],
+  [
+    '==',
+    ['get', 'mot_icon_count'],
+    1,
+  ],
+  [
+    '!',
+    ['has', 'rail'],
+  ],
+  ['has', 'platform'],
+  [
+    '==',
+    ['geometry-type'],
+    'Point',
+  ],
+];
+const platformKanteLevel1Filter = [
+  'all',
+  [
+    '==',
+    ['get', 'level'],
+    1,
+  ],
+  [
+    'match',
+    ['get', 'kind'],
+    ['platform', 'platform_fallback', 'platform_point_from_polygon'],
+    true,
+    false,
+  ],
+  [
+    '==',
+    ['get', 'mot_icon_count'],
+    1,
+  ],
+  [
+    '!',
+    ['has', 'rail'],
+  ],
+  ['has', 'platform'],
+  [
+    '==',
+    ['geometry-type'],
+    'Point',
+  ],
+];
+
+/// `level_label_streets_main-lvl` of `sbbmaps_bright`, verbatim: the `case`
+/// level idiom next to a `match` on another property.
+const labelStreetsMainLevel0Filter = [
+  'all',
+  [
+    '==',
+    [
+      'case',
+      ['has', 'level'],
+      ['get', 'level'],
+      0,
+    ],
+    0,
+  ],
+  [
+    'match',
+    ['get', 'kind'],
+    ['motorway', 'primary', 'secondary', 'tertiary'],
+    true,
+    false,
+  ],
+  [
+    '>=',
+    ['zoom'],
+    ['get', 'minzoom'],
+  ],
+];
+const labelStreetsMainLevel1Filter = [
+  'all',
+  [
+    '==',
+    [
+      'case',
+      ['has', 'level'],
+      ['get', 'level'],
+      0,
+    ],
+    1,
+  ],
+  [
+    'match',
+    ['get', 'kind'],
+    ['motorway', 'primary', 'secondary', 'tertiary'],
+    true,
+    false,
+  ],
+  [
+    '>=',
+    ['zoom'],
+    ['get', 'minzoom'],
+  ],
+];
+
+/// `level_railways_gravel-lvl` of `sbbmaps_bright`, verbatim: a `-lvl` layer
+/// whose filter holds no level clause.
+const railwaysGravelFilter = [
+  'all',
+  [
+    'match',
+    ['get', 'kind'],
+    ['narrow_gauge', 'rail'],
+    true,
+    false,
+  ],
+  [
+    '==',
+    ['get', 'tunnel'],
+    false,
+  ],
+  [
+    '==',
+    ['get', 'bridge'],
+    false,
+  ],
+  [
+    '>=',
+    ['zoom'],
+    ['get', 'minzoom'],
+  ],
+];
+
+/// A level clause inside a `none` group inside an `all` group.
+const noneGroupLevel0Filter = [
+  'all',
+  [
+    '==',
+    ['get', 'kind'],
+    'room',
+  ],
+  [
+    'none',
+    [
+      '==',
+      ['get', 'level'],
+      0,
+    ],
+    [
+      '==',
+      ['get', 'kind'],
+      'wall',
+    ],
+  ],
+];
+const noneGroupLevel1Filter = [
+  'all',
+  [
+    '==',
+    ['get', 'kind'],
+    'room',
+  ],
+  [
+    'none',
+    [
+      '==',
+      ['get', 'level'],
+      1,
+    ],
+    [
+      '==',
+      ['get', 'kind'],
+      'wall',
+    ],
+  ],
+];
+
+/// The bare `['get', 'level']` idiom at the filter root, with no group around it.
+const rootLevel0Filter = [
+  '==',
+  ['get', 'level'],
+  0,
+];
+const rootLevel1Filter = [
+  '==',
+  ['get', 'level'],
+  1,
 ];
