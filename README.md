@@ -416,6 +416,8 @@ See [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
   meaning that trying to select a POI at a very distant place will not be possible. The workaround
   would be to first move to the geo
   coordinate and then select the POI.
+* On Android, the user location only works if Google Location Accuracy (network location) is
+  enabled on the device, as MapLibre requests location with balanced priority and does not use GPS.
 
 [Journey Maps API]: (https://developer.sbb.ch/apis/journey-maps/information)
 
