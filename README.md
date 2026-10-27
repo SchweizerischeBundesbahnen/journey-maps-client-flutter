@@ -250,13 +250,12 @@ const properties = SBBMapProperties
 At a station with indoor data the map offers a floor switcher. Two variants exist, chosen
 with the `floorSwitcherOrientation` parameter of `SBBMap`:
 
-* `SBBMapFloorSwitcherOrientation.vertical` — a column of floor tiles, always expanded.
-  The default throughout 2.x.
-* `SBBMapFloorSwitcherOrientation.horizontal` — a collapsible pill. Collapsed it is a
+* `SBBMapFloorSwitcherOrientation.horizontal` — the default, a collapsible pill. Collapsed it is a
   single circular control showing the current floor, or a floors icon when none is
   selected; tapping it expands the floors leftwards with a close icon where the circle
   was. Picking a floor switches to it and collapses again; picking the floor that is
-  already current deselects it. Becomes the default in 3.0.0.
+  already current deselects it.
+* `SBBMapFloorSwitcherOrientation.vertical` — a column of floor tiles, always expanded.
 
 Both cross with `smallControls` to give the compact 32 px size, and both are also
 available as widgets for a custom `SBBMap.builder`: `SBBMapVerticalFloorSwitcher`,
@@ -266,7 +265,7 @@ available as widgets for a custom `SBBMap.builder`: `SBBMapVerticalFloorSwitcher
 ```dart
 SBBMap(
   mapStyler: mapStyler,
-  floorSwitcherOrientation: SBBMapFloorSwitcherOrientation.horizontal,
+  floorSwitcherOrientation: SBBMapFloorSwitcherOrientation.vertical,
 );
 ```
 

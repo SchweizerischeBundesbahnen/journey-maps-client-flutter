@@ -23,7 +23,7 @@ class SBBMap extends StatefulWidget {
     this.isMyLocationEnabled = false,
     this.onMapLocatorAvailable,
     this.isFloorSwitchingEnabled = true,
-    this.floorSwitcherOrientation = .vertical,
+    this.floorSwitcherOrientation = .horizontal,
     this.onFloorControllerAvailable,
     this.onRoutingControllerAvailable,
     this.builder,
@@ -113,8 +113,7 @@ class SBBMap extends StatefulWidget {
   /// This has no effect when a custom [SBBMap.builder] is provided, because
   /// the builder takes full control of the UI layout.
   ///
-  /// Defaults to [SBBMapFloorSwitcherOrientation.vertical]; the default
-  /// changes to [SBBMapFloorSwitcherOrientation.horizontal] in 3.0.0.
+  /// Defaults to [SBBMapFloorSwitcherOrientation.horizontal].
   final SBBMapFloorSwitcherOrientation floorSwitcherOrientation;
 
   /// Callback for once the floor controller is available.

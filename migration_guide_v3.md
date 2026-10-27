@@ -60,6 +60,20 @@ SBBMap(
 
 ## The default floor switcher is horizontal
 
+The default UI of `SBBMap` renders the horizontal floor switcher: a collapsible pill showing the
+current floor, which expands leftwards when tapped. In 2.x it rendered the vertical column of floor
+tiles. The same holds with `smallControls: true`.
+
+To keep the vertical floor switcher, pass the orientation:
+
+```dart
+SBBMap(
+  floorSwitcherOrientation: SBBMapFloorSwitcherOrientation.vertical,
+);
+```
+
+A custom `SBBMap.builder` places its own floor switcher and is not affected.
+
 ## `onPoiDeselected` receives the deselected POI
 
 ## Floor filters in custom styles
