@@ -52,6 +52,40 @@ The storey a user has selected, as exposed by `SBBMapFloorController`. Rendered
 into a style's Level Filter Idiom to decide what draws.
 _Avoid_: level, storey — except when quoting a style's own `level` property
 
+**Floor-dependent**:
+Said of a layer that shows only the features on one Floor. Its id ends in
+`-lvl`, and the style marks it with `general.floor: level`.
+_Avoid_: lvl layer, level layer, 3D layer
+
+**Floor-independent**:
+Said of a layer that shows the features of every Floor at once. It does not mean
+the features have no Floor. Its id ends in `-2d`, and the style marks it with
+`general.floor: 2D`.
+_Avoid_: 2D layer, floorless layer
+
+**Floor View**:
+The way a style draws a station when a Floor is selected: its floor-dependent
+layers show that Floor, and its floor-independent layers are hidden.
+_Avoid_: level mode, 3D view, lvl view
+
+**2D View**:
+The way a style draws a station when no Floor is selected: its floor-independent
+layers show every Floor at once, and its floor-dependent layers are hidden. The
+two views are alternatives; floor-dependent layers draw over floor-independent
+ones, so showing both hides the latter inside stations.
+_Avoid_: 2D mode, flat view, overview
+
+### Points of interest
+
+**Highlighted POI**:
+A point of interest drawn as a pin in the foreground of the map.
+_Avoid_: legacy POI, pin POI, marker
+
+**Base POI**:
+A point of interest drawn as a round or rounded-square icon in the background of
+the map. Clickable base POIs are rounded squares; non-clickable ones are round.
+_Avoid_: basemap POI, background POI
+
 ### Map lifecycle
 
 **Map Session**:

@@ -32,7 +32,7 @@ class SBBMapFloorControllerImpl with ChangeNotifier implements SBBMapFloorContro
   }
 
   /// Only called by [SBBMap] to update available floors
-  /// when the map camera is idle.
+  /// when the map has finished rendering.
   ///
   /// If the current floor is not available anymore,
   /// this will also reset it to null.

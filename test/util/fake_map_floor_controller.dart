@@ -34,8 +34,8 @@ class FakeMapFloorController extends ChangeNotifier implements SBBMapFloorContro
     notifyListeners();
   }
 
-  /// Replaces the available floors, as the real controller does on every
-  /// camera idle, and notifies.
+  /// Replaces the available floors, as the real controller does whenever the
+  /// map has finished rendering, and notifies.
   void updateAvailableFloors(List<int> floors) {
     _availableFloors = floors;
     notifyListeners();

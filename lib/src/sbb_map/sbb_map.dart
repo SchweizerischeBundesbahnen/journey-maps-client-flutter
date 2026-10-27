@@ -266,7 +266,7 @@ class _SBBMapState extends State<SBBMap> {
           onUserLocationUpdated: _session.onUserLocationUpdated,
           trackCameraPosition: widget.trackCameraPosition,
           onCameraTrackingDismissed: _session.onCameraTrackingDismissed,
-          onCameraIdle: _session.onCameraIdle,
+          onMapIdle: _session.onMapIdle,
           compassEnabled: widget.properties.compassEnabled,
           compassViewMargins: widget.properties.compassViewMargins,
           compassViewPosition: widget.properties.compassViewPosition,

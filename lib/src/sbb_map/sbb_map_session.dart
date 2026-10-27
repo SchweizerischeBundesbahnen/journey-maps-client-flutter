@@ -276,9 +276,10 @@ class SBBMapSession with ChangeNotifier {
     if (_acceptsInput) _config.onMapLongClick?.call(point, coordinates);
   }
 
-  /// Handles the camera coming to rest: updates the available floors.
-  Future<void> onCameraIdle() async {
-    if (_acceptsInput) await _floorController.updateAvailableFloors();
+  /// Handles the map having finished rendering, with every requested tile
+  /// loaded: updates the available floors if floor switching is enabled.
+  Future<void> onMapIdle() async {
+    if (_acceptsInput && _config.isFloorSwitchingEnabled) await _floorController.updateAvailableFloors();
   }
 
   /// Handles the user panning away from the device location: stops tracking.
