@@ -1,5 +1,41 @@
 # Changelog
 
+## [3.0.0](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/compare/2.9.1...3.0.0) (2026-10-29)
+
+
+### ⚠ BREAKING CHANGES
+
+* onPoiDeselected is a void Function(RokasPOI deselected) instead of a VoidCallback, in SBBMapPOISettings and SBBRokasPOIControllerImpl. See migration_guide_v3.md.
+* on a floor switch, filters using the bare floor name ['==', 'floor', n], a plain ['==', ['get', 'floor'], n] read, or a level read under another comparison (!=, >=, match, == with a collator) are no longer rewritten. No published style uses them; custom styles have to use one of the forms listed in migration_guide_v3.md.
+* the default UI shows the horizontal floor switcher instead of the vertical one. Pass floorSwitcherOrientation: SBBMapFloorSwitcherOrientation.vertical to keep it. See migration_guide_v3.md.
+* remove SBBRokasMapStyler
+* remove JOURNEY_MAPS_API_KEY environment variable fallback
+* remove SBBPoiController.currentPOICategories
+* remove aliases SBBMapFloorSelector, SBBMapFloorSelectorSmall and SBBMapFloorSelectorStyle
+* remove deprecated SBBMapPOISettings.isPointOfInterestVisible ([#334](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/334))
+* SBBMap without a mapStyler shows the SBB Maps style family (sbbmaps_bright, sbbmaps_dark, sbbmaps_aerial) instead of the Legacy Journey Maps style family. See migration_guide_v3.md.
+
+### Features
+
+* horizontal floor switcher becomes the new default ([#335](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/335)) ([d9881bb](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/d9881bbc8668123df76aeed23b11cf464cda42db)), closes [#279](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/279)
+* make SBBMapsMapStyler the default map styler ([#332](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/332)) ([0e0f41c](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/0e0f41c18da7030034a93e3ddf2a336062565233)), closes [#278](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/278)
+* pass the deselected POI to onPoiDeselected ([#336](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/336)) ([265f7b9](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/265f7b9a43e5f5c93139cae087359b949080de18)), closes [#322](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/322)
+* remove aliases SBBMapFloorSelector, SBBMapFloorSelectorSmall and SBBMapFloorSelectorStyle ([2b89312](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/2b89312169f495931c9aa217546d3c325c248b4a))
+* remove deprecated SBBMapPOISettings.isPointOfInterestVisible ([#334](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/334)) ([2b89312](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/2b89312169f495931c9aa217546d3c325c248b4a))
+* remove JOURNEY_MAPS_API_KEY environment variable fallback ([2b89312](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/2b89312169f495931c9aa217546d3c325c248b4a))
+* remove SBBPoiController.currentPOICategories ([2b89312](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/2b89312169f495931c9aa217546d3c325c248b4a))
+* remove SBBRokasMapStyler ([2b89312](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/2b89312169f495931c9aa217546d3c325c248b4a))
+
+
+### Bug Fixes
+
+* refresh available floors when the map becomes idle ([#339](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/339)) ([#341](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/341)) ([8b6082d](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/8b6082d242d23495b9e362ddfc39a9f389ef35b0))
+
+
+### Code Refactoring
+
+* rewrite the floor filter recursively like the iOS client ([#337](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/337)) ([b6665f0](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/b6665f05da5cc6710beac94089eb26512d230537)), closes [#281](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/281)
+
 ## [2.9.1](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/compare/2.9.0...2.9.1) (2026-10-26)
 
 

@@ -5,7 +5,7 @@ issue_tracker: https://github.com/SchweizerischeBundesbahnen/journey-maps-client
 topics: [ map, maps, maplibre ]
 
 # version is set by Release Please GH Action
-version: 2.9.1
+version: 3.0.0
 
 environment:
   sdk: ">=3.11.0 <4.0.0"
