@@ -3,7 +3,17 @@
   "extends": [
     "config:recommended"
   ],
+  "fvm": {
+    "enabled": false
+  },
   "packageRules": [
+    {
+      "description": "Flutter SDK updates are driven by the nightly support-window check, not by Renovate.",
+      "matchDatasources": [
+        "flutter-version"
+      ],
+      "enabled": false
+    },
     {
       "matchManagers": [
         "pub"
