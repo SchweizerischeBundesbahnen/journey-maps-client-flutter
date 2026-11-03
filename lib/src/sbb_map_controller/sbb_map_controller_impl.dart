@@ -28,12 +28,12 @@ class SBBMapControllerImpl with ChangeNotifier implements SBBMapController {
 
   @override
   Future getFilter(String layerId) {
-    return _maplibreMapController.getFilter(layerId);
+    return _maplibreMapController.getLayerFilter(layerId);
   }
 
   @override
   Future<void> setFilter(String layerId, dynamic filter) {
-    return _maplibreMapController.setFilter(layerId, filter);
+    return _maplibreMapController.setLayerFilter(layerId, filter);
   }
 
   @override

@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:logger/logger.dart';
@@ -117,7 +116,7 @@ class SBBMapFloorControllerImpl with ChangeNotifier implements SBBMapFloorContro
               "OLD Filter $oldFilterString\n"
               "NEW Filter $newFilterString",
             );
-            controller.setFilter(layerId, newFilter);
+            await controller.setLayerFilter(layerId, newFilter);
           }
         } catch (e) {
           _logger.e('Failed to set new layer filter on layer=$layerId');
@@ -129,7 +128,7 @@ class SBBMapFloorControllerImpl with ChangeNotifier implements SBBMapFloorContro
 
   Future<dynamic> _tryGettingOldFilter(MapLibreMapController controller, layerId) async {
     try {
-      final result = await controller.getFilter(layerId);
+      final result = await controller.getLayerFilter(layerId);
       return result;
     } catch (e) {
       _logger.i('Failed to get layer filter on layer: $layerId\nSkipping layer.');
@@ -184,14 +183,7 @@ class SBBMapFloorControllerImpl with ChangeNotifier implements SBBMapFloorContro
   }
 
   /// Whether [operandString] is a `case` that reads [property] when the
-  /// feature has it. Only this prefix is matched, not the fallback value. On
-  /// iOS the platform hands the `has` check back as
-  /// `['==', ['has', property], true]`.
-  bool _isCaseFilter(String operandString, {required String property}) {
-    if (Platform.isIOS) {
-      return operandString.startsWith('["case",["==",["has","$property"],true],["get","$property"]');
-    } else {
-      return operandString.startsWith('["case",["has","$property"],["get","$property"]');
-    }
-  }
+  /// feature has it. Only this prefix is matched, not the fallback value.
+  bool _isCaseFilter(String operandString, {required String property}) =>
+      operandString.startsWith('["case",["has","$property"],["get","$property"]');
 }

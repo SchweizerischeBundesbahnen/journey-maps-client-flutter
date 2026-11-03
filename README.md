@@ -72,6 +72,9 @@ the [Flutter Maplibre GL plugin] - solely for Android and iOS.
   <img src="https://img.shields.io/badge/iOS-000000?style=for-the-badge&logo=apple&logoColor=white" alt="iOS">
 </div>
 
+The minimum versions are iOS 15.5 and Android API 24 (Android 7.0). On iOS, apps build with Swift
+Package Manager, since MapLibre iOS is not published to CocoaPods.
+
 #### Precondition
 
 In order to access styles and tile data, you need to register your application to
@@ -133,24 +136,6 @@ Add this to your `Info.plist` file.
 ```
 <key>NSLocationWhenInUseUsageDescription</key>
 <string>YOUR DESCRIPTION WHY YOU NEED ACCESS TO THE MAP<string>
-```
-
-If your app uses CocoaPods, additionally enable the location permission macro in the
-`post_install` block of your `Podfile` (with Swift Package Manager, permissions are enabled
-automatically based on the `Info.plist` keys):
-
-```ruby
-post_install do |installer|
-  installer.pods_project.targets.each do |target|
-    flutter_additional_ios_build_settings(target)
-    target.build_configurations.each do |config|
-      config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= [
-        '$(inherited)',
-        'PERMISSION_LOCATION=1',
-      ]
-    end
-  end
-end
 ```
 
 *Android*

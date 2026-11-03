@@ -198,7 +198,7 @@ void main() {
       await sut.showPointsOfInterest();
       // expect
       verify(mockController.setLayerVisibility(rokasPoiBaseLayerIdWithFloorNonClickable, true)).called(1);
-      verifyNever(mockController.setFilter(any, any));
+      verifyNever(mockController.setLayerFilter(any, any));
       verify(listener()).called(1);
     });
 
@@ -208,7 +208,7 @@ void main() {
       await sut.showPointsOfInterest();
       // expect
       verify(mockController.setLayerVisibility(rokasPoiBaseLayerIdWithFloorNonClickable, true)).called(2);
-      verifyNever(mockController.setFilter(any, any));
+      verifyNever(mockController.setLayerFilter(any, any));
       verify(listener()).called(1);
     });
 
@@ -217,7 +217,7 @@ void main() {
       await sut.showPointsOfInterest(layer: SBBRokasPoiLayer.highlighted);
       // expect
       verify(mockController.setLayerVisibility(rokasPoiHighlightedLayerId, true)).called(1);
-      verifyNever(mockController.setFilter(any, any));
+      verifyNever(mockController.setLayerFilter(any, any));
       verify(listener()).called(1);
     });
 
@@ -229,7 +229,7 @@ void main() {
       await sut.showPointsOfInterest();
       // expect
       verify(mockController.setLayerVisibility(rokasPoiBaseLayerIdWithFloorClickable, true)).called(1);
-      verifyNever(mockController.setFilter(any, any));
+      verifyNever(mockController.setLayerFilter(any, any));
     });
 
     test('showPointsOfInterest_whenCalledOnceWithoutFilterAndOnceWithFilter_shouldUpdateTwice', () async {
@@ -240,7 +240,7 @@ void main() {
       await sut.showPointsOfInterest(categories: categories);
       // expect
       verify(mockController.setLayerVisibility(rokasPoiBaseLayerIdWithFloorNonClickable, true)).called(2);
-      verify(mockController.setFilter(any, any)).called(1);
+      verify(mockController.setLayerFilter(any, any)).called(1);
       verify(listener()).called(2);
     });
 
@@ -252,7 +252,7 @@ void main() {
       // expect
       verify(mockController.setLayerVisibility(any, any)).called(1);
       verify(
-        mockController.setFilter(rokasPoiBaseLayerIdWithFloorNonClickable, emptySubCategoryFilterFixture),
+        mockController.setLayerFilter(rokasPoiBaseLayerIdWithFloorNonClickable, emptySubCategoryFilterFixture),
       ).called(1);
       verify(listener()).called(1);
     });
@@ -265,7 +265,7 @@ void main() {
       // expect
       verify(mockController.setLayerVisibility(any, any)).called(1);
       verify(
-        mockController.setFilter(rokasPoiBaseLayerIdWithFloorNonClickable, subCategoryFilterWithBakeryFixture),
+        mockController.setLayerFilter(rokasPoiBaseLayerIdWithFloorNonClickable, subCategoryFilterWithBakeryFixture),
       ).called(1);
       verify(listener()).called(1);
     });
@@ -273,7 +273,7 @@ void main() {
     test('showPointsOfInterest_whenEmptyListAndExistingFilterWithoutSubCategory_shouldAddToLevelFilter', () async {
       // arrange
       when(
-        mockController.getFilter(rokasPoiBaseLayerIdWithFloorNonClickable),
+        mockController.getLayerFilter(rokasPoiBaseLayerIdWithFloorNonClickable),
       ).thenAnswer((_) => Future.value(lvlZeroFilterFixture));
 
       // act
@@ -281,7 +281,10 @@ void main() {
       // expect
       verify(mockController.setLayerVisibility(any, any)).called(1);
       verify(
-        mockController.setFilter(rokasPoiBaseLayerIdWithFloorNonClickable, lvlZeroWithEmptySubCategoryFilterFixture),
+        mockController.setLayerFilter(
+          rokasPoiBaseLayerIdWithFloorNonClickable,
+          lvlZeroWithEmptySubCategoryFilterFixture,
+        ),
       ).called(1);
       verify(listener()).called(1);
     });
@@ -289,7 +292,7 @@ void main() {
     test('showPointsOfInterest_whenSingleCategoryAndExistingFilterWithoutSubCategory_shouldAddToFilter', () async {
       // arrange
       when(
-        mockController.getFilter(rokasPoiBaseLayerIdWithFloorNonClickable),
+        mockController.getLayerFilter(rokasPoiBaseLayerIdWithFloorNonClickable),
       ).thenAnswer((_) => Future.value(lvlZeroFilterFixture));
 
       // act
@@ -297,7 +300,10 @@ void main() {
       // expect
       verify(mockController.setLayerVisibility(any, any)).called(1);
       verify(
-        mockController.setFilter(rokasPoiBaseLayerIdWithFloorNonClickable, lvlZeroWithBakerySubCategoryFilterFixture),
+        mockController.setLayerFilter(
+          rokasPoiBaseLayerIdWithFloorNonClickable,
+          lvlZeroWithBakerySubCategoryFilterFixture,
+        ),
       ).called(1);
       verify(listener()).called(1);
     });
@@ -305,7 +311,7 @@ void main() {
     test('showPointsOfInterest_whenSingleCategoryAndExistingMultiFilterWithoutSubCategory_shouldAddToFilter', () async {
       // arrange
       when(
-        mockController.getFilter(rokasPoiBaseLayerIdWithFloorNonClickable),
+        mockController.getLayerFilter(rokasPoiBaseLayerIdWithFloorNonClickable),
       ).thenAnswer((_) => Future.value(lvlZeroMultiFilterFixture));
 
       // act
@@ -313,12 +319,56 @@ void main() {
       // expect
       verify(mockController.setLayerVisibility(any, any)).called(1);
       verify(
-        mockController.setFilter(
+        mockController.setLayerFilter(
           rokasPoiBaseLayerIdWithFloorNonClickable,
           lvlZeroMultiFilterWithBakerySubCategoryFilterFixture,
         ),
       ).called(1);
       verify(listener()).called(1);
+    });
+
+    test('showPointsOfInterest_whenExistingSubCategoryFilterAsSet_shouldReplaceIt', () async {
+      // arrange: iOS reads the filter back as it was set
+      when(
+        mockController.getLayerFilter(rokasPoiBaseLayerIdWithFloorNonClickable),
+      ).thenAnswer((_) => Future.value(lvlZeroWithBakerySubCategoryFilterFixture));
+
+      // act
+      await sut.showPointsOfInterest(categories: []);
+
+      // expect
+      verify(
+        mockController.setLayerFilter(
+          rokasPoiBaseLayerIdWithFloorNonClickable,
+          lvlZeroWithEmptySubCategoryFilterFixture,
+        ),
+      ).called(1);
+    });
+
+    test('showPointsOfInterest_whenExistingSubCategoryFilterAsNormalizedByPlatform_shouldReplaceIt', () async {
+      // arrange: Android reads the property name back as an expression
+      when(mockController.getLayerFilter(rokasPoiBaseLayerIdWithFloorNonClickable)).thenAnswer(
+        (_) => Future.value([
+          'all',
+          ...lvlZeroFilterFixture,
+          [
+            'filter-in',
+            ['subCategory'],
+            'bakery',
+          ],
+        ]),
+      );
+
+      // act
+      await sut.showPointsOfInterest(categories: []);
+
+      // expect
+      verify(
+        mockController.setLayerFilter(
+          rokasPoiBaseLayerIdWithFloorNonClickable,
+          lvlZeroWithEmptySubCategoryFilterFixture,
+        ),
+      ).called(1);
     });
 
     test('showPointsOfInterest_whenNoCategoryAndNoLayerFilters_shouldApplyWithAllCategories', () async {
@@ -331,7 +381,10 @@ void main() {
       // expect
       verify(mockController.setLayerVisibility(any, any)).called(1);
       verify(
-        mockController.setFilter(rokasPoiBaseLayerIdWithFloorNonClickable, subCategoryFilterWithAllCategoriesFixture),
+        mockController.setLayerFilter(
+          rokasPoiBaseLayerIdWithFloorNonClickable,
+          subCategoryFilterWithAllCategoriesFixture,
+        ),
       ).called(1);
       verify(listener()).called(1);
     });
@@ -403,7 +456,7 @@ void main() {
       final result = await sut.selectPointOfInterest(sbbId: mobilityBikesharingPoiFixture.sbbId);
       // expect
       expect(result, isNull);
-      verifyNever(mockController.setFilter(any, any));
+      verifyNever(mockController.setLayerFilter(any, any));
       verifyNever(mockController.setLayerProperties(any, any));
       verifyNever(mockController.querySourceFeatures(any, any, any));
       verifyNever(listener());
@@ -429,7 +482,7 @@ void main() {
       expect(sut.selectedPointOfInterest, mobilityBikesharingPoiFixture);
       expect(selectedPois, [mobilityBikesharingPoiFixture]);
       verify(mockController.querySourceFeatures(journeyPoisSource, any, mobilityBikeSharingFilterFixture)).called(1);
-      verify(mockController.setFilter(selectedPoiLayerId, mobilityBikeSharingFilterFixture)).called(1);
+      verify(mockController.setLayerFilter(selectedPoiLayerId, mobilityBikeSharingFilterFixture)).called(1);
       verify(mockController.setLayerProperties(selectedPoiLayerId, any)).called(1);
       verify(listener()).called(1);
     });
@@ -455,7 +508,7 @@ void main() {
       expect(result, isNull);
       expect(sut.selectedPointOfInterest, isNull);
       verify(mockController.setLayerProperties(selectedPoiLayerId, any)).called(1);
-      verifyNever(mockController.setFilter(any, any));
+      verifyNever(mockController.setLayerFilter(any, any));
       verify(onPoiDeselected(mobilityBikesharingPoiFixture)).called(1);
       verify(listener()).called(1);
     });
@@ -485,7 +538,7 @@ void main() {
       final result = await sut.selectPointOfInterestAt(coordinates: LatLng(0, 0));
       // expect
       expect(result, isNull);
-      verifyNever(mockController.setFilter(any, any));
+      verifyNever(mockController.setLayerFilter(any, any));
       verifyNever(mockController.setLayerProperties(any, any));
       verifyNever(mockController.querySourceFeatures(any, any, any));
       verifyNever(listener());
@@ -509,7 +562,7 @@ void main() {
       verify(mockController.moveCamera(any)).called(1);
       verify(mockController.toScreenLocation(any)).called(1);
       verify(mockController.queryRenderedFeatures(any, any, any)).called(1);
-      verifyNever(mockController.setFilter(any, any));
+      verifyNever(mockController.setLayerFilter(any, any));
       verifyNever(mockController.setLayerProperties(any, any));
       verifyNever(listener());
     });
@@ -539,7 +592,7 @@ void main() {
       expect(result, isNull);
       expect(sut.selectedPointOfInterest, isNull);
       verify(mockController.setLayerProperties(selectedPoiLayerId, any)).called(1);
-      verifyNever(mockController.setFilter(any, any));
+      verifyNever(mockController.setLayerFilter(any, any));
       verify(onPoiDeselected(mobilityBikesharingPoiFixture)).called(1);
       verify(listener()).called(1);
     });
@@ -564,7 +617,7 @@ void main() {
       verify(mockController.moveCamera(any)).called(1);
       verify(mockController.toScreenLocation(any)).called(1);
       verify(mockController.queryRenderedFeatures(any, any, any)).called(1);
-      verify(mockController.setFilter(any, any)).called(1);
+      verify(mockController.setLayerFilter(any, any)).called(1);
       verify(mockController.setLayerProperties(any, any)).called(1);
       verify(listener()).called(1);
     });
@@ -614,7 +667,7 @@ void main() {
       // arrange + act (is POIs visible is false by default)
       await sut.toggleSelectedPointOfInterest(const Point(0, 0));
       // expect
-      verifyNever(mockController.setFilter(any, any));
+      verifyNever(mockController.setLayerFilter(any, any));
       verifyNever(mockController.setLayerProperties(any, any));
       verifyNever(mockController.querySourceFeatures(any, any, any));
       verifyNever(listener());
@@ -634,7 +687,7 @@ void main() {
 
       // expect
       expect(sut.selectedPointOfInterest, mobilityBikesharingPoiFixture);
-      verify(mockController.setFilter(selectedPoiLayerId, mobilityBikeSharingFilterFixture)).called(1);
+      verify(mockController.setLayerFilter(selectedPoiLayerId, mobilityBikeSharingFilterFixture)).called(1);
       verify(mockController.setLayerProperties(selectedPoiLayerId, any)).called(1);
       verify(listener()).called(1);
     });
@@ -645,7 +698,7 @@ void main() {
 
       // expect
       verify(mockController.setLayerVisibility(any, false)).called(4);
-      verifyNever(mockController.setFilter(any, any));
+      verifyNever(mockController.setLayerFilter(any, any));
       verifyNever(listener()); // never called except for POI dropped
     });
 
@@ -660,7 +713,7 @@ void main() {
 
       // expect
       verify(mockController.setLayerVisibility(rokasPoiBaseLayerIdWithFloorNonClickable, true)).called(1);
-      verifyNever(mockController.setFilter(any, any));
+      verifyNever(mockController.setLayerFilter(any, any));
       verifyNever(listener()); // never called except for POI dropped
     });
 
@@ -676,7 +729,7 @@ void main() {
       // expect
       verify(mockController.setLayerVisibility(rokasPoiBaseLayerIdWithFloorNonClickable, true)).called(1);
       verify(
-        mockController.setFilter(rokasPoiBaseLayerIdWithFloorNonClickable, bikeParkingCategoriesFiltureFixture),
+        mockController.setLayerFilter(rokasPoiBaseLayerIdWithFloorNonClickable, bikeParkingCategoriesFiltureFixture),
       ).called(1);
       verifyNever(listener()); // never called except for POI dropped
     });
@@ -796,7 +849,7 @@ void main() {
       // expect
       verifyInOrder([
         mockController.setLayerVisibility(rokasPoiBaseLayerIdWithFloorNonClickable, false),
-        mockController.setFilter(rokasPoiBaseLayerIdWithFloorClickable, subCategoryFilterWithBakeryFixture),
+        mockController.setLayerFilter(rokasPoiBaseLayerIdWithFloorClickable, subCategoryFilterWithBakeryFixture),
         mockController.setLayerVisibility(rokasPoiBaseLayerIdWithFloorClickable, true),
       ]);
     });
@@ -813,7 +866,7 @@ void main() {
         mockController.setLayerVisibility(rokasPoiBaseLayerIdWithFloorClickable, false),
         mockController.setLayerVisibility(rokasPoiBaseLayerIdWithFloorNonClickable, true),
       ]);
-      verifyNever(mockController.setFilter(any, any));
+      verifyNever(mockController.setLayerFilter(any, any));
     });
 
     test('updateSelectionCallbacks_whenHiddenAndClickabilityChanges_shouldKeepPoisHidden', () async {
@@ -823,7 +876,7 @@ void main() {
       await sut.updateSelectionCallbacks(onPoiSelected: (_) {}, onPoiDeselected: null);
       // expect
       verifyNever(mockController.setLayerVisibility(any, true));
-      verifyNever(mockController.setFilter(any, any));
+      verifyNever(mockController.setLayerFilter(any, any));
     });
 
     test('updateSelectionCallbacks_whenClickabilityUnchanged_shouldNotTouchLayers', () async {
@@ -939,7 +992,7 @@ void main() {
       // expect
       expect(result, mobilityBikesharingPoiFixture);
       expect(calls, isEmpty);
-      verifyNever(mockController.setFilter(any, any));
+      verifyNever(mockController.setLayerFilter(any, any));
       verifyNever(mockController.setLayerProperties(any, any));
     });
 
@@ -959,7 +1012,7 @@ void main() {
       // expect
       expect(sut.selectedPointOfInterest, mobilityBikesharingPoiFixture);
       expect(calls, isEmpty);
-      verifyNever(mockController.setFilter(any, any));
+      verifyNever(mockController.setLayerFilter(any, any));
       verifyNever(mockController.setLayerProperties(any, any));
     });
 
@@ -981,7 +1034,7 @@ void main() {
       // expect
       expect(sut.selectedPointOfInterest, mobilityBikesharingPoiFixture);
       expect(calls, isEmpty);
-      verify(mockController.setFilter(selectedPoiLayerId, mobilityBikeSharingFilterFixture)).called(1);
+      verify(mockController.setLayerFilter(selectedPoiLayerId, mobilityBikeSharingFilterFixture)).called(1);
       final properties =
           verify(mockController.setLayerProperties(selectedPoiLayerId, captureAny)).captured.single
               as SymbolLayerProperties;
@@ -997,14 +1050,14 @@ void main() {
       // expect
       expect(sut.selectedPointOfInterest, isNull);
       expect(calls, ['notified', 'deselected ${mobilityBikesharingPoiFixture.sbbId}, state null']);
-      verifyNever(mockController.setFilter(selectedPoiLayerId, any));
+      verifyNever(mockController.setLayerFilter(selectedPoiLayerId, any));
       verifyNever(mockController.setLayerProperties(selectedPoiLayerId, any));
     });
 
     test('toggleSelectedPointOfInterest_whenAllPoisHiddenDuringHighlight_shouldEndWithHighlightHidden', () async {
       // arrange
       final highlight = Completer<void>();
-      when(mockController.setFilter(selectedPoiLayerId, any)).thenAnswer((_) => highlight.future);
+      when(mockController.setLayerFilter(selectedPoiLayerId, any)).thenAnswer((_) => highlight.future);
       await sut.showPointsOfInterest();
       calls.clear();
       final tap = sut.toggleSelectedPointOfInterest(const Point(0, 0));
@@ -1067,7 +1120,7 @@ void main() {
       expect(result, isNull);
       expect(sut.selectedPointOfInterest, isNull);
       expect(calls, isEmpty);
-      verifyNever(mockController.setFilter(selectedPoiLayerId, any));
+      verifyNever(mockController.setLayerFilter(selectedPoiLayerId, any));
     });
 
     test('selectPointOfInterest_whenPoisHiddenAndShownDuringLookup_shouldNotSelect', () async {

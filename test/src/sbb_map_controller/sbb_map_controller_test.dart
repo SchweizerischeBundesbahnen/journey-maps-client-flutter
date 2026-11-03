@@ -106,25 +106,27 @@ void main() {
     test('getFilter should call mapLibre controller one to one', () {
       // arrange
       const fakeLayerId = 'fakeLayerId';
-      when(mockMLController.getFilter(fakeLayerId)).thenAnswer((_) => Future.value([]));
+      when(mockMLController.getLayerFilter(fakeLayerId)).thenAnswer((_) => Future.value([]));
 
       // act
+      // ignore: deprecated_member_use_from_same_package
       sut.getFilter(fakeLayerId);
 
       // expect
-      verify(mockMLController.getFilter(fakeLayerId)).called(1);
+      verify(mockMLController.getLayerFilter(fakeLayerId)).called(1);
     });
 
     test('setFilter should call mapLibre controller one to one', () {
       // arrange
       const fakeLayerId = 'fakeLayerId';
-      when(mockMLController.setFilter(fakeLayerId, [])).thenAnswer((_) => Future.value());
+      when(mockMLController.setLayerFilter(fakeLayerId, [])).thenAnswer((_) => Future.value());
 
       // act
+      // ignore: deprecated_member_use_from_same_package
       sut.setFilter(fakeLayerId, []);
 
       // expect
-      verify(mockMLController.setFilter(fakeLayerId, [])).called(1);
+      verify(mockMLController.setLayerFilter(fakeLayerId, [])).called(1);
     });
 
     test('setLayerVisibility should call mapLibre controller one to one', () {
