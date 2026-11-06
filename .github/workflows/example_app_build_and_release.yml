@@ -1,7 +1,7 @@
 # Build and release example app
 name: example_app_build_and_release
 on:
-  pull_request_target:
+  pull_request:
     types:
       - closed
     branches:
