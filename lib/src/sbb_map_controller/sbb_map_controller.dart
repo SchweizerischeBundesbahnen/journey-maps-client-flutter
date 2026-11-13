@@ -17,12 +17,14 @@ abstract class SBBMapController with ChangeNotifier {
   /// Returns the current filter of a layer of the style.
   ///
   /// The [layerId] must be the id of a layer in the current style.
+  @Deprecated('Unused and will be removed in the next major release.')
   Future<dynamic> getFilter(String layerId) async {}
 
   /// Sets the filter of a layer of the style.
   ///
   /// The [layerId] must be the id of a layer in the current style.
   /// The [filter] must be a valid filter for the layer.
+  @Deprecated('Unused and will be removed in the next major release.')
   Future<void> setFilter(String layerId, dynamic filter) async {}
 
   /// Sets the visibility of the specified layer.

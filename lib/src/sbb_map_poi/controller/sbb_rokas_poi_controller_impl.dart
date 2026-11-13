@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 import 'dart:math';
 
 import 'package:collection/collection.dart';
@@ -238,13 +237,11 @@ class SBBRokasPOIControllerImpl with ChangeNotifier implements SBBRokasPOIContro
     });
   }
 
-  List<Object>? _buildSbbIdFilter(String sbbId) {
-    return _buildPlatformSpecificFilter([
-      '==',
-      ['get', 'sbbId'],
-      sbbId,
-    ]);
-  }
+  List<Object> _buildSbbIdFilter(String sbbId) => [
+    '==',
+    ['get', 'sbbId'],
+    sbbId,
+  ];
 
   /// Makes [poi] the selection (null deselects) together with the given
   /// [visibility] change.
@@ -284,7 +281,7 @@ class SBBRokasPOIControllerImpl with ChangeNotifier implements SBBRokasPOIContro
   }
 
   Future<void> _showHighlight(MapLibreMapController c, RokasPOI poi) => Future.wait([
-    c.setFilter(_rokasSelectedPoiLayerId, _buildSbbIdFilter(poi.sbbId)),
+    c.setLayerFilter(_rokasSelectedPoiLayerId, _buildSbbIdFilter(poi.sbbId)),
     c.setLayerProperties(_rokasSelectedPoiLayerId, _selectedPoiLayerProperties(isSelectionVisible: true)),
   ]);
 
@@ -369,15 +366,14 @@ class SBBRokasPOIControllerImpl with ChangeNotifier implements SBBRokasPOIContro
   ) async {
     final layerId = _layerIdFromPoiLayer(layer);
 
-    final oldFilter = await c.getFilter(layerId);
+    final oldFilter = await c.getLayerFilter(layerId);
 
-    return c.setFilter(_layerIdFromPoiLayer(layer), _buildCategoriesFilter(oldFilter, categoryFilters));
+    return c.setLayerFilter(layerId, _buildCategoriesFilter(oldFilter, categoryFilters));
   }
 
   List<dynamic>? _buildCategoriesFilter(List<dynamic>? oldFilter, Set<SBBPoiCategoryType> categoryFilters) {
     if (oldFilter == null || oldFilter.isEmpty) {
-      final filter = ["all", _buildInnerCategoryFilter(categoryFilters)];
-      return _buildPlatformSpecificFilter(filter);
+      return ["all", _buildInnerCategoryFilter(categoryFilters)];
     }
 
     final prunedFilter = oldFilter.whereNot(_isSubCategoryFilter).toList();
@@ -386,29 +382,19 @@ class SBBRokasPOIControllerImpl with ChangeNotifier implements SBBRokasPOIContro
     return ['all', ...prunedFilter, _buildInnerCategoryFilter(categoryFilters)];
   }
 
+  /// Whether [filter] is the `filter-in` on `subCategory` built by
+  /// [_buildInnerCategoryFilter]. iOS reads it back as it was set, Android
+  /// with the property name as `["subCategory"]`.
   bool _isSubCategoryFilter(dynamic filter) {
-    if (Platform.isIOS) return jsonEncode(filter).startsWith('["==",["filter-in",["subCategory"');
-    return jsonEncode(filter).startsWith('["filter-in",["subCategory"');
+    final encoded = jsonEncode(filter);
+    return encoded.startsWith('["filter-in","subCategory"') || encoded.startsWith('["filter-in",["subCategory"]');
   }
 
-  List<Object> _buildInnerCategoryFilter(Set<SBBPoiCategoryType> categoryFilters) {
-    final filter = [
-      'filter-in',
-      'subCategory',
-      ...categoryFilters.isEmpty ? [''] : categoryFilters.map((e) => e.name),
-    ];
-    return _buildPlatformSpecificFilter(filter)!;
-  }
-
-  List<Object>? _buildPlatformSpecificFilter(List<Object>? filter) {
-    if (Platform.isIOS) return _buildFilterExpressionIOS(filter);
-    return filter; // Android
-  }
-
-  List<Object>? _buildFilterExpressionIOS(List<Object>? filter) {
-    if (filter == null) return filter;
-    return ['==', filter, true];
-  }
+  List<Object> _buildInnerCategoryFilter(Set<SBBPoiCategoryType> categoryFilters) => [
+    'filter-in',
+    'subCategory',
+    ...categoryFilters.isEmpty ? [''] : categoryFilters.map((e) => e.name),
+  ];
 }
 
 extension _ToDouble on Point<num> {
