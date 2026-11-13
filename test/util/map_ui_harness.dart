@@ -37,8 +37,7 @@ Widget mapUiHarness({
 /// An inert stand-in for [SBBMapStyler]; only [isDarkMode] and the style ids
 /// are read by the map UI controls.
 class FakeMapStyler extends ChangeNotifier implements SBBMapStyler {
-  FakeMapStyler({this.isDarkMode = false, List<String> styleIds = const <String>['bright', 'dark']})
-    : _styleIds = styleIds;
+  FakeMapStyler({this.isDarkMode = false, this._styleIds = const <String>['bright', 'dark']});
 
   final List<String> _styleIds;
 

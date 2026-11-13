@@ -532,7 +532,10 @@ void main() {
 
       session.dispose();
 
-      expect(() => controllers.single.addListener(() {}), throwsFlutterError);
+      expect(
+        () => controllers.single.addListener(() {}),
+        throwsA(predicate((e) => e.toString().contains('was used after being disposed'))),
+      );
       verifyNever(mapLibre.dispose());
     });
 

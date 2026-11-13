@@ -10,14 +10,12 @@ class SBBRokasIcon implements SBBMapAnnotation {
   final Map<String, dynamic>? data;
 
   const SBBRokasIcon._({
-    required String id,
-    required String symbolURI,
+    required this._id,
+    required this._symbolURI,
     required this.coords,
     this.data,
-    required bool draggable,
-  }) : _id = id,
-       _symbolURI = symbolURI,
-       _draggable = draggable;
+    required this._draggable,
+  });
 
   /// A RokasIcon to be placed in a [SBBMap].
   ///

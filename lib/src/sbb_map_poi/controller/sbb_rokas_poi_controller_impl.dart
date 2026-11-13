@@ -31,14 +31,11 @@ class SBBRokasPOIControllerImpl with ChangeNotifier implements SBBRokasPOIContro
   };
 
   SBBRokasPOIControllerImpl({
-    required Future<MapLibreMapController> controller,
-    OnPoiSelected? onPoiSelected,
-    OnPoiDeselected? onPoiDeselected,
+    required this._controller,
+    this._onPoiSelected,
+    this._onPoiDeselected,
     bool Function()? isDarkMode,
-  }) : _controller = controller,
-       _onPoiSelected = onPoiSelected,
-       _onPoiDeselected = onPoiDeselected,
-       _isDarkMode = isDarkMode ?? _notDarkMode;
+  }) : _isDarkMode = isDarkMode ?? _notDarkMode;
 
   static bool _notDarkMode() => false;
 

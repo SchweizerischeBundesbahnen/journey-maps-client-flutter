@@ -3,10 +3,9 @@ import 'package:maplibre_gl/maplibre_gl.dart';
 import 'package:sbb_maps_flutter/sbb_maps_flutter.dart';
 
 class SBBMapControllerImpl with ChangeNotifier implements SBBMapController {
-  SBBMapControllerImpl({required MapLibreMapController maplibreMapController, required SBBMapLocator mapLocator})
+  SBBMapControllerImpl({required MapLibreMapController maplibreMapController, required this._mapLocator})
     : _maplibreMapController = maplibreMapController,
-      _isCameraMoving = maplibreMapController.isCameraMoving,
-      _mapLocator = mapLocator {
+      _isCameraMoving = maplibreMapController.isCameraMoving {
     _maplibreMapController.addListener(_notifyListenersIfStateChanged);
   }
 

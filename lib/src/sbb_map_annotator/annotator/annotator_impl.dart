@@ -25,7 +25,7 @@ class SBBMapAnnotatorImpl implements SBBMapAnnotator {
 
   bool _isGeoJsonSourceAdded = false;
 
-  SBBMapAnnotatorImpl({required MapLibreMapController controller}) : _controller = controller {
+  SBBMapAnnotatorImpl({required this._controller}) {
     _controller.onFeatureTapped.add(_delegateToAnnotationCallback());
   }
 
