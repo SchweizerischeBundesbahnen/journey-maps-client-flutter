@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.0.1](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/compare/3.0.0...3.0.1) (2026-11-13)
+
+
+### Bug Fixes
+
+* **deps:** update dependency maplibre_gl to ^0.28.0 ([#349](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/349)) ([3fa41b1](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/3fa41b131a5c365506c4535172700642d9272bb5))
+* drop support for Flutter SDK 3.41 and support Flutter SDK 3.50 ([#357](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/357)) ([691c6ac](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/691c6accbba50bb1dd3b6d105c59767649da8b86))
+
 ## [3.0.0](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/compare/2.9.1...3.0.0) (2026-11-02)
 
 
