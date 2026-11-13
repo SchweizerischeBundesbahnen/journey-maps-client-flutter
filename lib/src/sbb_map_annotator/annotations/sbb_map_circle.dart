@@ -9,10 +9,7 @@ class SBBMapCircle implements SBBMapAnnotation {
   @override
   final Map<String, dynamic>? data;
 
-  const SBBMapCircle._({required String id, required LatLng center, this.style, required bool draggable, this.data})
-    : _id = id,
-      _center = center,
-      _draggable = draggable;
+  const SBBMapCircle._({required this._id, required this._center, this.style, required this._draggable, this.data});
 
   /// A circle to be placed in a [SBBMap].
   ///

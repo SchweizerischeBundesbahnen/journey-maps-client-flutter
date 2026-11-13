@@ -10,14 +10,12 @@ class SBBMapLine implements SBBMapAnnotation {
   final Map<String, dynamic>? data;
 
   const SBBMapLine._({
-    required String id,
-    required List<LatLng> vertices,
+    required this._id,
+    required this._vertices,
     this.style,
-    required bool draggable,
+    required this._draggable,
     this.data,
-  }) : _id = id,
-       _vertices = vertices,
-       _draggable = draggable;
+  });
 
   /// A line to be placed in a [SBBMap].
   ///

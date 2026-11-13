@@ -19,17 +19,14 @@ class SBBMapSymbol implements SBBMapAnnotation {
   final String _id;
 
   const SBBMapSymbol._({
-    required String id,
-    required String symbolURI,
+    required this._id,
+    required this._symbolURI,
     required this.coords,
-    String? text,
+    this._text,
     this.style,
     this.data,
-    required bool draggable,
-  }) : _id = id,
-       _symbolURI = symbolURI,
-       _text = text,
-       _draggable = draggable;
+    required this._draggable,
+  });
 
   /// A symbol to be placed in a [SBBMap].
   ///

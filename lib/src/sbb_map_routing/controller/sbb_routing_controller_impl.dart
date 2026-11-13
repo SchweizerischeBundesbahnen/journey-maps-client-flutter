@@ -9,12 +9,10 @@ const marginFraction = 0.1;
 
 class SBBRoutingControllerImpl with ChangeNotifier implements SBBRoutingController {
   SBBRoutingControllerImpl({
-    required Future<SBBMapAnnotator> annotator,
-    required Future<MapLibreMapController> controller,
-    required SBBMapFloorController floorController,
-  }) : _annotator = annotator,
-       _controller = controller,
-       _floorController = floorController {
+    required this._annotator,
+    required this._controller,
+    required this._floorController,
+  }) {
     _floorController.addListener(_floorControllerListener);
   }
 

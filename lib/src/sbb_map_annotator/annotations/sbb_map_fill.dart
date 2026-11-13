@@ -10,14 +10,12 @@ class SBBMapFill implements SBBMapAnnotation {
   final Map<String, dynamic>? data;
 
   const SBBMapFill._({
-    required String id,
-    required List<List<LatLng>> coords,
+    required this._id,
+    required this._coords,
     this.style,
-    required bool draggable,
+    required this._draggable,
     this.data,
-  }) : _id = id,
-       _coords = coords,
-       _draggable = draggable;
+  });
 
   /// A fill to be placed in a [SBBMap].
   ///

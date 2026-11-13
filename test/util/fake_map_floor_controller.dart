@@ -11,9 +11,7 @@ import 'package:sbb_maps_flutter/sbb_maps_flutter.dart';
 /// Like the real controller it emits a single, undifferentiated change
 /// notification for both floor set and selection changes.
 class FakeMapFloorController extends ChangeNotifier implements SBBMapFloorController {
-  FakeMapFloorController({List<int> availableFloors = const <int>[], int? currentFloor})
-    : _availableFloors = availableFloors,
-      _currentFloor = currentFloor;
+  FakeMapFloorController({this._availableFloors = const <int>[], this._currentFloor});
 
   List<int> _availableFloors;
   int? _currentFloor;
