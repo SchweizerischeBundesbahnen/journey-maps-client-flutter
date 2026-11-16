@@ -23,6 +23,7 @@ class SBBMap extends StatefulWidget {
     this.isMyLocationEnabled = false,
     this.onMapLocatorAvailable,
     this.isFloorSwitchingEnabled = true,
+    this.defaultViewWithoutFloor = .twoD,
     this.floorSwitcherOrientation = .horizontal,
     this.onFloorControllerAvailable,
     this.onRoutingControllerAvailable,
@@ -99,7 +100,24 @@ class SBBMap extends StatefulWidget {
   /// If true, the floor controller will be available via the [onFloorControllerAvailable]
   /// to programmatically switch floors. In the default UI, the floor switcher
   /// named by [floorSwitcherOrientation] will be shown.
+  ///
+  /// If false, the map still renders the view named by
+  /// [defaultViewWithoutFloor].
   final bool isFloorSwitchingEnabled;
+
+  /// What the map shows at a station while no floor is selected.
+  ///
+  /// [SBBMapViewWithoutFloor.twoD], the default, is the 2D View: the tunnels,
+  /// underground passages, labels, platform numbers and base POIs of every
+  /// floor at once, as sbb.ch renders a station. Selecting a floor switches to
+  /// the Floor View of that floor; deselecting it returns to the 2D View.
+  ///
+  /// [SBBMapViewWithoutFloor.floorZero] keeps the Floor View of floor 0 while
+  /// no floor is selected, so the 2D View is never shown.
+  ///
+  /// Changing this at runtime takes effect at once if no floor is selected,
+  /// otherwise once the floor is deselected.
+  final SBBMapViewWithoutFloor defaultViewWithoutFloor;
 
   /// Which floor switcher the default UI renders.
   ///
@@ -286,6 +304,7 @@ class _SBBMapState extends State<SBBMap> {
     initialCameraPosition: widget.initialCameraPosition,
     isMyLocationEnabled: widget.isMyLocationEnabled,
     isFloorSwitchingEnabled: widget.isFloorSwitchingEnabled,
+    defaultViewWithoutFloor: widget.defaultViewWithoutFloor,
     poiSettings: widget.poiSettings,
     onMapCreated: widget.onMapCreated,
     onStyleLoaded: widget.onStyleLoaded,

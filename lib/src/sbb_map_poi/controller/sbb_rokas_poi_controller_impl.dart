@@ -17,16 +17,21 @@ const _rokasSelectedPoiDarkIcon = 'sbb_marker_poi_dark_selected';
 const _rokasSelectedPoiIconAnchor = 'bottom';
 
 const _rokasHighlightedPoiLayerId = 'journey-pois-first';
+
+/// The base POI layers of the Floor View (`-lvl`) and of the 2D View (`-2d`),
+/// each as a clickable (rounded squares) and a non-clickable (circles) layer.
 const _rokasBaseLvlPoiClickableLayerId = 'journey-pois-second-lvl';
 const _rokasBaseLvlPoiNonClickableLayerId = 'journey-pois-third-lvl';
-const _rokasBasePoiClickableLayerId = 'journey-pois-second-2d';
+const _rokasBase2dPoiClickableLayerId = 'journey-pois-second-2d';
+const _rokasBase2dPoiNonClickableLayerId = 'journey-pois-third-2d';
 
 class SBBRokasPOIControllerImpl with ChangeNotifier implements SBBRokasPOIController {
   static const _allPoiLayerIds = {
     _rokasHighlightedPoiLayerId,
     _rokasBaseLvlPoiClickableLayerId,
     _rokasBaseLvlPoiNonClickableLayerId,
-    _rokasBasePoiClickableLayerId,
+    _rokasBase2dPoiClickableLayerId,
+    _rokasBase2dPoiNonClickableLayerId,
   };
 
   SBBRokasPOIControllerImpl({
@@ -44,6 +49,10 @@ class SBBRokasPOIControllerImpl with ChangeNotifier implements SBBRokasPOIContro
 
   final bool Function() _isDarkMode;
 
+  /// Whether the map shows the 2D View. Told by the Map Session through
+  /// [updateView]; a map without a selected Floor starts in the 2D View.
+  bool _isTwoDView = true;
+
   static Set<SBBPoiCategoryType> Function() get _allPoiCategories =>
       () => Set<SBBPoiCategoryType>.from(SBBPoiCategoryType.values);
 
@@ -52,7 +61,7 @@ class SBBRokasPOIControllerImpl with ChangeNotifier implements SBBRokasPOIContro
 
   Map<SBBRokasPoiLayer, Set<SBBPoiCategoryType>> _layerToCategoryFilters = {
     .highlighted: _allPoiCategories(),
-    .baseWithFloor: _allPoiCategories(),
+    .base: _allPoiCategories(),
   };
   Map<SBBRokasPoiLayer, bool> _layerToVisibility = _allLayersWithVisibilityToFalse();
   RokasPOI? _selectedPOI;
@@ -78,7 +87,7 @@ class SBBRokasPOIControllerImpl with ChangeNotifier implements SBBRokasPOIContro
 
   @override
   Future<void> showPointsOfInterest({
-    SBBRokasPoiLayer layer = SBBRokasPoiLayer.baseWithFloor,
+    SBBRokasPoiLayer layer = SBBRokasPoiLayer.base,
     List<SBBPoiCategoryType>? categories,
   }) async {
     final filters = categories?.toSet();
@@ -90,7 +99,7 @@ class SBBRokasPOIControllerImpl with ChangeNotifier implements SBBRokasPOIContro
   }
 
   @override
-  Future<void> hidePointsOfInterest({SBBRokasPoiLayer layer = SBBRokasPoiLayer.baseWithFloor}) async {
+  Future<void> hidePointsOfInterest({SBBRokasPoiLayer layer = SBBRokasPoiLayer.base}) async {
     _selectionGeneration++;
     final c = await _controller;
     await c.setLayerVisibility(_layerIdFromPoiLayer(layer), false);
@@ -155,23 +164,43 @@ class SBBRokasPOIControllerImpl with ChangeNotifier implements SBBRokasPOIContro
   /// Replaces the callbacks called on POI selection and deselection.
   ///
   /// Whether [onPoiSelected] is set decides which style layer shows the
-  /// [SBBRokasPoiLayer.baseWithFloor] POIs (clickable or not). When that
+  /// [SBBRokasPoiLayer.base] POIs (clickable or not). When that
   /// changes, the layer's category filter and visibility are applied to the
   /// newly used style layer and the previously used one is hidden.
   Future<void> updateSelectionCallbacks({
     required OnPoiSelected? onPoiSelected,
     required OnPoiDeselected? onPoiDeselected,
   }) async {
-    final previousLayerId = _layerIdFromPoiLayer(SBBRokasPoiLayer.baseWithFloor);
+    final previousLayerId = _layerIdFromPoiLayer(SBBRokasPoiLayer.base);
     _onPoiSelected = onPoiSelected;
     _onPoiDeselected = onPoiDeselected;
-    if (_layerIdFromPoiLayer(SBBRokasPoiLayer.baseWithFloor) == previousLayerId) return;
+    await _moveBasePoisIfLayerChanged(previousLayerId);
+  }
+
+  /// Called by the Map Session whenever the view changes and after every
+  /// style load.
+  ///
+  /// The view decides which style layers show the [SBBRokasPoiLayer.base]
+  /// POIs: the `-2d` layers in the 2D View, the `-lvl` layers in the Floor
+  /// View. When it changes, the layer's category filter and visibility are
+  /// applied to the newly used style layer and the previously used one is
+  /// hidden. Highlighted POIs and the selection are untouched.
+  Future<void> updateView({required bool isTwoDView}) async {
+    final previousLayerId = _layerIdFromPoiLayer(SBBRokasPoiLayer.base);
+    _isTwoDView = isTwoDView;
+    await _moveBasePoisIfLayerChanged(previousLayerId);
+  }
+
+  /// Re-points the base POIs from [previousLayerId] to the style layer now
+  /// named by [_layerIdFromPoiLayer], unless they are the same.
+  Future<void> _moveBasePoisIfLayerChanged(String previousLayerId) async {
+    if (_layerIdFromPoiLayer(SBBRokasPoiLayer.base) == previousLayerId) return;
 
     await _controller.then((c) async {
       await c.setLayerVisibility(previousLayerId, false);
-      await _reapplyFilter(c, SBBRokasPoiLayer.baseWithFloor);
-      if (_layerToVisibility[SBBRokasPoiLayer.baseWithFloor]!) {
-        await c.setLayerVisibility(_layerIdFromPoiLayer(SBBRokasPoiLayer.baseWithFloor), true);
+      await _reapplyFilter(c, SBBRokasPoiLayer.base);
+      if (_layerToVisibility[SBBRokasPoiLayer.base]!) {
+        await c.setLayerVisibility(_layerIdFromPoiLayer(SBBRokasPoiLayer.base), true);
       }
     });
   }
@@ -313,8 +342,12 @@ class SBBRokasPOIControllerImpl with ChangeNotifier implements SBBRokasPOIContro
   }
 
   String _layerIdFromPoiLayer(SBBRokasPoiLayer layer) => switch (layer) {
-    SBBRokasPoiLayer.baseWithFloor =>
-      _onPoiSelected != null ? _rokasBaseLvlPoiClickableLayerId : _rokasBaseLvlPoiNonClickableLayerId,
+    SBBRokasPoiLayer.base => switch ((_isTwoDView, isClickable: _onPoiSelected != null)) {
+      (true, isClickable: true) => _rokasBase2dPoiClickableLayerId,
+      (true, isClickable: false) => _rokasBase2dPoiNonClickableLayerId,
+      (false, isClickable: true) => _rokasBaseLvlPoiClickableLayerId,
+      (false, isClickable: false) => _rokasBaseLvlPoiNonClickableLayerId,
+    },
     SBBRokasPoiLayer.highlighted => _rokasHighlightedPoiLayerId,
   };
 

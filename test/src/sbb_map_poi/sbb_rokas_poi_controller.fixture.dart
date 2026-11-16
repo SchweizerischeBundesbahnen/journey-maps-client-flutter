@@ -1,7 +1,11 @@
 import 'package:sbb_maps_flutter/sbb_maps_flutter.dart';
 
-const rokasPoiBaseLayerIdWithFloorNonClickable = 'journey-pois-third-lvl';
-const rokasPoiBaseLayerIdWithFloorClickable = 'journey-pois-second-lvl';
+/// The style layers of the base POIs: one pair per view, each with a
+/// clickable and a non-clickable layer.
+const rokasPoiBase2dNonClickableLayerId = 'journey-pois-third-2d';
+const rokasPoiBase2dClickableLayerId = 'journey-pois-second-2d';
+const rokasPoiBaseLvlNonClickableLayerId = 'journey-pois-third-lvl';
+const rokasPoiBaseLvlClickableLayerId = 'journey-pois-second-lvl';
 const rokasPoiHighlightedLayerId = 'journey-pois-first';
 
 const journeyPoisSource = 'journey-pois-source';

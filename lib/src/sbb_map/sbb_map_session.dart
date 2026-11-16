@@ -6,6 +6,7 @@ import 'package:maplibre_gl/maplibre_gl.dart' hide MapCreatedCallback;
 import 'package:sbb_maps_flutter/src/sbb_camera/sbb_camera_position.dart';
 import 'package:sbb_maps_flutter/src/sbb_camera/sbb_camera_update.dart';
 import 'package:sbb_maps_flutter/src/sbb_map/sbb_map_callbacks.dart';
+import 'package:sbb_maps_flutter/src/sbb_map/sbb_map_view_without_floor.dart';
 import 'package:sbb_maps_flutter/src/sbb_map_annotator/annotator/annotator_impl.dart';
 import 'package:sbb_maps_flutter/src/sbb_map_controller/sbb_map_controller.dart';
 import 'package:sbb_maps_flutter/src/sbb_map_controller/sbb_map_controller_impl.dart';
@@ -28,6 +29,7 @@ class SBBMapSessionConfig {
     this.initialCameraPosition,
     this.isMyLocationEnabled = false,
     this.isFloorSwitchingEnabled = true,
+    this.defaultViewWithoutFloor = .twoD,
     this.poiSettings = const SBBMapPOISettings(),
     this.onMapCreated,
     this.onStyleLoaded,
@@ -43,6 +45,7 @@ class SBBMapSessionConfig {
   final SBBCameraPosition? initialCameraPosition;
   final bool isMyLocationEnabled;
   final bool isFloorSwitchingEnabled;
+  final SBBMapViewWithoutFloor defaultViewWithoutFloor;
   final SBBMapPOISettings poiSettings;
   final MapCreatedCallback? onMapCreated;
   final VoidCallback? onStyleLoaded;
@@ -71,7 +74,11 @@ enum _Lifecycle { loading, ready, disposed }
 ///   the first load, unless the app asked for the annotator;
 /// * on a styler notification, the new style being set on the map;
 /// * on a config update with new POI settings, the POI controller applying
-///   them to the map ([SBBRokasPOIControllerImpl.updateSelectionCallbacks]).
+///   them to the map ([SBBRokasPOIControllerImpl.updateSelectionCallbacks]);
+/// * on a config update with a new view without a Floor, the floor controller
+///   applying it ([SBBMapFloorControllerImpl.updateViewWithoutFloor]);
+/// * on a style load, a view change and a view config update, the POI
+///   controller following the view ([SBBRokasPOIControllerImpl.updateView]).
 ///
 /// Once disposed, the session ignores every event, and the handling of an
 /// earlier event neither notifies listeners nor calls the app any more.
@@ -101,8 +108,10 @@ class SBBMapSession with ChangeNotifier {
     _mapLocator = mapLocator ?? SBBMapLocatorImpl(_mapLibreController.future, PermissionHandlerFacade());
     _mapLocator.addListener(notifyListeners);
 
-    _floorController = floorController ?? SBBMapFloorControllerImpl(_mapLibreController.future);
-    _floorController.addListener(notifyListeners);
+    _floorController =
+        floorController ??
+        SBBMapFloorControllerImpl(_mapLibreController.future, viewWithoutFloor: config.defaultViewWithoutFloor);
+    _floorController.addListener(_reactToFloorChange);
 
     _routingController =
         routingController ??
@@ -177,6 +186,9 @@ class SBBMapSession with ChangeNotifier {
   /// New [SBBMapSessionConfig.poiSettings] are handed to the POI controller,
   /// whose selection and deselection callbacks follow them from now on.
   ///
+  /// A new [SBBMapSessionConfig.defaultViewWithoutFloor] is handed to the
+  /// floor controller, which owns the view, and the POI controller follows.
+  ///
   /// A swapped [SBBMapStyler] is followed from now on, and its style is set on
   /// the map if it differs from the previous styler's. Input is then ignored
   /// until that style has loaded.
@@ -190,6 +202,10 @@ class SBBMapSession with ChangeNotifier {
           onPoiDeselected: config.poiSettings.onPoiDeselected,
         ),
       );
+    }
+    if (oldConfig.defaultViewWithoutFloor != config.defaultViewWithoutFloor) {
+      unawaited(_floorController.updateViewWithoutFloor(config.defaultViewWithoutFloor));
+      _passViewToPoiController();
     }
     if (identical(oldConfig.mapStyler, config.mapStyler)) return;
 
@@ -223,8 +239,8 @@ class SBBMapSession with ChangeNotifier {
   }
 
   /// Handles a style load: makes the map accept input, hands the controllers
-  /// to the app on the first load, and re-syncs POIs, the selected floor
-  /// and annotations.
+  /// to the app on the first load, and re-syncs the view, POIs, the selected
+  /// floor and annotations.
   Future<void> onStyleLoaded() async {
     if (_isDisposed) return;
     _lifecycle = .ready;
@@ -245,6 +261,7 @@ class SBBMapSession with ChangeNotifier {
       if (_config.isFloorSwitchingEnabled) _config.onFloorControllerAvailable?.call(_floorController);
     }
 
+    _passViewToPoiController();
     _poiController.synchronizeWithNewStyle();
     _floorController.synchronizeWithNewStyle();
     if (isFirstStyleLoad) _config.poiSettings.onPoiControllerAvailable?.call(_poiController);
@@ -301,7 +318,7 @@ class SBBMapSession with ChangeNotifier {
   void dispose() {
     _lifecycle = .disposed;
     _mapLocator.removeListener(notifyListeners);
-    _floorController.removeListener(notifyListeners);
+    _floorController.removeListener(_reactToFloorChange);
     _routingController.removeListener(notifyListeners);
 
     mapStyler.removeListener(_reactToStyleChange);
@@ -316,6 +333,16 @@ class SBBMapSession with ChangeNotifier {
   }
 
   void _reactToStyleChange() => _reloadStyle();
+
+  /// A floor change may change the view, which the POI controller follows.
+  void _reactToFloorChange() {
+    _passViewToPoiController();
+    notifyListeners();
+  }
+
+  /// The floor controller owns the view; the POI controller is told which
+  /// style layers its base POIs live in.
+  void _passViewToPoiController() => unawaited(_poiController.updateView(isTwoDView: _floorController.isTwoDView));
 
   /// Sets the current styler's style on the map. Input is then ignored until
   /// that style has loaded.

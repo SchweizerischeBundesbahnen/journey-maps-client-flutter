@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 import 'package:mockito/annotations.dart';
@@ -79,11 +80,13 @@ void main() {
     SBBMapStyler? mapStyler,
     SBBCameraPosition? initialCameraPosition = .highLevelCH,
     SBBMapPOISettings poiSettings = const SBBMapPOISettings(),
+    SBBMapViewWithoutFloor defaultViewWithoutFloor = .twoD,
     void Function()? onStyleLoaded,
   }) => SBBMapSessionConfig(
     mapStyler: mapStyler ?? styler,
     initialCameraPosition: initialCameraPosition,
     poiSettings: poiSettings,
+    defaultViewWithoutFloor: defaultViewWithoutFloor,
     onStyleLoaded: onStyleLoaded,
     onMapClick: (_, _) => calls.add(.click),
     onMapLongClick: (_, _) => calls.add(.longClick),
@@ -394,6 +397,21 @@ void main() {
       verify(floorController.synchronizeWithNewStyle()).called(2);
     });
 
+    test('onStyleLoaded_whenAnyLoad_shouldPassViewToPoiControllerBeforeResyncingIt', () async {
+      when(floorController.isTwoDView).thenReturn(false);
+      final session = createSession(recordingConfig());
+
+      await loadFirstStyle(session);
+      await reloadStyle(session);
+
+      verifyInOrder([
+        poiController.updateView(isTwoDView: false),
+        poiController.synchronizeWithNewStyle(),
+        poiController.updateView(isTwoDView: false),
+        poiController.synchronizeWithNewStyle(),
+      ]);
+    });
+
     test('onStyleLoaded_whenAnyLoadWithoutOnMapAnnotatorAvailable_shouldResyncAnnotator', () async {
       final session = createSession(recordingConfig());
 
@@ -503,6 +521,44 @@ void main() {
           onPoiDeselected: anyNamed('onPoiDeselected'),
         ),
       );
+    });
+  });
+
+  group('view', () {
+    test('floorControllerNotification_shouldPassViewToPoiController', () async {
+      final session = createSession(recordingConfig());
+      final floorListener = verify(floorController.addListener(captureAny)).captured.single as VoidCallback;
+      await loadFirstStyle(session);
+      clearInteractions(poiController);
+
+      when(floorController.isTwoDView).thenReturn(false);
+      floorListener();
+      verify(poiController.updateView(isTwoDView: false)).called(1);
+
+      when(floorController.isTwoDView).thenReturn(true);
+      floorListener();
+      verify(poiController.updateView(isTwoDView: true)).called(1);
+    });
+
+    test('update_whenDefaultViewWithoutFloorChanges_shouldReachFloorAndPoiController', () async {
+      final session = createSession(recordingConfig());
+      await loadFirstStyle(session);
+      clearInteractions(poiController);
+      when(floorController.isTwoDView).thenReturn(false);
+
+      await session.update(recordingConfig(defaultViewWithoutFloor: .floorZero));
+
+      verify(floorController.updateViewWithoutFloor(.floorZero)).called(1);
+      verify(poiController.updateView(isTwoDView: false)).called(1);
+    });
+
+    test('update_whenDefaultViewWithoutFloorEqual_shouldNotUpdateFloorController', () async {
+      final session = createSession(recordingConfig());
+      await loadFirstStyle(session);
+
+      await session.update(recordingConfig());
+
+      verifyNever(floorController.updateViewWithoutFloor(argThat(anything)));
     });
   });
 
@@ -748,6 +804,46 @@ void main() {
       expect(session.mapLocator, isA<SBBMapLocatorImpl>());
       session.dispose();
     });
+
+    test('onStyleLoaded_whenNoFloorSelected_shouldShowFloorIndependentLayersAndTwoDViewBasePois', () async {
+      SBBRokasPOIController? poi;
+      final session = SBBMapSession(
+        config: recordingConfig(poiSettings: SBBMapPOISettings(onPoiControllerAvailable: (c) => poi = c)),
+      );
+      when(mapLibre.getLayerIds()).thenAnswer((_) async => ['level_floor-2d', 'level_floor-lvl']);
+
+      await loadFirstStyle(session);
+      await pumpEventQueue();
+      await poi!.showPointsOfInterest();
+
+      verify(mapLibre.setLayerVisibility('level_floor-2d', true)).called(1);
+      verify(mapLibre.setLayerVisibility('level_floor-lvl', false)).called(1);
+      verify(mapLibre.setLayerVisibility('journey-pois-third-2d', true)).called(1);
+      session.dispose();
+    });
+
+    test(
+      'onStyleLoaded_whenFloorZeroViewWithoutFloorSelected_shouldShowFloorDependentLayersAndFloorViewBasePois',
+      () async {
+        SBBRokasPOIController? poi;
+        final session = SBBMapSession(
+          config: recordingConfig(
+            poiSettings: SBBMapPOISettings(onPoiControllerAvailable: (c) => poi = c),
+            defaultViewWithoutFloor: .floorZero,
+          ),
+        );
+        when(mapLibre.getLayerIds()).thenAnswer((_) async => ['level_floor-2d', 'level_floor-lvl']);
+
+        await loadFirstStyle(session);
+        await pumpEventQueue();
+        await poi!.showPointsOfInterest();
+
+        verify(mapLibre.setLayerVisibility('level_floor-2d', false)).called(1);
+        verify(mapLibre.setLayerVisibility('level_floor-lvl', true)).called(1);
+        verify(mapLibre.setLayerVisibility('journey-pois-third-lvl', true)).called(1);
+        session.dispose();
+      },
+    );
 
     test('update_whenPoiSettingsChange_shouldCallNewOnPoiSelectedOnSelection', () async {
       SBBRokasPOIController? poi;
