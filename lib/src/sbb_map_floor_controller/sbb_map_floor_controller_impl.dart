@@ -10,6 +10,10 @@ class SBBMapFloorControllerImpl with ChangeNotifier implements SBBMapFloorContro
   static const _servicePointSourceId = 'service_points';
   static const _servicePointLayerId = 'rokas_service_points';
 
+  /// Greys out everything outside the station while a Floor other than 0 is
+  /// selected, so the selected Floor reads as "inside".
+  static const _greyoutLayerId = 'level_greyout';
+
   SBBMapFloorControllerImpl(this._controller);
 
   final Future<MapLibreMapController> _controller;
@@ -122,8 +126,18 @@ class SBBMapFloorControllerImpl with ChangeNotifier implements SBBMapFloorContro
           _logger.e('Failed to set new layer filter on layer=$layerId');
         }
       }
-      controller.setLayerVisibility("rokas_background_mask", floor < 0);
+      await _trySettingGreyoutVisibility(controller, visible: floor != 0);
     });
+  }
+
+  /// A style without the greyout layer keeps its Floor switch; only the greyout
+  /// is skipped.
+  Future<void> _trySettingGreyoutVisibility(MapLibreMapController controller, {required bool visible}) async {
+    try {
+      await controller.setLayerVisibility(_greyoutLayerId, visible);
+    } catch (e) {
+      _logger.i('Failed to set visibility on layer: $_greyoutLayerId\nSkipping greyout.');
+    }
   }
 
   Future<dynamic> _tryGettingOldFilter(MapLibreMapController controller, layerId) async {
