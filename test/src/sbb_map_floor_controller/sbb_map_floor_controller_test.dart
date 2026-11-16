@@ -17,6 +17,12 @@ void main() {
   late MockMapLibreMapController mockController;
   final listener = MockCallbackFunction();
 
+  /// Layer visibility is set exactly once, on `level_greyout`.
+  void verifyGreyoutVisibility(bool visible) {
+    final calls = verify(mockController.setLayerVisibility(captureAny, captureAny)).captured;
+    expect(calls, ['level_greyout', visible]);
+  }
+
   group('Unit Test SBBMapFloorProvider', () {
     setUp(() {
       mockController = MockMapLibreMapController();
@@ -99,7 +105,7 @@ void main() {
         // expect
         expect(sut.currentFloor, 1);
         verify(mockController.setLayerFilter('layer2-lvl', layer2Level1Filter)).called(1);
-        verify(mockController.setLayerVisibility('rokas_background_mask', false)).called(1);
+        verifyGreyoutVisibility(true);
         verifyNever(listener());
       });
 
@@ -112,6 +118,67 @@ void main() {
         verifyNever(mockController.setLayerFilter(any, any));
         verifyNever(mockController.setLayerVisibility(any, any));
         verifyNever(listener());
+      });
+    });
+    group('greyout', () {
+      setUp(() async {
+        when(mockController.querySourceFeatures(any, any, any)).thenAnswer((_) async => threeFeatureWithThreeFloors);
+        when(mockController.getLayerIds()).thenAnswer((_) async => oneLevelLayers);
+        when(mockController.getLayerFilter('layer2-lvl')).thenAnswer((_) async => layer2Level0Filter);
+        await sut.updateAvailableFloors();
+        clearInteractions(mockController);
+      });
+
+      test('switchFloor_whenPositiveFloor_shouldShowLevelGreyout', () async {
+        // act
+        await sut.switchFloor(1);
+
+        // expect
+        verifyGreyoutVisibility(true);
+      });
+
+      test('switchFloor_whenNegativeFloor_shouldShowLevelGreyout', () async {
+        // act
+        await sut.switchFloor(-1);
+
+        // expect
+        verifyGreyoutVisibility(true);
+      });
+
+      test('switchFloor_whenGroundFloor_shouldHideLevelGreyout', () async {
+        // act
+        await sut.switchFloor(0);
+
+        // expect
+        verifyGreyoutVisibility(false);
+      });
+
+      test('switchFloor_whenDeselectingFloor_shouldHideLevelGreyout', () async {
+        // arrange
+        await sut.switchFloor(1);
+        clearInteractions(mockController);
+
+        // act
+        await sut.switchFloor(null);
+
+        // expect
+        verifyGreyoutVisibility(false);
+      });
+
+      test('switchFloor_whenStyleHasNoLevelGreyoutLayer_shouldStillApplyTheFloor', () async {
+        // arrange
+        when(
+          mockController.setLayerVisibility('level_greyout', any),
+        ).thenAnswer((_) => Future.error(PlatformException(code: 'LAYER_NOT_FOUND_ERROR')));
+        reset(listener);
+
+        // act
+        await sut.switchFloor(1);
+
+        // expect
+        expect(sut.currentFloor, 1);
+        verify(mockController.setLayerFilter('layer2-lvl', layer2Level1Filter)).called(1);
+        verify(listener()).called(1);
       });
     });
     group('switchFloor', () {
@@ -133,6 +200,7 @@ void main() {
         // arrange
         await sut.switchFloor(-1);
         expect(sut.currentFloor, -1);
+        clearInteractions(mockController);
 
         // act
         when(mockController.querySourceFeatures(any, any, any)).thenAnswer((_) async => oneFeatureGroundAndFirstFloor);
@@ -140,6 +208,7 @@ void main() {
 
         // expect
         expect(sut.currentFloor, null);
+        verifyGreyoutVisibility(false);
         verify(listener()).called(2);
       });
       test('switchFloor_ifFloorNoLongerAvailableInSource_shouldApplyGroundFloorBeforeNotifying', () async {
@@ -406,7 +475,7 @@ void main() {
         // expect
         expect(sut.currentFloor, 1);
         verify(mockController.setLayerFilter('layer2-lvl', layer2Level1Filter)).called(1);
-        verify(mockController.setLayerVisibility('rokas_background_mask', false)).called(1);
+        verifyGreyoutVisibility(true);
       });
 
       test('switchFloor_whenSbbMapsPlatformLayerFilter_shouldOnlySubstituteTheLevel', () async {
