@@ -10,8 +10,8 @@ class SBBMapFloorControllerImpl with ChangeNotifier implements SBBMapFloorContro
   static const _servicePointSourceId = 'service_points';
   static const _servicePointLayerId = 'rokas_service_points';
 
-  /// Greys out everything outside the station while a Floor other than 0 is
-  /// selected, so the selected Floor reads as "inside".
+  /// Layer to display to grey out everything except the currently selected
+  /// floor if it's different than 0.
   static const _greyoutLayerId = 'level_greyout';
 
   SBBMapFloorControllerImpl(this._controller);

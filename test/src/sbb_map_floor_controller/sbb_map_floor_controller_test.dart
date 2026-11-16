@@ -17,10 +17,10 @@ void main() {
   late MockMapLibreMapController mockController;
   final listener = MockCallbackFunction();
 
-  /// The greyout is driven through `level_greyout` alone.
+  /// Layer visibility is set exactly once, on `level_greyout`.
   void verifyGreyoutVisibility(bool visible) {
-    verify(mockController.setLayerVisibility('level_greyout', visible)).called(1);
-    verifyNever(mockController.setLayerVisibility('rokas_background_mask', any));
+    final calls = verify(mockController.setLayerVisibility(captureAny, captureAny)).captured;
+    expect(calls, ['level_greyout', visible]);
   }
 
   group('Unit Test SBBMapFloorProvider', () {
@@ -200,6 +200,7 @@ void main() {
         // arrange
         await sut.switchFloor(-1);
         expect(sut.currentFloor, -1);
+        clearInteractions(mockController);
 
         // act
         when(mockController.querySourceFeatures(any, any, any)).thenAnswer((_) async => oneFeatureGroundAndFirstFloor);
