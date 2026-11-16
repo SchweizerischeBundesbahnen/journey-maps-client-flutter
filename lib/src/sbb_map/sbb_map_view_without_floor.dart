@@ -6,8 +6,7 @@
 /// floor-dependent layers of one Floor. Selecting a Floor always switches to the
 /// Floor View; this enum decides the rendering while no Floor is selected.
 enum SBBMapViewWithoutFloor {
-  /// The 2D View, as sbb.ch renders a station: the features of every Floor at
-  /// once. The default.
+  /// The 2D View: the features of every Floor at once. The default.
   twoD,
 
   /// The Floor View at Floor 0. [SBBMapFloorController.currentFloor] stays

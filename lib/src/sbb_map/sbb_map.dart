@@ -109,8 +109,8 @@ class SBBMap extends StatefulWidget {
   ///
   /// [SBBMapViewWithoutFloor.twoD], the default, is the 2D View: the tunnels,
   /// underground passages, labels, platform numbers and base POIs of every
-  /// floor at once, as sbb.ch renders a station. Selecting a floor switches to
-  /// the Floor View of that floor; deselecting it returns to the 2D View.
+  /// floor at once. Selecting a floor switches to the Floor View of that
+  /// floor; deselecting it returns to the 2D View.
   ///
   /// [SBBMapViewWithoutFloor.floorZero] keeps the Floor View of floor 0 while
   /// no floor is selected, so the 2D View is never shown.
