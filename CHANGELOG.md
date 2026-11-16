@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.1.0](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/compare/3.0.1...3.1.0) (2026-11-16)
+
+
+### Features
+
+* show level_greyout for Floors other than 0 ([#362](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/362)) ([62cf36c](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/62cf36caf80cf7722206c0ea3d04433c041d37f3))
+* show the 2D View when no Floor is selected ([#364](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/issues/364)) ([3bb217c](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/commit/3bb217c3eaafccd7e399dd0d3a0817a86416c45c))
+
 ## [3.0.1](https://github.com/SchweizerischeBundesbahnen/journey-maps-client-flutter/compare/3.0.0...3.0.1) (2026-11-13)
 
 
