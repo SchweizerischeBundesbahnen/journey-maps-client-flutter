@@ -41,7 +41,8 @@ abstract class SBBRokasPOIController with ChangeNotifier {
   /// Shows ROKAS POIs on the map.
   ///
   /// [layer] allows controlling which ROKAS POI type will be shown:
-  /// The baseOnFloor POIs are the round / rounded rectangle colored icons on the map (default).
+  /// The base POIs are the round / rounded rectangle colored icons on the map (default).
+  /// They follow the view of the map, see [SBBRokasPoiLayer.base].
   /// The highlighted POIs are symbols appearing as "pins" on the map.
   ///
   /// Only POIs of the given [categories] will be visible.
@@ -52,7 +53,7 @@ abstract class SBBRokasPOIController with ChangeNotifier {
   ///
   /// Does not change the [selectedPointOfInterest].
   Future<void> showPointsOfInterest({
-    SBBRokasPoiLayer layer = SBBRokasPoiLayer.baseWithFloor,
+    SBBRokasPoiLayer layer = SBBRokasPoiLayer.base,
     List<SBBPoiCategoryType>? categories,
   });
 
@@ -61,7 +62,7 @@ abstract class SBBRokasPOIController with ChangeNotifier {
   /// [layer] allows controlling which ROKAS POI will be hidden.
   ///
   /// If no POI layer stays visible, the selected POI is deselected.
-  Future<void> hidePointsOfInterest({SBBRokasPoiLayer layer = SBBRokasPoiLayer.baseWithFloor});
+  Future<void> hidePointsOfInterest({SBBRokasPoiLayer layer = SBBRokasPoiLayer.base});
 
   /// Hides all points of interest regardless of the [SBBRokasPoiLayer].
   ///

@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:sbb_maps_flutter/sbb_maps_flutter.dart';
 import 'package:sbb_maps_flutter/src/sbb_map_floor_controller/sbb_map_floor_controller_impl.dart';
 
 import '../../util/mock_callback_function.dart';
@@ -17,10 +18,42 @@ void main() {
   late MockMapLibreMapController mockController;
   final listener = MockCallbackFunction();
 
-  /// Layer visibility is set exactly once, on `level_greyout`.
+  /// The visibility set on each layer, by layer id. A layer whose visibility is
+  /// set twice fails the test.
+  Map<String, bool> capturedVisibilities() {
+    final captured = verify(mockController.setLayerVisibility(captureAny, captureAny)).captured;
+    final visibilities = <String, bool>{};
+    for (var i = 0; i < captured.length; i += 2) {
+      expect(visibilities.containsKey(captured[i]), isFalse, reason: 'visibility of ${captured[i]} set twice');
+      visibilities[captured[i] as String] = captured[i + 1] as bool;
+    }
+    return visibilities;
+  }
+
+  /// `level_greyout` is set exactly once, to [visible].
   void verifyGreyoutVisibility(bool visible) {
-    final calls = verify(mockController.setLayerVisibility(captureAny, captureAny)).captured;
-    expect(calls, ['level_greyout', visible]);
+    expect(capturedVisibilities()['level_greyout'], visible);
+  }
+
+  /// The 2D View: every `-2d` layer shown, every `-lvl` layer hidden, no greyout.
+  void verifyTwoDView() {
+    final visibilities = capturedVisibilities();
+    expect(visibilities, {
+      for (final id in floorIndependentLayers) id: true,
+      for (final id in floorDependentLayers) id: false,
+      'level_greyout': false,
+    });
+  }
+
+  /// The Floor View: every `-lvl` layer shown, every `-2d` layer hidden, and
+  /// the greyout following the Floor.
+  void verifyFloorView({required bool greyout}) {
+    final visibilities = capturedVisibilities();
+    expect(visibilities, {
+      for (final id in floorDependentLayers) id: true,
+      for (final id in floorIndependentLayers) id: false,
+      'level_greyout': greyout,
+    });
   }
 
   group('Unit Test SBBMapFloorProvider', () {
@@ -109,15 +142,187 @@ void main() {
         verifyNever(listener());
       });
 
-      test('synchronizeWithNewStyle_whenNoFloorSelected_shouldLeaveNewStyleUntouched', () async {
+      test('synchronizeWithNewStyle_whenNoFloorSelected_shouldNotRewriteFiltersNorNotify', () async {
         // act
         await sut.synchronizeWithNewStyle();
 
         // expect
         expect(sut.currentFloor, null);
         verifyNever(mockController.setLayerFilter(any, any));
-        verifyNever(mockController.setLayerVisibility(any, any));
         verifyNever(listener());
+      });
+    });
+    group('view', () {
+      Future<void> prepare({SBBMapViewWithoutFloor viewWithoutFloor = .twoD}) async {
+        sut = SBBMapFloorControllerImpl(Future.value(mockController), viewWithoutFloor: viewWithoutFloor);
+        sut.addListener(listener.call);
+        when(mockController.querySourceFeatures(any, any, any)).thenAnswer((_) async => threeFeatureWithThreeFloors);
+        when(mockController.getLayerIds()).thenAnswer((_) async => bothViewsLayers);
+        when(mockController.getLayerFilter(any)).thenAnswer((_) async => layer2Level0Filter);
+        await sut.updateAvailableFloors();
+        clearInteractions(mockController);
+        reset(listener);
+      }
+
+      test('switchFloor_whenFloorSelected_shouldEnterFloorView', () async {
+        // arrange
+        await prepare();
+
+        // act
+        await sut.switchFloor(1);
+
+        // expect
+        verifyFloorView(greyout: true);
+        verify(mockController.setLayerFilter('level_floor-lvl', layer2Level1Filter)).called(1);
+        verify(mockController.setLayerFilter('journey-pois-second-lvl', layer2Level1Filter)).called(1);
+      });
+
+      test('switchFloor_whenDeselectingFloor_shouldEnterTwoDView', () async {
+        // arrange
+        await prepare();
+        await sut.switchFloor(1);
+        clearInteractions(mockController);
+
+        // act
+        await sut.switchFloor(null);
+
+        // expect
+        verifyTwoDView();
+        verifyNever(mockController.setLayerFilter(any, any));
+      });
+
+      test('synchronizeWithNewStyle_whenNoFloorSelected_shouldApplyTwoDView', () async {
+        // arrange
+        await prepare();
+
+        // act
+        await sut.synchronizeWithNewStyle();
+
+        // expect
+        verifyTwoDView();
+        verifyNever(listener());
+      });
+
+      test('synchronizeWithNewStyle_whenFloorSelected_shouldApplyFloorView', () async {
+        // arrange
+        await prepare();
+        await sut.switchFloor(0);
+        clearInteractions(mockController);
+        reset(listener);
+
+        // act
+        await sut.synchronizeWithNewStyle();
+
+        // expect
+        verifyFloorView(greyout: false);
+        verifyNever(listener());
+      });
+
+      test('updateAvailableFloors_whenFloorNoLongerAvailable_shouldEnterTwoDView', () async {
+        // arrange
+        await prepare();
+        await sut.switchFloor(-1);
+        clearInteractions(mockController);
+        when(mockController.querySourceFeatures(any, any, any)).thenAnswer((_) async => oneFeatureGroundAndFirstFloor);
+
+        // act
+        await sut.updateAvailableFloors();
+
+        // expect
+        expect(sut.currentFloor, null);
+        verifyTwoDView();
+      });
+
+      test('synchronizeWithNewStyle_whenFloorZeroViewAndNoFloorSelected_shouldApplyFloorViewAtGroundFloor', () async {
+        // arrange
+        await prepare(viewWithoutFloor: .floorZero);
+
+        // act
+        await sut.synchronizeWithNewStyle();
+
+        // expect
+        expect(sut.currentFloor, null);
+        verifyFloorView(greyout: false);
+      });
+
+      test('switchFloor_whenFloorZeroViewAndDeselectingFloor_shouldApplyFloorViewAtGroundFloor', () async {
+        // arrange
+        await prepare(viewWithoutFloor: .floorZero);
+        await sut.switchFloor(1);
+        clearInteractions(mockController);
+
+        // act
+        await sut.switchFloor(null);
+
+        // expect
+        expect(sut.currentFloor, null);
+        verifyFloorView(greyout: false);
+        verify(mockController.setLayerFilter('level_floor-lvl', any)).called(1);
+      });
+
+      test('updateViewWithoutFloor_whenNoFloorSelected_shouldApplyNewView', () async {
+        // arrange
+        await prepare();
+
+        // act
+        await sut.updateViewWithoutFloor(.floorZero);
+
+        // expect
+        expect(sut.currentFloor, null);
+        verifyFloorView(greyout: false);
+        clearInteractions(mockController);
+
+        // act
+        await sut.updateViewWithoutFloor(.twoD);
+
+        // expect
+        verifyTwoDView();
+        verifyNever(listener());
+      });
+
+      test('updateViewWithoutFloor_whenUnchanged_shouldNotTouchLayers', () async {
+        // arrange
+        await prepare();
+
+        // act
+        await sut.updateViewWithoutFloor(.twoD);
+
+        // expect
+        verifyZeroInteractions(mockController);
+      });
+
+      test('updateViewWithoutFloor_whenFloorSelected_shouldNotTouchLayersUntilDeselected', () async {
+        // arrange
+        await prepare();
+        await sut.switchFloor(1);
+        clearInteractions(mockController);
+
+        // act
+        await sut.updateViewWithoutFloor(.floorZero);
+
+        // expect
+        verifyZeroInteractions(mockController);
+
+        // act
+        await sut.switchFloor(null);
+
+        // expect
+        verifyFloorView(greyout: false);
+      });
+
+      test('isTwoDView_shouldBeTrueExactlyWhileNoFloorSelectedInTwoDView', () async {
+        // arrange
+        await prepare();
+        expect(sut.isTwoDView, isTrue);
+
+        await sut.switchFloor(1);
+        expect(sut.isTwoDView, isFalse);
+
+        await sut.switchFloor(null);
+        expect(sut.isTwoDView, isTrue);
+
+        await sut.updateViewWithoutFloor(.floorZero);
+        expect(sut.isTwoDView, isFalse);
       });
     });
     group('greyout', () {

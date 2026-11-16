@@ -30,6 +30,7 @@ API key for style and routing usage (see details below).
         - [Features](#features)
         - [Custom Map Properties](#custom-map-properties)
         - [Floor Switcher](#floor-switcher)
+            - [View without a floor](#view-without-a-floor)
             - [Floor labels](#floor-labels)
             - [Theming](#theming)
         - [Gallery and Examples](#gallery-and-examples)
@@ -253,6 +254,26 @@ SBBMap(
   floorSwitcherOrientation: SBBMapFloorSwitcherOrientation.vertical,
 );
 ```
+
+##### View without a floor
+
+While no floor is selected, the map shows the station's **2D View**, as sbb.ch does: the
+tunnels, underground passages, labels, platform numbers and base POIs of every floor at
+once, so the shops of an underground passage are visible and selectable without picking a
+floor first. Selecting a floor switches to the **Floor View** of that floor; the close
+button of the floor switcher (or tapping the selected floor again) returns to the 2D View.
+A map without floor switching shows the 2D View too. To keep the Floor View of floor 0
+while no floor is selected, pass `defaultViewWithoutFloor`:
+
+```dart
+SBBMap(
+  mapStyler: mapStyler,
+  defaultViewWithoutFloor: SBBMapViewWithoutFloor.floorZero,
+);
+```
+
+The base POIs (`SBBRokasPoiLayer.base`) follow the view with the visibility and category
+filter you configured; `SBBRokasPoiLayer.baseWithFloor` is a deprecated alias of `base`.
 
 ##### Floor labels
 

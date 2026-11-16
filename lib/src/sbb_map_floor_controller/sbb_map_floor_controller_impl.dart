@@ -14,11 +14,19 @@ class SBBMapFloorControllerImpl with ChangeNotifier implements SBBMapFloorContro
   /// floor if it's different than 0.
   static const _greyoutLayerId = 'level_greyout';
 
-  SBBMapFloorControllerImpl(this._controller);
+  static const _floorDependentLayerIdSuffix = '-lvl';
+  static const _floorIndependentLayerIdSuffix = '-2d';
+
+  /// The POI layers are owned by the POI controller, which follows the view
+  /// through the Map Session.
+  static const _poiLayerIdPrefix = 'journey-pois-';
+
+  SBBMapFloorControllerImpl(this._controller, {this._viewWithoutFloor = .twoD});
 
   final Future<MapLibreMapController> _controller;
   List<int> _availableFloors = [];
   int? _currentFloor;
+  SBBMapViewWithoutFloor _viewWithoutFloor;
   final Logger _logger = Logger();
 
   @override
@@ -27,11 +35,28 @@ class SBBMapFloorControllerImpl with ChangeNotifier implements SBBMapFloorContro
   @override
   int? get currentFloor => _currentFloor;
 
+  /// Whether the map shows the 2D View: no Floor is selected and the view
+  /// without a Floor is [SBBMapViewWithoutFloor.twoD]. Otherwise it shows the
+  /// Floor View of [currentFloor], or of Floor 0 when none is selected.
+  bool get isTwoDView => _isTwoDViewFor(_currentFloor);
+
+  bool _isTwoDViewFor(int? floor) => floor == null && _viewWithoutFloor == .twoD;
+
   @override
   Future<void> switchFloor(int? floor) async {
     if (floor != null && !_availableFloors.contains(floor)) return;
-    await _selectFloor(floor: floor ?? 0);
+    await _applyView(floor: floor);
     _notifyListenersIfChanged(currentFloor: floor);
+  }
+
+  /// Called by the Map Session when `SBBMap.defaultViewWithoutFloor` changes.
+  ///
+  /// Re-applies the view if no Floor is selected. With a selected Floor nothing
+  /// changes until it is deselected.
+  Future<void> updateViewWithoutFloor(SBBMapViewWithoutFloor viewWithoutFloor) async {
+    if (_viewWithoutFloor == viewWithoutFloor) return;
+    _viewWithoutFloor = viewWithoutFloor;
+    if (_currentFloor == null) await _applyView(floor: null);
   }
 
   /// Only called by [SBBMap] to update available floors
@@ -45,7 +70,7 @@ class SBBMapFloorControllerImpl with ChangeNotifier implements SBBMapFloorContro
 
     int? updatedFloor = _currentFloor;
     if (_currentFloorShouldBeReset(updatedFloors)) {
-      await _selectFloor(floor: 0);
+      await _applyView(floor: null);
       updatedFloor = null;
     }
     _notifyListenersIfChanged(currentFloor: updatedFloor, availableFloors: updatedFloors);
@@ -53,12 +78,9 @@ class SBBMapFloorControllerImpl with ChangeNotifier implements SBBMapFloorContro
 
   /// Called by the Map Session after every style load.
   ///
-  /// A new style's layers show floor 0, so the [currentFloor] is re-applied to
-  /// them. Without a selected floor there is nothing to re-apply.
-  Future<void> synchronizeWithNewStyle() async {
-    final floor = _currentFloor;
-    if (floor != null) await _selectFloor(floor: floor);
-  }
+  /// A new style ships with the Floor View of Floor 0, so the view and the
+  /// [currentFloor] are re-applied to its layers.
+  Future<void> synchronizeWithNewStyle() => _applyView(floor: _currentFloor);
 
   Future<List<dynamic>> _queryFeaturesWithFloorsFromSource() async {
     return await _controller.then(
@@ -104,30 +126,81 @@ class SBBMapFloorControllerImpl with ChangeNotifier implements SBBMapFloorContro
     }
   }
 
-  Future<void> _selectFloor({required int floor}) async {
-    return await _controller.then((controller) async {
-      final knownLayerIds = (await controller.getLayerIds()).where((id) => (id as String).endsWith('-lvl'));
-      for (final layerId in knownLayerIds) {
-        try {
-          final oldFilter = await _tryGettingOldFilter(controller, layerId);
-          if (oldFilter == null) continue;
-          final newFilter = _calculateLayerFilter(oldFilter, floor);
-          final oldFilterString = jsonEncode(oldFilter);
-          final newFilterString = jsonEncode(newFilter);
-          if (oldFilterString != newFilterString) {
-            _logger.d(
-              "Updating Filter on Layer: $layerId\n"
-              "OLD Filter $oldFilterString\n"
-              "NEW Filter $newFilterString",
-            );
-            await controller.setLayerFilter(layerId, newFilter);
-          }
-        } catch (e) {
-          _logger.e('Failed to set new layer filter on layer=$layerId');
+  /// Applies the view [floor] stands for: the 2D View for `null` with
+  /// [SBBMapViewWithoutFloor.twoD], otherwise the Floor View of [floor] or of
+  /// Floor 0.
+  ///
+  /// The view is decided by the visibility of the floor-independent (`-2d`) and
+  /// floor-dependent (`-lvl`) layers, found by id suffix as `maplibre_gl` cannot
+  /// read their `general.floor` metadata. The POI layers are left to the POI
+  /// controller. In the Floor View the Floor is written into the filters of the
+  /// `-lvl` layers before they are shown, so no other Floor flashes, and the
+  /// greyout is shown for a Floor other than 0.
+  Future<void> _applyView({required int? floor}) async {
+    final isTwoDView = _isTwoDViewFor(floor);
+    final viewFloor = floor ?? 0;
+    final controller = await _controller;
+    final layerIds = (await controller.getLayerIds()).cast<String>().toList();
+
+    if (!isTwoDView) await _applyFloorFilters(controller, layerIds, floor: viewFloor);
+    await _setViewLayerVisibilities(controller, layerIds, isTwoDView: isTwoDView);
+    await _trySettingGreyoutVisibility(controller, visible: !isTwoDView && viewFloor != 0);
+  }
+
+  Future<void> _setViewLayerVisibilities(
+    MapLibreMapController controller,
+    List<String> layerIds, {
+    required bool isTwoDView,
+  }) async {
+    final viewLayerIds = layerIds.where((id) => !id.startsWith(_poiLayerIdPrefix));
+    final writes = <Future<void>>[
+      for (final id in viewLayerIds.where((id) => id.endsWith(_floorIndependentLayerIdSuffix)))
+        _trySettingLayerVisibility(controller, id, visible: isTwoDView),
+      for (final id in viewLayerIds.where((id) => id.endsWith(_floorDependentLayerIdSuffix)))
+        _trySettingLayerVisibility(controller, id, visible: !isTwoDView),
+    ];
+    await Future.wait(writes);
+  }
+
+  Future<void> _trySettingLayerVisibility(
+    MapLibreMapController controller,
+    String layerId, {
+    required bool visible,
+  }) async {
+    try {
+      await controller.setLayerVisibility(layerId, visible);
+    } catch (e) {
+      _logger.e('Failed to set visibility on layer=$layerId');
+    }
+  }
+
+  /// Writes [floor] into the filters of the floor-dependent layers among
+  /// [layerIds].
+  Future<void> _applyFloorFilters(
+    MapLibreMapController controller,
+    List<String> layerIds, {
+    required int floor,
+  }) async {
+    final knownLayerIds = layerIds.where((id) => id.endsWith(_floorDependentLayerIdSuffix));
+    for (final layerId in knownLayerIds) {
+      try {
+        final oldFilter = await _tryGettingOldFilter(controller, layerId);
+        if (oldFilter == null) continue;
+        final newFilter = _calculateLayerFilter(oldFilter, floor);
+        final oldFilterString = jsonEncode(oldFilter);
+        final newFilterString = jsonEncode(newFilter);
+        if (oldFilterString != newFilterString) {
+          _logger.d(
+            "Updating Filter on Layer: $layerId\n"
+            "OLD Filter $oldFilterString\n"
+            "NEW Filter $newFilterString",
+          );
+          await controller.setLayerFilter(layerId, newFilter);
         }
+      } catch (e) {
+        _logger.e('Failed to set new layer filter on layer=$layerId');
       }
-      await _trySettingGreyoutVisibility(controller, visible: floor != 0);
-    });
+    }
   }
 
   /// A style without the greyout layer keeps its Floor switch; only the greyout

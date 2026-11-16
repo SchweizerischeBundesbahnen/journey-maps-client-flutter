@@ -28,6 +28,24 @@ const oneFeatureGroundAndFirstFloor = [
 const noLevelLayers = ['layer1', 'layer2'];
 const oneLevelLayers = ['nolvlLayer', 'layer2-lvl'];
 
+/// Layers of both views next to basemap, greyout and POI layers, as a style of
+/// the SBB Maps style family lists them.
+const bothViewsLayers = [
+  'background',
+  'level_floor-2d',
+  'level_floor-lvl',
+  'level_greyout',
+  'rokas-walk-platform-2d',
+  'rokas-walk-platform-lvl',
+  'journey-pois-second-2d',
+  'journey-pois-second-lvl',
+  'journey-pois-third-2d',
+  'journey-pois-third-lvl',
+  'journey-pois-first',
+];
+const floorIndependentLayers = ['level_floor-2d', 'rokas-walk-platform-2d'];
+const floorDependentLayers = ['level_floor-lvl', 'rokas-walk-platform-lvl'];
+
 /// Layer Filters (DO NOT AUTOFORMAT)
 const layer2Level0Filter = [
   'all',
