@@ -1,18 +1,7 @@
 import 'package:sbb_design_system_mobile/sbb_design_system_mobile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sbb_maps_example/routes/integration_data_route.dart';
-import 'routes/camera_route.dart';
-import 'routes/custom_ui_route.dart';
-import 'routes/display_annotations_route.dart';
-import 'routes/features_route.dart';
-import 'routes/floor_switcher_route.dart';
-import 'routes/map_properties_route.dart';
-import 'routes/plain_map_route.dart';
-import 'routes/poi_route.dart';
-import 'routes/routing_route.dart';
-import 'routes/standard_map_route.dart';
-import 'routes/track_device_location_route.dart';
+import 'app_layout.dart';
 import 'theme_provider.dart';
 
 void main() {
@@ -48,21 +37,7 @@ class _MainAppState extends State<MainApp> {
           theme: SBBTheme.light(),
           darkTheme: SBBTheme.dark(),
           themeMode: themeProvider.isDark ? ThemeMode.dark : ThemeMode.light,
-          initialRoute: '/features',
-          routes: {
-            '/features': (context) => const FeaturesRoute(),
-            '/plain': (context) => const PlainMapRoute(),
-            '/camera': (context) => const CameraRoute(),
-            '/standard': (context) => const StandardMapRoute(),
-            '/custom_ui': (context) => const CustomUiRoute(),
-            '/floor_switcher': (context) => const FloorSwitcherRoute(),
-            '/poi': (context) => const POIRoute(),
-            '/routing': (context) => const RoutingRoute(),
-            '/map_properties': (context) => const MapPropertiesRoute(),
-            '/integration_data': (context) => const IntegrationDataRoute(),
-            '/display_annotations': (context) => const DisplayAnnotationsRoute(),
-            '/track_device_location': (context) => const TrackDeviceLocationRoute(),
-          },
+          home: const AppLayout(),
         ),
       ),
     );

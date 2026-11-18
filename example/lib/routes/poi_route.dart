@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sbb_design_system_mobile/sbb_design_system_mobile.dart';
+import 'package:sbb_maps_example/breakpoint.dart';
 import 'package:sbb_maps_example/env.dart';
 import 'package:sbb_maps_example/theme_provider.dart';
 import 'package:sbb_maps_example/widgets/theme_segmented_button.dart';
@@ -18,7 +19,6 @@ class POIRoute extends StatefulWidget {
 }
 
 class _POIRouteState extends State<POIRoute> {
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
   _PoiSettings _settings = const _PoiSettings();
   SBBRokasPOIController? _poiController;
   PersistentBottomSheetController? _detailsSheet;
@@ -32,41 +32,39 @@ class _POIRouteState extends State<POIRoute> {
     );
     final isClickable = _settings.type != .nonClickable;
 
-    return Scaffold(
-      key: _scaffoldKey,
-      appBar: const SBBHeader(titleText: 'POI'),
-      body: SBBMap(
-        initialCameraPosition: _tiefenbrunnen,
-        mapStyler: mapStyler,
-        isMyLocationEnabled: false,
-        poiSettings: SBBMapPOISettings(
-          onPoiControllerAvailable: _onPoiControllerAvailable,
-          onPoiSelected: isClickable ? _showPoiDetails : null,
-          onPoiDeselected: isClickable ? _closePoiDetails : null,
-        ),
-        builder: (context) => Stack(
-          children: [
+    return SBBMap(
+      initialCameraPosition: _tiefenbrunnen,
+      mapStyler: mapStyler,
+      isMyLocationEnabled: false,
+      poiSettings: SBBMapPOISettings(
+        onPoiControllerAvailable: _onPoiControllerAvailable,
+        onPoiSelected: isClickable ? _showPoiDetails : null,
+        onPoiDeselected: isClickable ? _closePoiDetails : null,
+      ),
+      builder: (context) => Stack(
+        children: [
+          // The split layout shows the theme toggle in the feature list.
+          if (!isSplitLayout(context))
             const Align(
               alignment: .topCenter,
               // Keeps clear of the 44 px map buttons on the right.
               child: Padding(padding: .fromLTRB(64.0, SBBSpacing.medium, 64.0, 0), child: ThemeSegmentedButton()),
             ),
-            Align(
-              alignment: .topRight,
-              child: Padding(
-                padding: const .fromLTRB(0, SBBSpacing.medium, SBBSpacing.xSmall, 0),
-                child: Column(
-                  crossAxisAlignment: .end,
-                  children: [
-                    SBBMapIconButton(onPressed: _openSettings, icon: SBBIcons.gears_small),
-                    const SizedBox(height: SBBSpacing.medium),
-                    const SBBMapHorizontalFloorSwitcher(),
-                  ],
-                ),
+          Align(
+            alignment: .topRight,
+            child: Padding(
+              padding: const .fromLTRB(0, SBBSpacing.medium, SBBSpacing.xSmall, 0),
+              child: Column(
+                crossAxisAlignment: .end,
+                children: [
+                  SBBMapIconButton(onPressed: _openSettings, icon: SBBIcons.gears_small),
+                  const SizedBox(height: SBBSpacing.medium),
+                  const SBBMapHorizontalFloorSwitcher(),
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -79,6 +77,7 @@ class _POIRouteState extends State<POIRoute> {
   Future<void> _openSettings() async {
     final settings = await showSBBBottomSheet<_PoiSettings>(
       context: context,
+      useRootNavigator: false,
       titleText: 'POI',
       body: _PoiSettingsModalBody(settings: _settings),
     );
@@ -104,7 +103,7 @@ class _POIRouteState extends State<POIRoute> {
       return;
     }
 
-    final sheet = _scaffoldKey.currentState!.showBottomSheet(
+    final sheet = Scaffold.of(context).showBottomSheet(
       (context) => _PoiDetailsSheet(poi: _detailsPoi),
       shape: const RoundedRectangleBorder(borderRadius: .vertical(top: .circular(SBBSpacing.medium))),
       clipBehavior: .antiAlias,
@@ -178,7 +177,7 @@ class _PoiSettingsModalBodyState extends State<_PoiSettingsModalBody> {
         const SizedBox(height: SBBSpacing.medium),
         SBBMultiDropdown<SBBPoiCategoryType>(
           triggerDecoration: const SBBInputDecoration(labelText: 'Categories', placeholderText: 'None'),
-          sheetTitleText: 'Categories',
+          sheetConfig: const SBBBottomSheetConfig(titleText: 'Categories', useRootNavigator: false),
           selectedItems: _settings.categories,
           items: [
             for (final category in SBBPoiCategoryType.values) SBBDropdownItem(value: category, label: category.name),
