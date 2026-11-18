@@ -109,10 +109,9 @@ jobs:
 
       - run: flutter build ipa --no-pub --export-options-plist=ios/ExportOptions.plist
 
-      - name: Upload ipa to TestFlight
+      - name: 'App Store Connect API: write API key file'
         env:
           APPSTORE_CONNECT_KEY_ID: ${{ secrets.APPSTORE_CONNECT_KEY_ID }}
-          APPSTORE_CONNECT_ISSUER_ID: ${{ secrets.APPSTORE_CONNECT_ISSUER_ID }}
           APPSTORE_CONNECT_PRIVATE_KEY: ${{ secrets.APPSTORE_CONNECT_PRIVATE_KEY }}
         run: |
           # altool reads the API key from this directory by its key id.
@@ -120,10 +119,15 @@ jobs:
           mkdir -p "$PRIVATE_KEYS_DIR"
           printf '%s\n' "$APPSTORE_CONNECT_PRIVATE_KEY" > "$PRIVATE_KEYS_DIR/AuthKey_$APPSTORE_CONNECT_KEY_ID.p8"
 
+      - name: 'App Store Connect API: upload ipa to TestFlight'
+        env:
+          APPSTORE_CONNECT_KEY_ID: ${{ secrets.APPSTORE_CONNECT_KEY_ID }}
+          APPSTORE_CONNECT_ISSUER_ID: ${{ secrets.APPSTORE_CONNECT_ISSUER_ID }}
+        run: |
           xcrun altool --upload-app --type ios -f build/ios/ipa/*.ipa \
             --apiKey "$APPSTORE_CONNECT_KEY_ID" --apiIssuer "$APPSTORE_CONNECT_ISSUER_ID"
 
-      - name: Delete API key
+      - name: 'App Store Connect API: delete API key file'
         if: always()
         run: rm -rf "$HOME/.appstoreconnect/private_keys"
 
