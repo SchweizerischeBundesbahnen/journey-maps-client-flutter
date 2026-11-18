@@ -94,3 +94,11 @@ disposed, across every style load in between. Decides when the map takes input
 and what is re-applied after a style load.
 _Avoid_: map state, map lifecycle manager, map controller (that is the public
 `SBBMapController`)
+
+### Example app
+
+**Feature route**:
+A screen of the example app that demonstrates one feature of the library, such
+as Standard, POI or Routing. Unrelated to the routing overlays the library draws
+on the map.
+_Avoid_: route on its own, page, screen, demo

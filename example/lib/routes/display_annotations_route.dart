@@ -110,40 +110,38 @@ class _DisplayAnnotationsRouteState extends State<DisplayAnnotationsRoute> {
   @override
   Widget build(BuildContext context) {
     Provider.of<ThemeProvider>(context).isDark ? _styler.toggleDarkMode() : null;
-    return Scaffold(
-      appBar: const SBBHeader(titleText: 'Display annotations'),
-      body: SBBMap(
-        initialCameraPosition: const SBBCameraPosition(
-          target: LatLng(46.947456, 7.451123), // Bern
-          zoom: 12.0,
-        ),
-        mapStyler: _styler,
-        isMyLocationEnabled: false,
-        isFloorSwitchingEnabled: true,
-        onMapAnnotatorAvailable: (annotator) => !_annotator.isCompleted ? _annotator.complete(annotator) : null,
-        builder: (context) => Align(
-          alignment: Alignment.topRight,
-          child: Padding(
-            padding: const .all(SBBSpacing.medium),
-            child: Column(
-              mainAxisSize: .min,
-              crossAxisAlignment: .end,
-              spacing: SBBSpacing.medium,
-              children: [
-                const SBBMapStyleSwitcher(),
-                SBBMapIconButton(
-                  onPressed: () {
-                    showSBBBottomSheet<_AnnotationVisibilitySettings>(
-                      context: context,
-                      isScrollControlled: true,
-                      titleText: 'Show Annotations',
-                      body: _AnnotationVisibilitySettingModal(settings: properties),
-                    ).then(_setStateWithProperties);
-                  },
-                  icon: SBBIcons.gears_small,
-                ),
-              ],
-            ),
+    return SBBMap(
+      initialCameraPosition: const SBBCameraPosition(
+        target: LatLng(46.947456, 7.451123), // Bern
+        zoom: 12.0,
+      ),
+      mapStyler: _styler,
+      isMyLocationEnabled: false,
+      isFloorSwitchingEnabled: true,
+      onMapAnnotatorAvailable: (annotator) => !_annotator.isCompleted ? _annotator.complete(annotator) : null,
+      builder: (context) => Align(
+        alignment: Alignment.topRight,
+        child: Padding(
+          padding: const .all(SBBSpacing.medium),
+          child: Column(
+            mainAxisSize: .min,
+            crossAxisAlignment: .end,
+            spacing: SBBSpacing.medium,
+            children: [
+              const SBBMapStyleSwitcher(),
+              SBBMapIconButton(
+                onPressed: () {
+                  showSBBBottomSheet<_AnnotationVisibilitySettings>(
+                    context: context,
+                    useRootNavigator: false,
+                    isScrollControlled: true,
+                    titleText: 'Show Annotations',
+                    body: _AnnotationVisibilitySettingModal(settings: properties),
+                  ).then(_setStateWithProperties);
+                },
+                icon: SBBIcons.gears_small,
+              ),
+            ],
           ),
         ),
       ),

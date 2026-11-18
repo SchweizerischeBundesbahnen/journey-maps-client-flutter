@@ -25,30 +25,27 @@ class _TrackDeviceLocationRouteState extends State<TrackDeviceLocationRoute> {
       apiKey: Env.journeyMapsTilesApiKey,
       isDarkMode: Provider.of<ThemeProvider>(context).isDark,
     );
-    return Scaffold(
-      appBar: const SBBHeader(titleText: 'Track Device'),
-      body: SBBMap(
-        isMyLocationEnabled: true,
-        initialCameraPosition: _oltenOnLowZoom,
-        mapStyler: mapStyler,
-        onMapLocatorAvailable: (locator) => locator.trackDeviceLocation(),
-        onMapCreated: (c) => controller = c,
-        builder: (context) => Align(
-          alignment: Alignment.topRight,
-          child: Padding(
-            padding: const EdgeInsets.only(top: SBBSpacing.medium, right: SBBSpacing.xSmall),
-            child: Column(
-              crossAxisAlignment: .end,
-              mainAxisAlignment: .start,
-              spacing: SBBSpacing.medium,
-              children: [
-                const SBBMapMyLocationButton(),
-                SBBMapIconButton(
-                  onPressed: () => controller.animateCameraMove(cameraUpdate: _kCameraZurich),
-                  icon: SBBIcons.station_small,
-                ),
-              ],
-            ),
+    return SBBMap(
+      isMyLocationEnabled: true,
+      initialCameraPosition: _oltenOnLowZoom,
+      mapStyler: mapStyler,
+      onMapLocatorAvailable: (locator) => locator.trackDeviceLocation(),
+      onMapCreated: (c) => controller = c,
+      builder: (context) => Align(
+        alignment: Alignment.topRight,
+        child: Padding(
+          padding: const EdgeInsets.only(top: SBBSpacing.medium, right: SBBSpacing.xSmall),
+          child: Column(
+            crossAxisAlignment: .end,
+            mainAxisAlignment: .start,
+            spacing: SBBSpacing.medium,
+            children: [
+              const SBBMapMyLocationButton(),
+              SBBMapIconButton(
+                onPressed: () => controller.animateCameraMove(cameraUpdate: _kCameraZurich),
+                icon: SBBIcons.station_small,
+              ),
+            ],
           ),
         ),
       ),

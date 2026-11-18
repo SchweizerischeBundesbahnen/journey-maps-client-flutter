@@ -31,44 +31,49 @@ class _CameraRouteState extends State<CameraRoute> {
       apiKey: Env.journeyMapsTilesApiKey,
       isDarkMode: Provider.of<ThemeProvider>(context).isDark,
     );
-    return Scaffold(
-      appBar: const SBBHeader(titleText: 'Camera'),
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: SBBMap(
-                initialCameraPosition: const SBBCameraPosition(
-                  target: LatLng(46.947456, 7.451123), // Bern
-                  zoom: 8.0,
-                ),
-                mapStyler: mapStyler,
-                isMyLocationEnabled: true,
-                onMapCreated: (controller) => mapController.complete(controller),
+    return SBBMap(
+      initialCameraPosition: const SBBCameraPosition(
+        target: LatLng(46.947456, 7.451123), // Bern
+        zoom: 8.0,
+      ),
+      mapStyler: mapStyler,
+      isMyLocationEnabled: true,
+      onMapCreated: (controller) => mapController.complete(controller),
+      builder: (context) => Stack(
+        children: [
+          const Align(
+            alignment: .topRight,
+            child: Padding(
+              padding: .only(top: SBBSpacing.medium, right: SBBSpacing.xSmall),
+              child: Column(
+                mainAxisSize: .min,
+                spacing: SBBSpacing.small,
+                children: [SBBMapStyleSwitcher(), SBBMapMyLocationButton()],
               ),
             ),
-            SBBContentBox(
-              padding: const .all(SBBSpacing.xSmall),
+          ),
+          Align(
+            alignment: .topCenter,
+            child: Padding(
+              // Keeps clear of the 44 px map buttons on the right.
+              padding: const .fromLTRB(64.0, SBBSpacing.medium, 64.0, 0),
               child: Row(
-                mainAxisAlignment: .spaceEvenly,
+                mainAxisSize: .min,
+                spacing: SBBSpacing.small,
                 children: [
-                  SBBTertiaryButtonSmall(
-                    labelText: 'Bern',
-                    iconData: SBBIcons.house_small,
-                    onPressed: () => mapController.future.then((c) => c.animateCameraMove(cameraUpdate: _kCameraBern)),
-                  ),
-                  SBBTertiaryButtonSmall(
-                    labelText: 'Zurich',
-                    iconData: SBBIcons.station_small,
-                    onPressed: () =>
-                        mapController.future.then((c) => c.animateCameraMove(cameraUpdate: _kCameraZurich)),
-                  ),
+                  SBBTertiaryButtonSmall(labelText: 'Bern', onPressed: () => _moveCamera(_kCameraBern)),
+                  SBBTertiaryButtonSmall(labelText: 'Zurich HB', onPressed: () => _moveCamera(_kCameraZurich)),
                 ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
+  }
+
+  Future<void> _moveCamera(SBBCameraUpdate cameraUpdate) async {
+    final controller = await mapController.future;
+    await controller.animateCameraMove(cameraUpdate: cameraUpdate);
   }
 }
