@@ -63,10 +63,11 @@ class _CameraRouteState extends State<CameraRoute> {
                 padding: const .only(right: SBBSpacing.xSmall, bottom: _kCameraButtonsBottomPadding),
                 child: Column(
                   mainAxisSize: .min,
+                  crossAxisAlignment: .end,
                   spacing: SBBSpacing.small,
                   children: [
-                    SBBMapIconButton(onPressed: () => _moveCamera(_kCameraBern), icon: SBBIcons.house_small),
-                    SBBMapIconButton(onPressed: () => _moveCamera(_kCameraZurich), icon: SBBIcons.station_small),
+                    SBBTertiaryButtonSmall(labelText: 'Bern', onPressed: () => _moveCamera(_kCameraBern)),
+                    SBBTertiaryButtonSmall(labelText: 'Zurich HB', onPressed: () => _moveCamera(_kCameraZurich)),
                   ],
                 ),
               ),
