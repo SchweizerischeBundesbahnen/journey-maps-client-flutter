@@ -21,9 +21,7 @@ Merging the release please PR will trigger the `example_app_release_pr` Github a
 
 Upon merging this PR, the `example_app_build_and_release` workflow releases the example app to
 * the SBB Enterprise Playstore (Android)
-* TestFlight (iOS). Internal testers receive the build once Apple has processed it. External testers
-  receive it after someone adds the build to their tester group in App Store Connect. The first build
-  of each version passes Apple's Beta App Review before external testers can install it.
+* SBB Cargo App Store for internal testing (iOS)
 
 The Android and the iOS release run independently. If one fails, use *Re-run failed jobs* on the
 workflow run. This reruns the failed platform only.
@@ -39,22 +37,6 @@ Pull requests from forks cannot read secrets and build without signing.
 Signing uses team `ZB8B4MY472`, the bundle id `ch.sbb.SBBJourneyMapsFlutter` and the App Store
 provisioning profile `JourneyMaps Client Flutter (AppStore)`. The workflows download the profile from
 App Store Connect on every run.
-
-The workflows read five Github Actions secrets:
-
-| Secret                                  | Content                                                               |
-|-----------------------------------------|-----------------------------------------------------------------------|
-| `IOS_DISTRIBUTION_CERTIFICATE_BASE64`   | The distribution certificate with its private key as `.p12`, base64 encoded. |
-| `IOS_DISTRIBUTION_CERTIFICATE_PASSWORD` | The password of the `.p12` file.                                      |
-| `APPSTORE_CONNECT_KEY_ID`               | The key id of the App Store Connect team API key.                     |
-| `APPSTORE_CONNECT_ISSUER_ID`            | The issuer id of the App Store Connect team API key.                  |
-| `APPSTORE_CONNECT_PRIVATE_KEY`          | The content of the `.p8` file of the API key, not base64 encoded.     |
-
-The distribution certificate expires one year after its creation. To renew it:
-1. Create a new distribution certificate in the Apple developer portal and export it with its private
-   key as `.p12` from the keychain.
-2. Add the new certificate to the provisioning profile `JourneyMaps Client Flutter (AppStore)`.
-3. Update `IOS_DISTRIBUTION_CERTIFICATE_BASE64` and `IOS_DISTRIBUTION_CERTIFICATE_PASSWORD`.
 
 [Release Please]: https://github.com/googleapis/release-please
 [Github Action version]: https://github.com/googleapis/release-please-action
