@@ -3,8 +3,10 @@ import 'package:sbb_design_system_mobile/sbb_design_system_mobile.dart';
 import 'package:sbb_maps_example/feature_routes.dart';
 import 'package:sbb_maps_example/widgets/theme_segmented_button.dart';
 
+const _kFooterText = 'Built with Flutter 💙';
+
 /// Lists every feature route under the heading of its group, below the theme
-/// toggle.
+/// toggle and above the footer.
 class FeatureList extends StatelessWidget {
   const FeatureList({super.key, required this.onSelected, this.selected});
 
@@ -48,6 +50,8 @@ class FeatureList extends StatelessWidget {
                 ),
               ),
             ],
+            const SizedBox(height: SBBSpacing.large),
+            Text(_kFooterText, style: sbbTextStyle.small.lightStyle),
           ],
         ),
       ),

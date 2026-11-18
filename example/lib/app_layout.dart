@@ -5,7 +5,7 @@ import 'breakpoint.dart';
 import 'feature_routes.dart';
 import 'widgets/feature_list.dart';
 
-const _kHeaderTitle = 'Maps Flutter';
+const _kHeaderTitle = 'SBB Karten';
 
 /// Shows the feature list and the selected feature route, in the split layout
 /// or the phone layout depending on [isSplitLayout].
