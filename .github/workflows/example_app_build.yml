@@ -18,6 +18,16 @@ on:
         required: true
       signing_key_alias:
         required: true
+      ios_distribution_certificate_base64:
+        required: false
+      ios_distribution_certificate_password:
+        required: false
+      appstore_connect_key_id:
+        required: false
+      appstore_connect_issuer_id:
+        required: false
+      appstore_connect_private_key:
+        required: false
 
 jobs:
   build-android:
@@ -70,6 +80,9 @@ jobs:
   build-iOS:
     name: Build iOS
     runs-on: macos-26
+    env:
+      # Pull requests from forks cannot read secrets and build unsigned.
+      CAN_SIGN: ${{ secrets.ios_distribution_certificate_base64 != '' }}
     defaults:
       run:
         working-directory: example
@@ -99,4 +112,28 @@ jobs:
 
       - run: flutter pub get
       - run: dart run build_runner build
-      - run: flutter build ios --no-codesign
+
+      - name: Setup iOS signing
+        id: signing
+        if: env.CAN_SIGN == 'true'
+        uses: ./.github/actions/setup-ios-signing
+        with:
+          certificate-base64: ${{ secrets.ios_distribution_certificate_base64 }}
+          certificate-password: ${{ secrets.ios_distribution_certificate_password }}
+          appstore-connect-key-id: ${{ secrets.appstore_connect_key_id }}
+          appstore-connect-issuer-id: ${{ secrets.appstore_connect_issuer_id }}
+          appstore-connect-private-key: ${{ secrets.appstore_connect_private_key }}
+
+      - name: Build signed ipa
+        if: env.CAN_SIGN == 'true'
+        run: flutter build ipa --no-pub --export-options-plist=ios/ExportOptions.plist
+
+      - name: Build without signing
+        if: env.CAN_SIGN != 'true'
+        run: flutter build ios --no-pub --no-codesign
+
+      - name: Delete signing keychain
+        if: always() && steps.signing.outputs.keychain-path != ''
+        run: security delete-keychain "$KEYCHAIN_PATH"
+        env:
+          KEYCHAIN_PATH: ${{ steps.signing.outputs.keychain-path }}

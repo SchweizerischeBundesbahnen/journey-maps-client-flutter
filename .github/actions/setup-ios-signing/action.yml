@@ -1,0 +1,82 @@
+name: setup_ios_signing
+description: >
+  Prepares the runner to sign the example app for the App Store. Signing needs
+  two things. The distribution certificate with its private key signs the
+  binary. The provisioning profile, issued by Apple, allows the bundle id to be
+  distributed when signed by that certificate. The certificate comes from a
+  secret. The profile is downloaded from App Store Connect, which requires the
+  App Store Connect API key. The caller deletes the keychain at `keychain-path`
+  when the job ends.
+
+inputs:
+  # Code signing
+  certificate-base64:
+    description: 'The distribution certificate with its private key as base64 encoded .p12 file.'
+    required: true
+  certificate-password:
+    description: 'The password of the .p12 file.'
+    required: true
+  # App Store Connect API
+  appstore-connect-key-id:
+    description: 'The key id of the App Store Connect API key.'
+    required: true
+  appstore-connect-issuer-id:
+    description: 'The issuer id of the App Store Connect API key.'
+    required: true
+  appstore-connect-private-key:
+    description: 'The content of the .p8 file of the App Store Connect API key.'
+    required: true
+
+outputs:
+  keychain-path:
+    description: 'The path of the temporary keychain holding the distribution certificate.'
+    value: ${{ steps.keychain.outputs.path }}
+
+runs:
+  using: composite
+  steps:
+    - name: 'Code signing: create temporary keychain'
+      id: keychain
+      shell: bash
+      run: |
+        KEYCHAIN_PATH="$RUNNER_TEMP/app-signing.keychain-db"
+        # The keychain only lives for this job, so its password is never stored.
+        KEYCHAIN_PASSWORD="$(openssl rand -hex 32)"
+        echo "::add-mask::$KEYCHAIN_PASSWORD"
+
+        security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+        echo "path=$KEYCHAIN_PATH" >> "$GITHUB_OUTPUT"
+        echo "password=$KEYCHAIN_PASSWORD" >> "$GITHUB_OUTPUT"
+
+        # Keep the keychain unlocked for the whole job.
+        security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
+        security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+
+        # Xcode searches this keychain for the signing identity.
+        security list-keychain -d user -s "$KEYCHAIN_PATH"
+
+    - name: 'Code signing: import distribution certificate'
+      shell: bash
+      env:
+        CERTIFICATE_BASE64: ${{ inputs.certificate-base64 }}
+        CERTIFICATE_PASSWORD: ${{ inputs.certificate-password }}
+        KEYCHAIN_PATH: ${{ steps.keychain.outputs.path }}
+        KEYCHAIN_PASSWORD: ${{ steps.keychain.outputs.password }}
+      run: |
+        CERTIFICATE_PATH="$RUNNER_TEMP/distribution_certificate.p12"
+        trap 'rm -f "$CERTIFICATE_PATH"' EXIT
+        echo -n "$CERTIFICATE_BASE64" | base64 --decode -o "$CERTIFICATE_PATH"
+
+        security import "$CERTIFICATE_PATH" -P "$CERTIFICATE_PASSWORD" -A -t cert -f pkcs12 -k "$KEYCHAIN_PATH"
+
+        # Allow codesign to use the private key without a password prompt.
+        security set-key-partition-list -S apple-tool:,apple: -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH" > /dev/null
+
+    - name: 'App Store Connect API: download provisioning profile'
+      uses: apple-actions/download-provisioning-profiles@v7
+      with:
+        bundle-id: 'ch.sbb.SBBJourneyMapsFlutter'
+        profile-type: 'IOS_APP_STORE'
+        issuer-id: ${{ inputs.appstore-connect-issuer-id }}
+        api-key-id: ${{ inputs.appstore-connect-key-id }}
+        api-private-key: ${{ inputs.appstore-connect-private-key }}

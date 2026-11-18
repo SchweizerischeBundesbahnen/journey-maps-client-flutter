@@ -19,9 +19,24 @@ Merging the release please PR will trigger the `example_app_release_pr` Github a
   * syncing the example app to the package version
   * increasing the build number by one.
 
-Upon merging this PR, the example app will be released to the enterprise app store.
+Upon merging this PR, the `example_app_build_and_release` workflow releases the example app to
+* the SBB Enterprise Playstore (Android)
+* SBB Cargo App Store for internal testing (iOS)
 
-This PR can also be opened manually and will fail silently if no changes are commited.
+The Android and the iOS release run independently. If one fails, use *Re-run failed jobs* on the
+workflow run. This reruns the failed platform only.
+
+This PR can also be opened manually and will fail silently if no changes are commited. A manually
+opened PR increases the build number, so it releases the same package version again on both platforms.
+
+##### iOS signing
+
+The example app is signed in every build of the `example_app_build` workflow and in the release.
+Pull requests from forks cannot read secrets and build without signing.
+
+Signing uses team `ZB8B4MY472`, the bundle id `ch.sbb.SBBJourneyMapsFlutter` and the App Store
+provisioning profile `JourneyMaps Client Flutter (AppStore)`. The workflows download the profile from
+App Store Connect on every run.
 
 [Release Please]: https://github.com/googleapis/release-please
 [Github Action version]: https://github.com/googleapis/release-please-action
