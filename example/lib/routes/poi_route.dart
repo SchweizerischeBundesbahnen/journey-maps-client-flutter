@@ -59,8 +59,6 @@ class _POIRouteState extends State<POIRoute> {
                   crossAxisAlignment: .end,
                   children: [
                     SBBMapIconButton(onPressed: _openSettings, icon: SBBIcons.gears_small),
-                    const SizedBox(height: SBBSpacing.small),
-                    const SBBMapStyleSwitcher(),
                     const SizedBox(height: SBBSpacing.medium),
                     const SBBMapHorizontalFloorSwitcher(),
                   ],
