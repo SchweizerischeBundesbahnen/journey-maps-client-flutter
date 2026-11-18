@@ -45,6 +45,7 @@ class _FloorSwitcherRouteState extends State<FloorSwitcherRoute> {
                   showSBBBottomSheet<_FloorSwitcherSettings>(
                     context: context,
                     useRootNavigator: false,
+                    isScrollControlled: true,
                     titleText: 'Floor Switcher',
                     body: _FloorSwitcherModalBody(settings: _settings),
                   ).then(_setStateWithSettings);

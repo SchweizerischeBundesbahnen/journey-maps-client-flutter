@@ -36,6 +36,7 @@ class _MapPropertiesRouteState extends State<MapPropertiesRoute> {
               showSBBBottomSheet<SBBMapProperties>(
                 context: context,
                 useRootNavigator: false,
+                isScrollControlled: true,
                 titleText: 'Map Properties',
                 body: _MapPropertiesModalBody(properties: properties),
               ).then(_setStateWithProperties);

@@ -96,7 +96,7 @@ class _PhoneLayoutState extends State<_PhoneLayout> {
 }
 
 /// One header spans the window. Below it, the feature list takes the left
-/// third and the selected feature route the remaining two thirds.
+/// quarter and the selected feature route the remaining three quarters.
 class _SplitLayout extends StatelessWidget {
   const _SplitLayout({required this.selected, required this.onSelected});
 
@@ -122,7 +122,7 @@ class _SplitLayout extends StatelessWidget {
           ),
           const VerticalDivider(width: 1.0),
           Expanded(
-            flex: 2,
+            flex: 3,
             child: MediaQuery.removePadding(
               context: context,
               removeLeft: true,
