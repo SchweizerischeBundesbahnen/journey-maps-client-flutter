@@ -123,11 +123,13 @@ jobs:
           xcrun altool --upload-app --type ios -f build/ios/ipa/*.ipa \
             --apiKey "$APPSTORE_CONNECT_KEY_ID" --apiIssuer "$APPSTORE_CONNECT_ISSUER_ID"
 
-      - name: Delete signing keychain and API key
+      - name: Delete API key
         if: always()
-        run: |
-          rm -rf "$HOME/.appstoreconnect/private_keys"
-          if [ -n "$KEYCHAIN_PATH" ]; then security delete-keychain "$KEYCHAIN_PATH"; fi
+        run: rm -rf "$HOME/.appstoreconnect/private_keys"
+
+      - name: Delete signing keychain
+        if: always() && steps.signing.outputs.keychain-path != ''
+        run: security delete-keychain "$KEYCHAIN_PATH"
         env:
           KEYCHAIN_PATH: ${{ steps.signing.outputs.keychain-path }}
 

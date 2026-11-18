@@ -21,7 +21,8 @@ Merging the release please PR will trigger the `example_app_release_pr` Github a
 
 Upon merging this PR, the `example_app_build_and_release` workflow releases the example app to
 * the SBB Enterprise Playstore (Android)
-* TestFlight (iOS). Only internal testers of the App Store Connect team receive the build.
+* TestFlight (iOS). Only internal testers receive the build. An internal tester is a user of the
+  App Store Connect team `ZB8B4MY472` who was added to the app's tester group in App Store Connect.
 
 The Android and the iOS release run independently. If one fails, use *Re-run failed jobs* on the
 workflow run. This reruns the failed platform only.

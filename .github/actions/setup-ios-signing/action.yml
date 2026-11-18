@@ -20,10 +20,6 @@ inputs:
   appstore-connect-private-key:
     description: 'The content of the .p8 file of the App Store Connect API key.'
     required: true
-  bundle-id:
-    description: 'The bundle id the provisioning profile is downloaded for.'
-    required: false
-    default: 'ch.sbb.SBBJourneyMapsFlutter'
 
 outputs:
   keychain-path:
@@ -45,9 +41,11 @@ runs:
         # The keychain only lives for this job, so its password is never stored.
         KEYCHAIN_PASSWORD="$(openssl rand -base64 32)"
 
+        trap 'rm -f "$CERTIFICATE_PATH"' EXIT
         echo -n "$CERTIFICATE_BASE64" | base64 --decode -o "$CERTIFICATE_PATH"
 
         security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+        echo "path=$KEYCHAIN_PATH" >> "$GITHUB_OUTPUT"
         security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
         security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
 
@@ -55,13 +53,10 @@ runs:
         security set-key-partition-list -S apple-tool:,apple: -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH" > /dev/null
         security list-keychain -d user -s "$KEYCHAIN_PATH"
 
-        rm "$CERTIFICATE_PATH"
-        echo "path=$KEYCHAIN_PATH" >> "$GITHUB_OUTPUT"
-
     - name: Download App Store provisioning profile
       uses: apple-actions/download-provisioning-profiles@v7
       with:
-        bundle-id: ${{ inputs.bundle-id }}
+        bundle-id: 'ch.sbb.SBBJourneyMapsFlutter'
         profile-type: 'IOS_APP_STORE'
         issuer-id: ${{ inputs.appstore-connect-issuer-id }}
         api-key-id: ${{ inputs.appstore-connect-key-id }}

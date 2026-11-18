@@ -37,5 +37,5 @@ example/.fvm/*
 # Testing
 coverage/
 
-# Local helper setting the iOS signing secrets, see RELEASE.md.
+# Local helper setting the iOS signing secrets
 tool/ci/set-ios-signing-secrets.sh
