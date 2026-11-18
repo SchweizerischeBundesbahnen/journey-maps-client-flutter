@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:sbb_design_system_mobile/sbb_design_system_mobile.dart';
 import 'package:sbb_maps_example/widgets/theme_segmented_button.dart';
 
-const _kHeaderTitle = 'Maps Flutter';
+const _kHeaderTitle = 'SBB Karten';
+const _kFooterText = 'Built with Flutter 💙';
 
 class FeaturesRoute extends StatefulWidget {
   const FeaturesRoute({super.key});
@@ -62,6 +63,8 @@ class _FeaturesRouteState extends State<FeaturesRoute> {
                   ],
                 ),
               ),
+              SizedBox(height: SBBSpacing.large),
+              Text(_kFooterText, style: sbbTextStyle.small.lightStyle),
             ],
           ),
         ),
