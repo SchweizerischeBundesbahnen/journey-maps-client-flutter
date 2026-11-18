@@ -10,10 +10,6 @@ import 'package:sbb_maps_flutter/sbb_maps_flutter.dart';
 final _kCameraBern = SBBCameraUpdate.newLatLngZoom(const LatLng(46.947456, 7.451123), 14.0);
 final _kCameraZurich = SBBCameraUpdate.newLatLngZoom(const LatLng(47.3769, 8.5417), 15.0);
 
-/// Keeps the camera buttons clear of the map's attribution button in the
-/// bottom right corner.
-const _kCameraButtonsBottomPadding = 48.0;
-
 class CameraRoute extends StatefulWidget {
   const CameraRoute({super.key});
 
@@ -57,19 +53,17 @@ class _CameraRouteState extends State<CameraRoute> {
             ),
           ),
           Align(
-            alignment: .bottomRight,
-            child: SafeArea(
-              child: Padding(
-                padding: const .only(right: SBBSpacing.xSmall, bottom: _kCameraButtonsBottomPadding),
-                child: Column(
-                  mainAxisSize: .min,
-                  crossAxisAlignment: .end,
-                  spacing: SBBSpacing.small,
-                  children: [
-                    SBBTertiaryButtonSmall(labelText: 'Bern', onPressed: () => _moveCamera(_kCameraBern)),
-                    SBBTertiaryButtonSmall(labelText: 'Zurich HB', onPressed: () => _moveCamera(_kCameraZurich)),
-                  ],
-                ),
+            alignment: .topCenter,
+            child: Padding(
+              // Keeps clear of the 44 px map buttons on the right.
+              padding: const .fromLTRB(64.0, SBBSpacing.medium, 64.0, 0),
+              child: Row(
+                mainAxisSize: .min,
+                spacing: SBBSpacing.small,
+                children: [
+                  SBBTertiaryButtonSmall(labelText: 'Bern', onPressed: () => _moveCamera(_kCameraBern)),
+                  SBBTertiaryButtonSmall(labelText: 'Zurich HB', onPressed: () => _moveCamera(_kCameraZurich)),
+                ],
               ),
             ),
           ),
