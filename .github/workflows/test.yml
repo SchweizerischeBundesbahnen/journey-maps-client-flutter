@@ -191,3 +191,8 @@ jobs:
       signing_keystore_password: ${{ secrets.SIGNING_KEYSTORE_PASSWORD }}
       signing_key_password: ${{ secrets.SIGNING_KEY_PASSWORD }}
       signing_key_alias: ${{ secrets.SIGNING_KEY_ALIAS }}
+      ios_distribution_certificate_base64: ${{ secrets.IOS_DISTRIBUTION_CERTIFICATE_BASE64 }}
+      ios_distribution_certificate_password: ${{ secrets.IOS_DISTRIBUTION_CERTIFICATE_PASSWORD }}
+      appstore_connect_key_id: ${{ secrets.APPSTORE_CONNECT_KEY_ID }}
+      appstore_connect_issuer_id: ${{ secrets.APPSTORE_CONNECT_ISSUER_ID }}
+      appstore_connect_private_key: ${{ secrets.APPSTORE_CONNECT_PRIVATE_KEY }}
