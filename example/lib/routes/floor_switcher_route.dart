@@ -28,34 +28,32 @@ class _FloorSwitcherRouteState extends State<FloorSwitcherRoute> {
       isDarkMode: Provider.of<ThemeProvider>(context).isDark,
     );
 
-    return Scaffold(
-      appBar: const SBBHeader(titleText: 'Floor Switcher'),
-      body: SBBMap(
-        mapStyler: mapStyler,
-        initialCameraPosition: _zurichHB,
-        isFloorSwitchingEnabled: true,
-        defaultViewWithoutFloor: _settings.viewWithoutFloor,
-        builder: (context) => Align(
-          alignment: Alignment.topRight,
-          child: Padding(
-            padding: const .all(SBBSpacing.medium),
-            child: Column(
-              crossAxisAlignment: .end,
-              children: [
-                SBBMapIconButton(
-                  onPressed: () {
-                    showSBBBottomSheet<_FloorSwitcherSettings>(
-                      context: context,
-                      titleText: 'Floor Switcher',
-                      body: _FloorSwitcherModalBody(settings: _settings),
-                    ).then(_setStateWithSettings);
-                  },
-                  icon: SBBIcons.gears_small,
-                ),
-                const SizedBox(height: SBBSpacing.medium),
-                _floorSwitcher(),
-              ],
-            ),
+    return SBBMap(
+      mapStyler: mapStyler,
+      initialCameraPosition: _zurichHB,
+      isFloorSwitchingEnabled: true,
+      defaultViewWithoutFloor: _settings.viewWithoutFloor,
+      builder: (context) => Align(
+        alignment: Alignment.topRight,
+        child: Padding(
+          padding: const .all(SBBSpacing.medium),
+          child: Column(
+            crossAxisAlignment: .end,
+            children: [
+              SBBMapIconButton(
+                onPressed: () {
+                  showSBBBottomSheet<_FloorSwitcherSettings>(
+                    context: context,
+                    useRootNavigator: false,
+                    titleText: 'Floor Switcher',
+                    body: _FloorSwitcherModalBody(settings: _settings),
+                  ).then(_setStateWithSettings);
+                },
+                icon: SBBIcons.gears_small,
+              ),
+              const SizedBox(height: SBBSpacing.medium),
+              _floorSwitcher(),
+            ],
           ),
         ),
       ),

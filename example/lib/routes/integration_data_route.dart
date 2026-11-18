@@ -23,26 +23,24 @@ class _IntegrationDataRouteState extends State<IntegrationDataRoute> {
       useIntegrationData: useIntegration,
     );
 
-    return Scaffold(
-      appBar: const SBBHeader(titleText: 'Integration Data'),
-      body: SBBMap(
-        mapStyler: mapStyler,
-        isMyLocationEnabled: false,
-        isFloorSwitchingEnabled: true,
-        builder: (context) => Align(
-          alignment: Alignment.topRight,
-          child: Padding(
-            padding: const .all(SBBSpacing.medium),
-            child: SBBMapIconButton(
-              onPressed: () {
-                showSBBBottomSheet<bool>(
-                  context: context,
-                  titleText: 'Integration Data',
-                  body: _IntegrationDataModalBody(useIntegration: useIntegration),
-                ).then(_setStateWithProperties);
-              },
-              icon: SBBIcons.gears_small,
-            ),
+    return SBBMap(
+      mapStyler: mapStyler,
+      isMyLocationEnabled: false,
+      isFloorSwitchingEnabled: true,
+      builder: (context) => Align(
+        alignment: Alignment.topRight,
+        child: Padding(
+          padding: const .all(SBBSpacing.medium),
+          child: SBBMapIconButton(
+            onPressed: () {
+              showSBBBottomSheet<bool>(
+                context: context,
+                useRootNavigator: false,
+                titleText: 'Integration Data',
+                body: _IntegrationDataModalBody(useIntegration: useIntegration),
+              ).then(_setStateWithProperties);
+            },
+            icon: SBBIcons.gears_small,
           ),
         ),
       ),

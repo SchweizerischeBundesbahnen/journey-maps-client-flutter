@@ -22,27 +22,25 @@ class _MapPropertiesRouteState extends State<MapPropertiesRoute> {
       isDarkMode: Provider.of<ThemeProvider>(context).isDark,
     );
 
-    return Scaffold(
-      appBar: const SBBHeader(titleText: 'Map Properties'),
-      body: SBBMap(
-        mapStyler: mapStyler,
-        isMyLocationEnabled: false,
-        isFloorSwitchingEnabled: true,
-        properties: properties,
-        builder: (context) => Align(
-          alignment: Alignment.topRight,
-          child: Padding(
-            padding: const .all(SBBSpacing.medium),
-            child: SBBMapIconButton(
-              onPressed: () {
-                showSBBBottomSheet<SBBMapProperties>(
-                  context: context,
-                  titleText: 'Map Properties',
-                  body: _MapPropertiesModalBody(properties: properties),
-                ).then(_setStateWithProperties);
-              },
-              icon: SBBIcons.gears_small,
-            ),
+    return SBBMap(
+      mapStyler: mapStyler,
+      isMyLocationEnabled: false,
+      isFloorSwitchingEnabled: true,
+      properties: properties,
+      builder: (context) => Align(
+        alignment: Alignment.topRight,
+        child: Padding(
+          padding: const .all(SBBSpacing.medium),
+          child: SBBMapIconButton(
+            onPressed: () {
+              showSBBBottomSheet<SBBMapProperties>(
+                context: context,
+                useRootNavigator: false,
+                titleText: 'Map Properties',
+                body: _MapPropertiesModalBody(properties: properties),
+              ).then(_setStateWithProperties);
+            },
+            icon: SBBIcons.gears_small,
           ),
         ),
       ),
