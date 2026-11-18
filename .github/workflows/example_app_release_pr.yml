@@ -62,6 +62,8 @@ jobs:
           body: |
             Update pubspec version to ${{ steps.read_build_name.outputs.pubspec_build_name }}+${{ steps.read_build_number.outputs.pubspec_build_number }}
 
-            **Merging this PR will trigger the release into the enterprise app store.**
+            **Merging this PR will trigger the release of the example app:**
+            * Android: release into the SBB Enterprise Playstore.
+            * iOS: upload of the signed build to TestFlight.
           labels: |
             exampleAppRelease:pending
